@@ -1,0 +1,9 @@
+.next
+out
+node_modules
+package-lock.json
+next-env.d.ts
+src/components/ui
+LICENSE
+CODE_OF_CONDUCT.md
+AGENTS.md

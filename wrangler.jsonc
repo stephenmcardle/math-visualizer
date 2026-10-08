@@ -1,0 +1,12 @@
+// Cloudflare Workers static-assets deployment for the `next build` output.
+// Deploy with: npm run build && npx wrangler deploy
+{
+  "name": "math-visualizer",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    // Serve out/404.html for unknown paths. `/about` -> about.html is handled
+    // by the default html_handling ("auto-trailing-slash").
+    "not_found_handling": "404-page",
+  },
+}

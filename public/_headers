@@ -1,0 +1,4 @@
+# Cloudflare static assets headers. Next.js fingerprints everything under
+# /_next/static, so it can be cached indefinitely.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

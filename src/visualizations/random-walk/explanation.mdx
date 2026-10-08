@@ -1,0 +1,51 @@
+## What this shows
+
+Each colored path is one **walker**. All walkers start at the same point (the
+center of the viewport) and move independently. At every step, a walker picks a
+direction uniformly at random and moves a fixed distance in that direction.
+This is often called an _isotropic_ or _Pearson_ random walk in the plane.
+
+## How the visualization works
+
+- The simulation keeps only the current position of every walker. It advances in
+  whole, discrete steps, so frame rate never changes the outcome.
+- Every random direction comes from a seeded pseudo-random generator. The same
+  seed, walker count and step size always produce the same paths, which is why
+  the seed is part of the shareable URL.
+- The renderer draws the segment each walker covered since the previous frame
+  into an offscreen texture. At high speeds several steps can happen between
+  frames, and the drawn segment then joins the sampled positions rather than
+  every intermediate step.
+
+## Parameters
+
+- **Walkers**: how many independent walkers to simulate. Changing it restarts
+  the run from the seed.
+- **Step size**: the length of each step, in screen pixels. Applies immediately.
+- **Speed**: steps per second. Applies immediately.
+
+## Mathematical background
+
+Write the position of one walker after _n_ steps as
+X<sub>n</sub> = ξ<sub>1</sub> + ξ<sub>2</sub> + … + ξ<sub>n</sub>, where each
+step ξ<sub>k</sub> has length _s_ and a uniformly random direction, independent
+of the others. Each step has mean zero, so the expected position stays at the
+origin. For the squared distance, the cross terms
+E[ξ<sub>j</sub> · ξ<sub>k</sub>] vanish for _j_ ≠ _k_, leaving
+
+E[|X<sub>n</sub>|²] = n·s².
+
+The typical (root-mean-square) distance from the start therefore grows like
+s·√n: to get twice as far, a walker needs about four times as many steps. You
+can see this in the way the cloud of walkers spreads quickly at first and then
+more and more slowly.
+
+By the central limit theorem, for large _n_ the distribution of
+X<sub>n</sub> / (s·√n) approaches a two-dimensional Gaussian. Rescaled
+appropriately, random walks converge to Brownian motion, which connects this
+picture to diffusion.
+
+## References
+
+The problem was posed by Karl Pearson in a 1905 letter to _Nature_ and answered
+by Lord Rayleigh in the same volume. Full citations are listed below.
