@@ -16,7 +16,7 @@ GitHub repository is private.
 | Check                    | State                                     |
 | ------------------------ | ----------------------------------------- |
 | `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build |
-| CI (GitHub Actions)      | Passing on `main`                         |
+| CI (GitHub Actions)      | Passing on `main`; required to merge      |
 | Deployment               | Not deployed                              |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                |
 
@@ -46,7 +46,6 @@ _Nothing._
 
 1. Milestone 2: deploy to Cloudflare (see ROADMAP).
 2. Resolve launch blockers: Code of Conduct contact (ISS-007), repository visibility.
-3. Branch protection on `main` requiring CI.
 
 ## Known limitations
 

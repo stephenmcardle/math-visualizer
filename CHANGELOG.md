@@ -29,4 +29,12 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 - README, CONTRIBUTING, Code of Conduct (Contributor Covenant 2.1), Apache-2.0 license, issue
   and pull request templates, Cloudflare `wrangler.jsonc` and cache headers.
 
+### Changed
+
+- `main` is protected: all changes go through pull requests that must pass CI. CONTRIBUTING and
+  `CLAUDE.md` document the PR workflow.
+- `CLAUDE.md` now explains how a visualization runs end to end (build-time page, URL-backed
+  configuration, the frame loop and its restart/redraw/resize controls), single-test commands,
+  and Base UI / Turbopack / static-export gotchas.
+
 [Unreleased]: https://github.com/stephenmcardle/math-visualizer/commits/main

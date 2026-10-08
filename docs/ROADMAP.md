@@ -40,7 +40,7 @@ Goal: a deployed site that outside contributors can find and use.
 - ⬜ Make the GitHub repository public
 - ⬜ Code of Conduct reporting contact (ISSUES: ISS-007)
 - ⬜ README screenshot and live demo link
-- ⬜ Branch protection on `main` requiring CI
+- ✅ Branch protection on `main` requiring CI and pull requests
 
 Exit: the site is live, the repository is public, and the README links to the demo.
 
