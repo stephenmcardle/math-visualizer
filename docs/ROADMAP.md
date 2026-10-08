@@ -20,16 +20,17 @@ Goal: prove the architecture with one visualization.
 Exit: `npm run check` passes and the random walk runs through the full architecture. Met
 2026-10-08.
 
-## Milestone 1: Development infrastructure 🚧
+## Milestone 1: Development infrastructure ✅
 
 Goal: make the state of the project and the reasons behind it easy to find.
 
 - ✅ `docs/` with status, roadmap, capture log and ADRs
 - ✅ CHANGELOG.md
 - ✅ CLAUDE.md agent workflow
-- 🚧 GitHub Actions CI running `npm run check` (added; first green run pending)
+- ✅ GitHub Actions CI running `npm run check` and the format check
 
-Exit: CI green on `main`, and the docs are referenced from README and CONTRIBUTING.
+Exit: CI green on `main`, and the docs are referenced from README and CONTRIBUTING. Met
+2026-10-08.
 
 ## Milestone 2: Public launch ⬜
 

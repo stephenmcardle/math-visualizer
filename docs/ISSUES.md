@@ -32,6 +32,16 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-010: CI's `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19
+
+- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** low
+- **Where:** `.github/workflows/ci.yml`
+- **Status:** open
+- GitHub annotated the first CI run: the `ubuntu-latest` label will migrate to Ubuntu 26 beginning
+  2026-10-19 (actions/runner-images#14748). Nothing in the workflow is OS-version specific, so no
+  action is expected. If CI breaks after that date, pin `runs-on: ubuntu-24.04` while
+  investigating.
+
 ### ISS-009: Auto quality only ever steps down
 
 - **Captured:** 2026-10-08 · **Type:** idea · **Severity:** low

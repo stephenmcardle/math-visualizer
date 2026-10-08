@@ -1,20 +1,22 @@
 # Status
 
 **Last updated:** 2026-10-08
-**Phase:** Milestone 1 (Development infrastructure), in progress. See [ROADMAP.md](ROADMAP.md).
+**Phase:** Milestone 1 (Development infrastructure) complete; Milestone 2 (Public launch) next.
+See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
 
-The scaffold is complete and on `main`. The generic visualization host, the four architecture
-layers and one demo visualization (2D random walk) are working in the production build. The
-site is not deployed yet, and the GitHub repository is private.
+The scaffold and development infrastructure are on `main`. The generic visualization host, the
+four architecture layers and one demo visualization (2D random walk) work in the production
+build, and CI runs the full check on every push and PR. The site is not deployed yet, and the
+GitHub repository is private.
 
 ## Health
 
 | Check                    | State                                     |
 | ------------------------ | ----------------------------------------- |
 | `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build |
-| CI (GitHub Actions)      | Workflow added; first run pending         |
+| CI (GitHub Actions)      | Passing on `main`                         |
 | Deployment               | Not deployed                              |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                |
 
@@ -34,15 +36,17 @@ site is not deployed yet, and the GitHub repository is private.
 - Light/dark theme, keyboard-accessible controls, reduced-motion start-paused, mobile bottom
   sheet, no horizontal scroll at 390px.
 
+- Development docs (`docs/`), changelog, `CLAUDE.md` agent workflow, and GitHub Actions CI.
+
 ## In progress
 
-- Milestone 1: development infrastructure (this docs folder, CI, changelog, agent workflow).
+_Nothing._
 
 ## Next up
 
-1. Confirm the first CI run is green.
-2. Milestone 2: deploy to Cloudflare (see ROADMAP).
-3. Resolve launch blockers in the capture log (Code of Conduct contact, repo visibility).
+1. Milestone 2: deploy to Cloudflare (see ROADMAP).
+2. Resolve launch blockers: Code of Conduct contact (ISS-007), repository visibility.
+3. Branch protection on `main` requiring CI.
 
 ## Known limitations
 
