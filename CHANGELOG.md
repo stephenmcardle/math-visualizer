@@ -1,0 +1,32 @@
+# Changelog
+
+All notable changes to this project are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
+will follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once it has releases.
+Until then, everything is under **Unreleased**.
+
+Add entries in the same PR as the change, under the matching heading: Added, Changed,
+Deprecated, Removed, Fixed or Security. Write for contributors and users, not as a commit log.
+
+## [Unreleased]
+
+### Added
+
+- Development docs in `docs/`: status, roadmap, capture log, and architecture decision records
+  (ADRs 0001–0007).
+- This changelog.
+- `CLAUDE.md` with the development workflow for AI coding agents.
+- GitHub Actions CI running lint, typecheck, tests, production build and format check on pushes
+  and pull requests to `main`.
+- Initial scaffold: Next.js 16 static-export app with a generic visualization host, simulation /
+  renderer / UI / worker layers, visualization registry, schema-driven controls with shareable
+  URL state, seeded sfc32 PRNG, PixiJS engine host, Three.js engine host, optional Web Worker
+  execution, adaptive render quality, MDX explanations, light/dark themes, and a seeded 2D random
+  walk demo.
+- Vitest tests for the PRNG, random-walk determinism (including through the worker protocol),
+  URL params, registry and step clock.
+- README, CONTRIBUTING, Code of Conduct (Contributor Covenant 2.1), Apache-2.0 license, issue
+  and pull request templates, Cloudflare `wrangler.jsonc` and cache headers.
+
+[Unreleased]: https://github.com/stephenmcardle/math-visualizer/commits/main

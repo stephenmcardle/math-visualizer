@@ -1,5 +1,7 @@
 # Math Visualizer
 
+[![CI](https://github.com/stephenmcardle/math-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/stephenmcardle/math-visualizer/actions/workflows/ci.yml)
+
 An open-source, mobile-first web app of interactive visualizations of mathematical systems:
 stochastic processes, algorithms, graph structures, dynamical systems and other ideas from
 modern mathematical research. Every run is seeded, so a URL reproduces exactly what you saw.
@@ -206,7 +208,8 @@ interface VisualizationRenderer<TParams, TState> {
 
 ```
 .
-├── .github/                      # Issue and pull request templates
+├── .github/                      # CI workflow, issue and pull request templates
+├── docs/                         # Status, roadmap, capture log, ADRs (see docs/README.md)
 ├── public/_headers               # Cloudflare cache headers for static assets
 ├── src/
 │   ├── app/                      # Next.js routes
@@ -240,6 +243,8 @@ interface VisualizationRenderer<TParams, TState> {
 │   │   ├── simulation.worker.ts  # generic worker entry
 │   │   └── simulations.ts        # simulations available in the worker
 │   └── mdx-components.tsx        # MDX typography
+├── CHANGELOG.md                  # Keep a Changelog
+├── CLAUDE.md                     # workflow guide for AI coding agents
 ├── next.config.ts                # static export + MDX
 ├── wrangler.jsonc                # Cloudflare deployment config
 └── vitest.config.mts
@@ -429,6 +434,8 @@ As an example, here is how to add a hypothetical `bond-percolation` visualizatio
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions and the
 pull request process, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+Project status, the roadmap, the issue capture log and architecture decisions are in
+[`docs/`](docs/README.md); notable changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 The essentials:
 
 - keep simulation math pure and seeded, and keep renderers read-only;
@@ -469,21 +476,10 @@ The essentials:
 
 ## Roadmap
 
-Not yet implemented; contributions welcome:
-
-- [ ] More visualizations (percolation, Markov chains, cellular automata, graph algorithms,
-      chaotic maps, …)
-- [ ] A first Three.js visualization to exercise the 3D host
-- [ ] A first worker-executed visualization, and transferable-buffer snapshots for large state
-- [ ] Optional per-visualization custom controls (beyond schema-generated sliders), plus
-      boolean/enum parameter types
-- [ ] Pan and zoom in the viewport
-- [ ] Screen-reader summaries of visualization state
-- [ ] Export frame as image / copy share link button
-- [ ] Search and filtering by category, difficulty and tag
-- [ ] Math typesetting in MDX explanations (e.g. KaTeX)
-- [ ] CI workflow running `npm run check`
-- [ ] End-to-end smoke tests
+The roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), organized as milestones with exit
+criteria. Current progress is in [docs/STATUS.md](docs/STATUS.md). Highlights of what's next:
+a Cloudflare deployment and public launch, then a second 2D visualization, a first Three.js
+visualization and a first worker-executed visualization.
 
 ## License
 

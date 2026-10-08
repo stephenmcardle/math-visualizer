@@ -35,6 +35,22 @@ Individual commands: `npm run lint`, `npm run typecheck`, `npm test`, `npm run t
 - Open an issue first for large changes to shared infrastructure (the host, viewport, registry or
   URL state), so the approach can be discussed before you invest time.
 
+## Project docs
+
+Working documents live in [`docs/`](docs/README.md):
+
+- [STATUS.md](docs/STATUS.md): where the project is and what's next. Read this first.
+- [ROADMAP.md](docs/ROADMAP.md): milestones and their exit criteria.
+- [ISSUES.md](docs/ISSUES.md): capture log for bugs, debt and ideas noticed during work. Add an
+  entry rather than fixing unrelated things in your PR.
+- [decisions/](docs/decisions/README.md): architecture decision records. Read the relevant ones
+  before changing architecture; propose a new ADR to change a decision.
+
+Update [CHANGELOG.md](CHANGELOG.md) (under Unreleased) in the same PR for any change a user or
+contributor would notice, and update STATUS/ROADMAP/ISSUES if your change affects them.
+
+CI runs `npm run check` and `npm run format:check` on every push and pull request to `main`.
+
 ## Adding a visualization
 
 The [README](README.md#adding-a-new-visualization) has the step-by-step guide. In short:
