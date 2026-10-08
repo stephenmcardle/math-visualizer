@@ -32,6 +32,16 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-011: GitHub can't enforce branch protection on `main` yet
+
+- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** medium
+- **Where:** GitHub repository settings
+- **Status:** open (blocked on repository visibility or plan)
+- Both classic branch protection and repository rulesets return HTTP 403 ("Upgrade to GitHub Pro
+  or make this repository public") for this private repository on the free plan. Until then, the
+  PR-only rule is policy only. When unblocked, apply: required status check `check` (strict),
+  pull request required with 0 approvals, enforce for admins, block force-pushes and deletion.
+
 ### ISS-010: CI's `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19
 
 - **Captured:** 2026-10-08 · **Type:** chore · **Severity:** low

@@ -26,8 +26,8 @@ Individual commands: `npm run lint`, `npm run typecheck`, `npm test`, `npm run t
 
 ## Branches and pull requests
 
-- `main` is protected: every change, including maintainers', lands through a pull request, and the
-  CI `check` job (lint, typecheck, tests, build, format check) must pass before merging.
+- Every change, including maintainers', lands on `main` through a pull request, and the CI
+  `check` job (lint, typecheck, tests, build, format check) must pass before merging.
 - Branch from `main`, using a descriptive name such as `viz/percolation` or `fix/seed-input`.
 - Keep pull requests focused: one visualization or one change per PR.
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages, e.g.

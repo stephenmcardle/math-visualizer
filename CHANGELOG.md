@@ -31,8 +31,8 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
-- `main` is protected: all changes go through pull requests that must pass CI. CONTRIBUTING and
-  `CLAUDE.md` document the PR workflow.
+- All changes now go through pull requests that must pass CI. CONTRIBUTING and `CLAUDE.md`
+  document the PR workflow.
 - `CLAUDE.md` now explains how a visualization runs end to end (build-time page, URL-backed
   configuration, the frame loop and its restart/redraw/resize controls), single-test commands,
   and Base UI / Turbopack / static-export gotchas.

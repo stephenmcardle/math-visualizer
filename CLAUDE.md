@@ -35,10 +35,10 @@ tests); config is `vitest.config.mts`.
   an accepted ADR; write a superseding one.
 - **Out-of-scope finding:** add it to `docs/ISSUES.md` (next `ISS-NNN`, top of Open) instead of
   fixing it in passing.
-- **Branches and PRs:** `main` is protected: changes land only through a pull request whose CI
+- **Branches and PRs:** never push to `main`. Changes land only through a pull request whose CI
   `check` job passes. Work on a branch (`feat/...`, `fix/...`, `docs/...`), push it, open a PR
   with `gh pr create` following `.github/pull_request_template.md`, and leave merging to the
-  maintainer unless asked.
+  maintainer unless asked. (GitHub doesn't enforce this yet; see ISS-011.)
 - **Before committing:** `npm run check` and `npm run format:check` pass, and docs are updated in
   the same commit: `CHANGELOG.md` (Unreleased), `docs/STATUS.md` (bump "Last updated"),
   `docs/ROADMAP.md`, resolved `docs/ISSUES.md` entries. Conventional commits
