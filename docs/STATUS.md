@@ -13,12 +13,12 @@ GitHub repository is private.
 
 ## Health
 
-| Check                    | State                                     |
-| ------------------------ | ----------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build |
-| CI (GitHub Actions)      | Passing on `main`                         |
-| Deployment               | Not deployed                              |
-| Open capture-log entries | See [ISSUES.md](ISSUES.md)                |
+| Check                    | State                                                            |
+| ------------------------ | ---------------------------------------------------------------- |
+| `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build                        |
+| CI (GitHub Actions)      | Passing on `main`; PR-only by policy, not yet enforced (ISS-011) |
+| Deployment               | Not deployed                                                     |
+| Open capture-log entries | See [ISSUES.md](ISSUES.md)                                       |
 
 ## What works
 
@@ -46,7 +46,7 @@ _Nothing._
 
 1. Milestone 2: deploy to Cloudflare (see ROADMAP).
 2. Resolve launch blockers: Code of Conduct contact (ISS-007), repository visibility.
-3. Branch protection on `main` requiring CI.
+3. Enforce PR-only, CI-required `main` once the repository is public or on GitHub Pro (ISS-011).
 
 ## Known limitations
 
