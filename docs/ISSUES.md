@@ -69,14 +69,6 @@ Keep closed entries; they explain why things are the way they are.
   the viewport freezes silently. No visualization uses the worker yet. Fix before the first one
   does: surface the error in the UI or restart the worker.
 
-### ISS-007: Code of Conduct has no reporting contact
-
-- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** high (blocks Milestone 2)
-- **Where:** `CODE_OF_CONDUCT.md`
-- **Status:** promoted (Roadmap M2)
-- Still contains `[INSERT CONTACT METHOD]`. Needs a monitored email address or form before the
-  repository goes public.
-
 ### ISS-006: Font preload warnings seen once in headless Chrome
 
 - **Captured:** 2026-10-08 · **Type:** question · **Severity:** low
@@ -134,4 +126,10 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Closed
 
-_None yet._
+### ISS-007: Code of Conduct has no reporting contact
+
+- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** high (blocks Milestone 2)
+- **Where:** `CODE_OF_CONDUCT.md`
+- **Status:** fixed (Google Form reporting contact; reports can be anonymous)
+- Still contains `[INSERT CONTACT METHOD]`. Needs a monitored email address or form before the
+  repository goes public.

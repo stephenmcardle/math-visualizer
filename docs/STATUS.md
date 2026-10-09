@@ -45,7 +45,7 @@ _Nothing._
 ## Next up
 
 1. Milestone 2: deploy to Cloudflare (see ROADMAP).
-2. Resolve launch blockers: Code of Conduct contact (ISS-007), repository visibility.
+2. Make the repository public (the Code of Conduct reporting contact, ISS-007, is done).
 3. Enforce PR-only, CI-required `main` once the repository is public or on GitHub Pro (ISS-011).
 
 ## Known limitations
