@@ -31,6 +31,7 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- The Code of Conduct now links a private reporting form instead of a placeholder contact.
 - All changes now go through pull requests that must pass CI. CONTRIBUTING and `CLAUDE.md`
   document the PR workflow.
 - `CLAUDE.md` now explains how a visualization runs end to end (build-time page, URL-backed

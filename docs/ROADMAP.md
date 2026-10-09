@@ -38,7 +38,7 @@ Goal: a deployed site that outside contributors can find and use.
 
 - ⬜ Deploy to Cloudflare (Workers static assets, `wrangler.jsonc`), with a custom domain
 - ⬜ Make the GitHub repository public
-- ⬜ Code of Conduct reporting contact (ISSUES: ISS-007)
+- ✅ Code of Conduct reporting contact (ISSUES: ISS-007)
 - ⬜ README screenshot and live demo link
 - ⬜ Branch protection on `main` requiring CI and pull requests (blocked until the repository
   is public or on GitHub Pro; ISSUES: ISS-011)
