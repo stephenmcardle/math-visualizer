@@ -9,4 +9,8 @@
     // by the default html_handling ("auto-trailing-slash").
     "not_found_handling": "404-page",
   },
+  // Worker Previews (one per branch, via `npx wrangler preview`) don't inherit
+  // production vars or bindings. This Worker has none; `assets` and
+  // `compatibility_date` are top-level only and apply to Previews too.
+  "previews": {},
 }
