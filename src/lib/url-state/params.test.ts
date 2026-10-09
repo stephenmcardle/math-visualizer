@@ -49,6 +49,61 @@ describe("normalizeParam", () => {
   });
 });
 
+const mixed = {
+  count: { label: "Count", min: 1, max: 10, step: 1, default: 3 },
+  trails: { type: "boolean", label: "Trails", default: true },
+  shape: {
+    type: "enum",
+    label: "Shape",
+    options: [
+      { value: "square", label: "Square" },
+      { value: "hex", label: "Hexagonal" },
+    ],
+    default: "square",
+  },
+} satisfies ParamSchema;
+
+describe("boolean and enum params", () => {
+  it("default when missing", () => {
+    expect(parseParams(mixed, new URLSearchParams("count=4"))).toEqual({
+      count: 4,
+      trails: true,
+      shape: "square",
+    });
+  });
+
+  it.each([
+    ["trails=0", false],
+    ["trails=false", false],
+    ["trails=1", true],
+    ["trails=true", true],
+    ["trails=yes", true],
+    ["trails=", true],
+  ])("parses %s as %s (default true)", (query, expected) => {
+    expect(parseParams(mixed, new URLSearchParams(query)).trails).toBe(expected);
+  });
+
+  it("accepts known enum options and rejects others", () => {
+    expect(parseParams(mixed, new URLSearchParams("shape=hex")).shape).toBe("hex");
+    expect(parseParams(mixed, new URLSearchParams("shape=Hex")).shape).toBe("square");
+    expect(parseParams(mixed, new URLSearchParams("shape=circle")).shape).toBe("square");
+  });
+
+  it("serializes booleans as 1/0 and round-trips", () => {
+    const values = { count: 7, trails: false, shape: "hex" };
+    const query = serializeParams(mixed, values, 5);
+    expect(query.toString()).toBe("count=7&trails=0&shape=hex&seed=5");
+    expect(parseParams(mixed, query)).toEqual(values);
+  });
+
+  it("normalizes values of the wrong type to the default", () => {
+    expect(normalizeParam(mixed.trails, "1")).toBe(true);
+    expect(normalizeParam(mixed.trails, false)).toBe(false);
+    expect(normalizeParam(mixed.shape, 3)).toBe("square");
+    expect(normalizeParam(mixed.count, "4")).toBe(3);
+  });
+});
+
 describe("parseSeed", () => {
   it.each([
     ["seed=12345", 12345],

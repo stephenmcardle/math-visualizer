@@ -3,7 +3,9 @@
 Each colored path is one **walker**. All walkers start at the same point (the
 center of the viewport) and move independently. At every step, a walker picks a
 direction uniformly at random and moves a fixed distance in that direction.
-This is often called an _isotropic_ or _Pearson_ random walk in the plane.
+This is often called an _isotropic_ or _Pearson_ random walk in the plane. With
+**Step directions** set to the grid, each step instead goes up, down, left or
+right with equal probability: the _simple random walk_ on the square lattice.
 
 ## How the visualization works
 
@@ -23,13 +25,17 @@ This is often called an _isotropic_ or _Pearson_ random walk in the plane.
   the run from the seed.
 - **Step size**: the length of each step, in screen pixels. Applies immediately.
 - **Speed**: steps per second. Applies immediately.
+- **Step directions**: any direction, or only the four grid directions.
+  Restarts the run.
+- **Show trails**: draw each walker's path, or only its current position.
+  Applies immediately and never changes the walk itself.
 
 ## Mathematical background
 
 Write the position of one walker after _n_ steps as
 X<sub>n</sub> = ξ<sub>1</sub> + ξ<sub>2</sub> + … + ξ<sub>n</sub>, where each
-step ξ<sub>k</sub> has length _s_ and a uniformly random direction, independent
-of the others. Each step has mean zero, so the expected position stays at the
+step ξ<sub>k</sub> has length _s_ and a random direction (uniform on the circle,
+or one of the four grid directions), independent of the others. Each step has mean zero, so the expected position stays at the
 origin. For the squared distance, the cross terms
 E[ξ<sub>j</sub> · ξ<sub>k</sub>] vanish for _j_ ≠ _k_, leaving
 
@@ -44,6 +50,12 @@ By the central limit theorem, for large _n_ the distribution of
 X<sub>n</sub> / (s·√n) approaches a two-dimensional Gaussian. Rescaled
 appropriately, random walks converge to Brownian motion, which connects this
 picture to diffusion.
+
+The two choices of step directions differ step by step but not on large
+scales. In both, each coordinate of a step has mean zero and variance s²/2, and
+the two coordinates are uncorrelated, so both walks have the same Gaussian
+limit. Zoomed out, a cloud of grid walkers spreads just as round as the
+isotropic one.
 
 ## References
 
