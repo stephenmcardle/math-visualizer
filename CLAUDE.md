@@ -89,7 +89,8 @@ quality change, auto step-down), which is a no-op re-render unless the level act
 - Renderer (`src/lib/rendering/types.ts`): factory receives engine objects and returns
   `reset/render/resize/destroy`. Reads state, never mutates it. Engines and renderers are loaded
   with dynamic `import()` per page (`pixi-host.ts`, `three-host.ts`); the Pixi ticker is off.
-  Three.js has a host but no visualization uses it yet.
+  The Three.js factory also gets `requestRender()` (draw one frame without stepping) for camera
+  controls; the Lorenz renderer shows the rotate-only, `touch-action: pan-y` setup (ADR 0008).
 - Runners (`src/lib/simulation/runner.ts`, `worker-runner.ts`, `worker-protocol.ts`): `execution:
 "worker"` moves `step` into `src/workers/simulation.worker.ts`. Worker-run simulations must
   also be listed in `src/workers/simulations.ts` (kept separate so the worker bundle has no

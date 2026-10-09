@@ -50,7 +50,7 @@ Exit: the site is live, the repository is public, and the README links to the de
 Goal: exercise the parts of the architecture the random walk does not.
 
 - ✅ A second 2D visualization from a different area: site percolation
-- ⬜ A first Three.js visualization
+- ✅ A first Three.js visualization: the Lorenz attractor, with a rotate-only camera
 - ✅ A first visualization running in the worker: site percolation. Profiling: a full 512×512
   sweep takes ~37 ms of compute and cloning the state ~1.2 ms per frame, so snapshots stay on
   structured clone and transferable buffers are not justified yet.
@@ -60,7 +60,8 @@ Goal: exercise the parts of the architecture the random walk does not.
 - ⬜ Home page filtering by category, difficulty and tag
 
 Exit: at least three visualizations covering Pixi, Three and worker execution, with no
-visualization-specific code in the host.
+visualization-specific code in the host. Met 2026-10-08 with the Lorenz attractor; the
+remaining items above are still open.
 
 ## Milestone 4: Polish and reach ⬜
 

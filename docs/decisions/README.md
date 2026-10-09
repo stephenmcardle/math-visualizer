@@ -25,3 +25,4 @@ likely to be questioned later. Small, local choices belong in code comments.
 | [0005](0005-simulation-runners-and-workers.md)     | Simulation runners and opt-in Web Workers          | Accepted | 2026-10-08 |
 | [0006](0006-engine-hosts-and-lazy-renderers.md)    | Engine hosts and lazily loaded renderers           | Accepted | 2026-10-08 |
 | [0007](0007-in-repo-project-tracking.md)           | In-repo status, roadmap and capture log            | Accepted | 2026-10-08 |
+| [0008](0008-interactive-3d-camera.md)              | Interactive 3D camera and touch policy             | Accepted | 2026-10-08 |

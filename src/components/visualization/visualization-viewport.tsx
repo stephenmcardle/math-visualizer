@@ -54,6 +54,7 @@ async function createEngineHost(
   definition: AnyVisualizationDefinition,
   container: HTMLElement,
   context: RenderContext,
+  requestRender: () => void,
 ): Promise<EngineHost<Params, unknown>> {
   // Engines are imported on demand so a page only downloads the one it uses.
   const binding = definition.renderer;
@@ -68,7 +69,7 @@ async function createEngineHost(
     import("@/lib/rendering/three-host"),
     binding.load(),
   ]);
-  return createThreeHost(container, factory, context);
+  return createThreeHost(container, factory, context, requestRender);
 }
 
 /**
@@ -197,7 +198,7 @@ export function VisualizationViewport({
 
     const initialContext = renderContext();
     latest.current.onQualityLevelChange?.(initialContext.quality.level);
-    createEngineHost(definition, container, initialContext)
+    createEngineHost(definition, container, initialContext, schedule)
       .then((created) => {
         if (disposed) {
           created.destroy();
