@@ -38,7 +38,8 @@ tests); config is `vitest.config.mts`.
 - **Branches and PRs:** never push to `main`. Changes land only through a pull request whose CI
   `check` job passes. Work on a branch (`feat/...`, `fix/...`, `docs/...`), push it, open a PR
   with `gh pr create` following `.github/pull_request_template.md`, and leave merging to the
-  maintainer unless asked. (GitHub doesn't enforce this yet; see ISS-011.)
+  maintainer unless asked. Branch protection enforces this, for admins too: direct pushes and
+  force-pushes to `main` are rejected, and PR branches must be up to date with `main`.
 - **Before committing:** `npm run check` and `npm run format:check` pass, and docs are updated in
   the same commit: `CHANGELOG.md` (Unreleased), `docs/STATUS.md` (bump "Last updated"),
   `docs/ROADMAP.md`, resolved `docs/ISSUES.md` entries. Conventional commits

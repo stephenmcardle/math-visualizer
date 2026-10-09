@@ -37,11 +37,10 @@ Exit: CI green on `main`, and the docs are referenced from README and CONTRIBUTI
 Goal: a deployed site that outside contributors can find and use.
 
 - ⬜ Deploy to Cloudflare (Workers static assets, `wrangler.jsonc`), with a custom domain
-- ⬜ Make the GitHub repository public
+- ✅ Make the GitHub repository public
 - ✅ Code of Conduct reporting contact (ISSUES: ISS-007)
 - ⬜ README screenshot and live demo link
-- ⬜ Branch protection on `main` requiring CI and pull requests (blocked until the repository
-  is public or on GitHub Pro; ISSUES: ISS-011)
+- ✅ Branch protection on `main` requiring CI and pull requests (ISSUES: ISS-011)
 
 Exit: the site is live, the repository is public, and the README links to the demo.
 

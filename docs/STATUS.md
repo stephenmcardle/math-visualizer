@@ -8,17 +8,17 @@ See [ROADMAP.md](ROADMAP.md).
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
 four architecture layers and one demo visualization (2D random walk) work in the production
-build, and CI runs the full check on every push and PR. The site is not deployed yet, and the
-GitHub repository is private.
+build, and CI runs the full check on every push and PR. The GitHub repository is public; the site
+is not deployed yet.
 
 ## Health
 
-| Check                    | State                                                            |
-| ------------------------ | ---------------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build                        |
-| CI (GitHub Actions)      | Passing on `main`; PR-only by policy, not yet enforced (ISS-011) |
-| Deployment               | Not deployed                                                     |
-| Open capture-log entries | See [ISSUES.md](ISSUES.md)                                       |
+| Check                    | State                                                   |
+| ------------------------ | ------------------------------------------------------- |
+| `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build               |
+| CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
+| Deployment               | Not deployed                                            |
+| Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
@@ -44,9 +44,8 @@ _Nothing._
 
 ## Next up
 
-1. Milestone 2: deploy to Cloudflare (see ROADMAP).
-2. Make the repository public (the Code of Conduct reporting contact, ISS-007, is done).
-3. Enforce PR-only, CI-required `main` once the repository is public or on GitHub Pro (ISS-011).
+1. Milestone 2: deploy to Cloudflare with a custom domain (see ROADMAP).
+2. README screenshot and live demo link.
 
 ## Known limitations
 

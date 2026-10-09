@@ -32,16 +32,6 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
-### ISS-011: GitHub can't enforce branch protection on `main` yet
-
-- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** medium
-- **Where:** GitHub repository settings
-- **Status:** open (blocked on repository visibility or plan)
-- Both classic branch protection and repository rulesets return HTTP 403 ("Upgrade to GitHub Pro
-  or make this repository public") for this private repository on the free plan. Until then, the
-  PR-only rule is policy only. When unblocked, apply: required status check `check` (strict),
-  pull request required with 0 approvals, enforce for admins, block force-pushes and deletion.
-
 ### ISS-010: CI's `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19
 
 - **Captured:** 2026-10-08 · **Type:** chore · **Severity:** low
@@ -125,6 +115,16 @@ Keep closed entries; they explain why things are the way they are.
   [ADR 0005](decisions/0005-simulation-runners-and-workers.md)). Re-check on Next.js upgrades.
 
 ## Closed
+
+### ISS-011: GitHub can't enforce branch protection on `main` yet
+
+- **Captured:** 2026-10-08 · **Type:** chore · **Severity:** medium
+- **Where:** GitHub repository settings
+- **Status:** fixed (repository made public; protection applied 2026-10-08)
+- Both classic branch protection and repository rulesets return HTTP 403 ("Upgrade to GitHub Pro
+  or make this repository public") for this private repository on the free plan. Until then, the
+  PR-only rule is policy only. When unblocked, apply: required status check `check` (strict),
+  pull request required with 0 approvals, enforce for admins, block force-pushes and deletion.
 
 ### ISS-007: Code of Conduct has no reporting contact
 
