@@ -1,15 +1,16 @@
 # Status
 
 **Last updated:** 2026-10-08
-**Phase:** Milestone 1 (Development infrastructure) complete; Milestone 2 (Public launch) next.
+**Phase:** Milestone 2 (Public launch) complete; Milestone 3 (Prove the extension points) next.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
 four architecture layers and one demo visualization (2D random walk) work in the production
-build, and CI runs the full check on every push and PR. The GitHub repository is public; the site
-is not deployed yet.
+build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
+is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every merge to
+`main`.
 
 ## Health
 
@@ -17,7 +18,7 @@ is not deployed yet.
 | ------------------------ | ------------------------------------------------------- |
 | `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
-| Deployment               | Not deployed                                            |
+| Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
@@ -44,8 +45,7 @@ _Nothing._
 
 ## Next up
 
-1. Milestone 2: deploy to Cloudflare with a custom domain (see ROADMAP).
-2. README screenshot and live demo link.
+1. Milestone 3: prove the extension points (see ROADMAP).
 
 ## Known limitations
 

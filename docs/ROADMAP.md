@@ -32,17 +32,18 @@ Goal: make the state of the project and the reasons behind it easy to find.
 Exit: CI green on `main`, and the docs are referenced from README and CONTRIBUTING. Met
 2026-10-08.
 
-## Milestone 2: Public launch ⬜
+## Milestone 2: Public launch ✅
 
 Goal: a deployed site that outside contributors can find and use.
 
-- ⬜ Deploy to Cloudflare (Workers static assets, `wrangler.jsonc`), with a custom domain
+- ✅ Deploy to Cloudflare (Workers static assets, `wrangler.jsonc`), with a custom domain
 - ✅ Make the GitHub repository public
 - ✅ Code of Conduct reporting contact (ISSUES: ISS-007)
-- ⬜ README screenshot and live demo link
+- ✅ README screenshot and live demo link
 - ✅ Branch protection on `main` requiring CI and pull requests (ISSUES: ISS-011)
 
-Exit: the site is live, the repository is public, and the README links to the demo.
+Exit: the site is live, the repository is public, and the README links to the demo. Met
+2026-10-08.
 
 ## Milestone 3: Prove the extension points ⬜
 

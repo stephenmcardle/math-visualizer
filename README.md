@@ -9,9 +9,9 @@ modern mathematical research. Every run is seeded, so a URL reproduces exactly w
 This is an independent community project. It is not affiliated with, endorsed by, or sponsored
 by OpenAI or any other organization.
 
-_Screenshot placeholder: add an image (e.g. `docs/screenshot.png`) and embed it here._
+**Live demo:** [mathvisualizer.org](https://mathvisualizer.org)
 
-**Live demo:** _coming soon_
+[![The 2D random walk visualization: 200 walkers spreading from the origin, with parameter and seed controls](docs/screenshot.png)](https://mathvisualizer.org/visualizations/random-walk?walkers=200&stepSize=3&speed=60&seed=2026)
 
 ---
 
@@ -317,8 +317,20 @@ npx wrangler login        # first time only
 npx wrangler deploy
 ```
 
-Or connect the repository in the Cloudflare dashboard (Workers Builds) with build command
-`npm run build`; the deploy step runs `npx wrangler deploy`.
+The live site at [mathvisualizer.org](https://mathvisualizer.org) deploys automatically with
+Workers Builds: the Cloudflare dashboard is connected to this repository, and every merge to
+`main` is built and deployed. Its settings:
+
+| Setting         | Value                                                        |
+| --------------- | ------------------------------------------------------------ |
+| Worker name     | `math-visualizer` (must match `name` in `wrangler.jsonc`)    |
+| Build command   | `npm run build`                                              |
+| Deploy command  | `npx wrangler deploy`                                        |
+| Preview command | `npx wrangler versions upload` (preview URL for each branch) |
+| Path            | `/`                                                          |
+| Build variable  | `NODE_VERSION=22`, matching CI                               |
+
+The custom domain is attached under the Worker's **Settings → Domains & Routes**.
 
 Notes:
 
@@ -478,8 +490,8 @@ The essentials:
 
 The roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), organized as milestones with exit
 criteria. Current progress is in [docs/STATUS.md](docs/STATUS.md). Highlights of what's next:
-a Cloudflare deployment and public launch, then a second 2D visualization, a first Three.js
-visualization and a first worker-executed visualization.
+a second 2D visualization, a first Three.js visualization and a first worker-executed
+visualization.
 
 ## License
 
