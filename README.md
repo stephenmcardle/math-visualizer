@@ -55,7 +55,8 @@ visualizations where each one is:
 - Seeded PRNG (sfc32) with pinned regression tests.
 - Fixed-step simulation loop: results don't depend on frame rate.
 - Shareable URLs such as `/visualizations/random-walk?walkers=100&stepSize=3&speed=30&seed=12345`.
-- Parameter controls generated from a schema (sliders with labels, units and descriptions).
+- Parameter controls generated from a schema: sliders for numbers, switches for on/off options and
+  selects for choices, with labels, units and descriptions.
 - Play/pause, reset, seed entry and randomization.
 - Render quality setting (Auto / Low / Medium / High). Auto starts from a device heuristic and
   steps down if frames are persistently slow.
@@ -176,7 +177,8 @@ interface VisualizationRenderer<TParams, TState> {
 - `VisualizationHost` holds configuration state: params and seed (via
   `useVisualizationUrlState`), play/pause, quality, and a reset counter. On large screens
   controls sit in a side panel; on small screens they open in a bottom sheet.
-- `ParamControls` renders labeled sliders from the parameter schema. A param marked
+- `ParamControls` renders labeled controls from the parameter schema: a slider, switch or select
+  per param ([ADR 0009](docs/decisions/0009-boolean-and-enum-params.md)). A param marked
   `live: true` applies to the running simulation (e.g. speed); others restart it from the seed
   (e.g. walker count).
 - `VisualizationViewport` mounts the engine once per visualization and runs the
@@ -394,7 +396,24 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
    ```
 
    Keys become URL query keys (`seed` is reserved). Mark parameters `live: true` if changing them
-   should not restart the run.
+   should not restart the run. Besides numbers, a param can be an on/off switch or a choice:
+
+   ```ts
+   showClusters: { type: "boolean", label: "Show clusters", default: true, live: true },
+   lattice: {
+     type: "enum",
+     label: "Lattice",
+     options: [
+       { value: "square", label: "Square" },
+       { value: "triangular", label: "Triangular" },
+     ],
+     default: "square",
+   },
+   ```
+
+   Booleans appear in URLs as `1`/`0` and enums as the option `value` (lowercase kebab-case, so
+   keep values stable once shipped). When adding a param to an existing visualization, pick a
+   default that reproduces the old behavior so shared links still replay.
 
 3. **Write the simulation** in `simulation.ts`, implementing `Simulation<PercolationParams, State>`:
    - `create(params, seed)` returns plain-data state and stores `createRng(seed)` in it;

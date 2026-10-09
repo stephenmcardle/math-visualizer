@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { LocalSimulationRunner } from "@/lib/simulation/runner";
 import { createWorkerHandler } from "@/lib/simulation/worker-protocol";
-import { defaultParams } from "@/lib/url-state/params";
+import { defaultParams, parseParams } from "@/lib/url-state/params";
 import { randomWalkParams, type RandomWalkParams } from "@/visualizations/random-walk/params";
 import {
   randomWalkSimulation,
@@ -42,6 +42,36 @@ describe("random walk simulation", () => {
     for (let i = 0; i < state.x.length; i++) {
       expect(Math.hypot(state.x[i], state.y[i])).toBeCloseTo(params.stepSize, 10);
     }
+  });
+
+  it("on the grid, moves each walker exactly stepSize along one axis per step", () => {
+    const grid: RandomWalkParams = { ...params, directions: "grid" };
+    const state = randomWalkSimulation.create(grid, 3);
+    for (let step = 0; step < 25; step++) {
+      const x0 = state.x.slice();
+      const y0 = state.y.slice();
+      randomWalkSimulation.step(state, grid);
+      for (let i = 0; i < state.x.length; i++) {
+        const dx = Math.abs(state.x[i] - x0[i]);
+        const dy = Math.abs(state.y[i] - y0[i]);
+        expect([dx, dy].sort()).toEqual([0, grid.stepSize]);
+      }
+    }
+  });
+
+  it("replays links from before the directions/trails params exactly", () => {
+    // Pinned from the implementation that had no `directions` param. A change
+    // here means shared links replay differently: a breaking change.
+    const old = parseParams(randomWalkParams, new URLSearchParams("walkers=3&stepSize=2&speed=30"));
+    expect(old.directions).toBe("any");
+    expect(old.trails).toBe(true);
+    const state = run(12345, 100, old);
+    expect(Array.from(state.x)).toEqual([
+      -5.22339275851229, 7.722401269232372, -10.212814873220664,
+    ]);
+    expect(Array.from(state.y)).toEqual([
+      3.580314056295457, 13.648118488357152, -26.287808550208673,
+    ]);
   });
 
   it("does not depend on how steps are batched into frames", () => {

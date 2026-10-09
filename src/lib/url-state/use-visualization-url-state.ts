@@ -10,6 +10,7 @@ import {
   parseSeed,
   serializeParams,
   type ParamSchema,
+  type ParamValue,
   type ParamValues,
 } from "@/lib/url-state/params";
 
@@ -18,7 +19,7 @@ const URL_WRITE_DELAY_MS = 250;
 export interface VisualizationUrlState<S extends ParamSchema> {
   params: ParamValues<S>;
   seed: number;
-  setParam: (key: keyof S & string, value: number) => void;
+  setParam: (key: keyof S & string, value: ParamValue) => void;
   setSeed: (seed: number) => void;
 }
 
@@ -51,7 +52,7 @@ export function useVisualizationUrlState<S extends ParamSchema>(
   }, [schema, pathname, state]);
 
   const setParam = useCallback(
-    (key: keyof S & string, value: number) => {
+    (key: keyof S & string, value: ParamValue) => {
       setState((prev) => ({
         ...prev,
         params: { ...prev.params, [key]: normalizeParam(schema[key], value) },

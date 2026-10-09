@@ -45,6 +45,7 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
   app.stage.addChild(trailSprite, heads);
 
   let colors: number[] = [];
+  let trailsShown = true;
   let prevX = new Float64Array(0);
   let prevY = new Float64Array(0);
 
@@ -65,25 +66,33 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
       clearTrails();
     },
 
-    render(state) {
+    render(state, params) {
       const { x, y } = state;
       const ox = context.width / 2;
       const oy = context.height / 2;
 
-      segments.clear();
-      for (let i = 0; i < x.length; i++) {
-        if (x[i] === prevX[i] && y[i] === prevY[i]) continue;
-        segments
-          .moveTo(ox + prevX[i], oy + prevY[i])
-          .lineTo(ox + x[i], oy + y[i])
-          .stroke({ width: 1, color: colors[i], alpha: TRAIL_ALPHA });
+      if (params.trails) {
+        segments.clear();
+        for (let i = 0; i < x.length; i++) {
+          if (x[i] === prevX[i] && y[i] === prevY[i]) continue;
+          segments
+            .moveTo(ox + prevX[i], oy + prevY[i])
+            .lineTo(ox + x[i], oy + y[i])
+            .stroke({ width: 1, color: colors[i], alpha: TRAIL_ALPHA });
+        }
+        app.renderer.render({ container: segments, target: trails, clear: false });
+      } else if (trailsShown) {
+        clearTrails();
       }
-      app.renderer.render({ container: segments, target: trails, clear: false });
+      trailsShown = params.trails;
+      // Track positions even with trails off, so turning them back on starts
+      // from where the walkers are instead of drawing a jump.
       prevX.set(x);
       prevY.set(y);
 
       heads.clear();
-      if (context.quality.level !== "low") {
+      // Without trails the heads are all there is, so draw them at any quality.
+      if (!params.trails || context.quality.level !== "low") {
         for (let i = 0; i < x.length; i++) {
           heads.circle(ox + x[i], oy + y[i], HEAD_RADIUS).fill(colors[i]);
         }

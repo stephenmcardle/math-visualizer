@@ -29,6 +29,23 @@ export const randomWalkParams = {
     unit: "steps/s",
     live: true,
   },
+  directions: {
+    type: "enum",
+    label: "Step directions",
+    description: "Any direction (an isotropic walk), or only up, down, left and right.",
+    options: [
+      { value: "any", label: "Any direction" },
+      { value: "grid", label: "Grid (4 directions)" },
+    ],
+    default: "any",
+  },
+  trails: {
+    type: "boolean",
+    label: "Show trails",
+    description: "Draw each walker's path. Turn off to see only current positions.",
+    default: true,
+    live: true,
+  },
 } satisfies ParamSchema;
 
 export type RandomWalkParams = ParamValues<typeof randomWalkParams>;

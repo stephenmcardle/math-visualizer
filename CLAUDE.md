@@ -60,8 +60,10 @@ exists in the browser under static export.
 
 **Configuration (React).** `VisualizationHost` owns params + seed via `useVisualizationUrlState`
 (parse from the query string, debounced `history.replaceState` back), plus playing / quality /
-reset counter. Controls are generated from the definition's param schema (`params.ts`); there
-is no per-visualization controls component.
+reset counter. Controls are generated from the definition's param schema (`params.ts`): number
+(slider; `type` optional), `boolean` (switch, URL `1`/`0`) and `enum` (select, URL option value);
+there is no per-visualization controls component. A new param on an existing visualization needs
+a default that reproduces old behavior, plus a test pinning an old link's output (ADR 0009).
 
 **Frame loop (outside React).** `VisualizationViewport` creates, once per definition, a
 `SimulationRunner` and an engine host, then drives a `requestAnimationFrame` loop. Props reach the
