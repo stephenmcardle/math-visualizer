@@ -32,6 +32,16 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-012: 3D camera is not keyboard-operable
+
+- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium
+- **Where:** `src/visualizations/lorenz-attractor/renderer.ts`, ADR 0008
+- **Status:** open
+- The Lorenz camera rotates only by pointer drag. Keyboard users can't change the view, and the
+  canvas isn't focusable. Options: make the viewport focusable and map arrow keys to rotation
+  (OrbitControls' built-in keys pan, which is disabled), or add rotate buttons. Related to
+  ISS-004.
+
 ### ISS-010: CI's `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19
 
 - **Captured:** 2026-10-08 · **Type:** chore · **Severity:** low

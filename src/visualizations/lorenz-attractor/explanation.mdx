@@ -1,0 +1,71 @@
+## What this shows
+
+Each colored curve is one **trajectory** of the Lorenz system, a point moving
+through three-dimensional space according to fixed rules. All trajectories
+start inside a tiny cube, so at first they move as a single bundle. Within a
+few seconds the bundle stretches, folds and breaks apart, and the trajectories
+spread over the two "wings" of the **Lorenz attractor**.
+
+Nothing here is random once the run starts: the rules are deterministic. The
+seed only chooses the starting points inside the cube. The spreading is
+**sensitive dependence on initial conditions**, the hallmark of chaos.
+
+Drag the view to rotate it. On a touch screen, drag sideways to rotate and
+swipe up or down to scroll the page.
+
+## How the visualization works
+
+- The equations are integrated with the classic fourth-order Runge–Kutta method
+  at a fixed time step of 0.005, so frame rate never changes the result.
+- The integrator uses only addition, subtraction, multiplication and division.
+  JavaScript requires each of these to be rounded the same way in every browser,
+  so a shared link replays exactly, digit for digit, even though the system is
+  chaotic.
+- Any numerical method makes tiny errors, and chaos amplifies them just as it
+  amplifies differences in starting points. What you see is the exact result of
+  this method and step size. The computed trajectories still trace out the
+  attractor's familiar shape.
+- Trails show each trajectory's recent path and fade with age. At high speeds
+  several steps happen between frames, and a trail segment then joins the
+  sampled positions.
+
+## Parameters
+
+- **Trajectories**: how many points to follow. Restarts the run.
+- **Initial spread**: the side length of the starting cube. Smaller cubes keep
+  the bundle together for longer. Restarts the run.
+- **ρ (rho)**: the system's main parameter (see below). Restarts the run.
+- **Speed**: integration steps per second. Applies immediately.
+
+## Mathematical background
+
+Edward Lorenz derived the system in 1963 as a drastically simplified model of
+convection in a layer of fluid heated from below:
+
+x′ = σ(y − x), y′ = x(ρ − z) − y, z′ = xy − βz.
+
+Here σ = 10 and β = 8/3 are fixed, as in Lorenz's paper, and ρ (proportional to
+the Rayleigh number) is adjustable.
+
+- For ρ < 1, the origin is the only equilibrium and every trajectory decays to
+  it.
+- For ρ > 1, two more equilibria appear at
+  (±√(β(ρ − 1)), ±√(β(ρ − 1)), ρ − 1), the centers of the two wings.
+- These equilibria lose stability at ρ = σ(σ + β + 3) / (σ − β − 1), about 24.74
+  for these values of σ and β. At Lorenz's value ρ = 28, trajectories never
+  settle down and never exactly repeat.
+
+Two trajectories that start close together separate roughly exponentially, until
+their separation is as large as the attractor itself. After that, knowing where
+one trajectory is tells you almost nothing about the other, even though both
+follow the same equations. Applying this to the atmosphere, Lorenz concluded that
+predicting the sufficiently distant future is impossible by any method unless
+the present conditions are known exactly.
+
+Whether the shape that trajectories trace out is truly a "strange attractor" was
+a famous open question, listed by Stephen Smale among his problems for the 21st
+century. Warwick Tucker settled it in 2002 with a computer-assisted proof.
+
+## References
+
+Full citations for Lorenz (1963) and Tucker (2002) are listed below.

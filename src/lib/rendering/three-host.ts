@@ -4,13 +4,14 @@ import type { EngineHost, RenderContext, ThreeRendererFactory } from "@/lib/rend
 
 /**
  * Three.js counterpart to `createPixiHost`, for visualizations that genuinely
- * need 3D. No visualization uses it yet; it exists so the first 3D one only
- * has to write a renderer, not engine lifecycle code.
+ * need 3D. `requestRender` lets interactive renderers (camera controls) get a
+ * frame drawn while the visualization is paused.
  */
 export async function createThreeHost<TParams, TState>(
   container: HTMLElement,
   factory: ThreeRendererFactory<TParams, TState>,
   context: RenderContext,
+  requestRender: () => void,
 ): Promise<EngineHost<TParams, TState>> {
   const webgl = new WebGLRenderer({ antialias: true, alpha: true });
   webgl.setPixelRatio(context.quality.resolution);
@@ -20,7 +21,7 @@ export async function createThreeHost<TParams, TState>(
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(50, context.width / context.height, 0.1, 1000);
-  const renderer = factory({ renderer: webgl, scene, camera }, context);
+  const renderer = factory({ renderer: webgl, scene, camera, requestRender }, context);
 
   return {
     renderer,

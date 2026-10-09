@@ -13,6 +13,12 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Lorenz attractor visualization, the first in Three.js: hundreds of seeded trajectories
+  integrated with RK4 spread across the attractor, with fading trails and a drag-to-rotate
+  camera. Shared links replay exactly in every browser because the integrator uses only basic
+  arithmetic.
+- Three.js renderers get `requestRender()` to draw a frame without stepping, for camera controls
+  (ADR 0008).
 - Site percolation visualization: a seeded Newman–Ziff sweep on a square lattice of up to
   512×512 sites, with cluster coloring, a highlighted spanning cluster and the p at which it
   first spans. It is the first visualization that runs its simulation in a Web Worker.

@@ -59,7 +59,7 @@ visualizations where each one is:
 - Play/pause, reset, seed entry and randomization.
 - Render quality setting (Auto / Low / Medium / High). Auto starts from a device heuristic and
   steps down if frames are persistently slow.
-- PixiJS 2D rendering, with Three.js infrastructure ready for 3D visualizations.
+- PixiJS 2D rendering and Three.js 3D rendering, with a drag-to-rotate camera for 3D.
 - Optional Web Worker execution for CPU-heavy simulations, behind the same interface as
   main-thread execution.
 - Long-form MDX explanations, rendered to static HTML at build time.
@@ -72,20 +72,20 @@ configurable walker count, step size and speed. It exists mainly to validate the
 
 ## Technology stack
 
-| Concern           | Choice                                                         |
-| ----------------- | -------------------------------------------------------------- |
-| Framework         | [Next.js](https://nextjs.org/) 16 (App Router, static export)  |
-| Language          | TypeScript (strict)                                            |
-| Styling           | Tailwind CSS 4                                                 |
-| UI components     | [shadcn/ui](https://ui.shadcn.com/) (Base UI primitives)       |
-| 2D rendering      | [PixiJS](https://pixijs.com/) 8                                |
-| 3D rendering      | [Three.js](https://threejs.org/) (infrastructure only for now) |
-| Long-form content | MDX via `@next/mdx`                                            |
-| Themes            | `next-themes`                                                  |
-| Tests             | [Vitest](https://vitest.dev/)                                  |
-| Lint / format     | ESLint (`eslint-config-next`), Prettier                        |
-| Package manager   | npm                                                            |
-| Hosting target    | Cloudflare (static assets)                                     |
+| Concern           | Choice                                                        |
+| ----------------- | ------------------------------------------------------------- |
+| Framework         | [Next.js](https://nextjs.org/) 16 (App Router, static export) |
+| Language          | TypeScript (strict)                                           |
+| Styling           | Tailwind CSS 4                                                |
+| UI components     | [shadcn/ui](https://ui.shadcn.com/) (Base UI primitives)      |
+| 2D rendering      | [PixiJS](https://pixijs.com/) 8                               |
+| 3D rendering      | [Three.js](https://threejs.org/)                              |
+| Long-form content | MDX via `@next/mdx`                                           |
+| Themes            | `next-themes`                                                 |
+| Tests             | [Vitest](https://vitest.dev/)                                 |
+| Lint / format     | ESLint (`eslint-config-next`), Prettier                       |
+| Package manager   | npm                                                           |
+| Hosting target    | Cloudflare (static assets)                                    |
 
 ## Architecture overview
 
@@ -160,7 +160,9 @@ interface VisualizationRenderer<TParams, TState> {
 ```
 
 - A visualization supplies a factory: `(app: PIXI.Application, ctx) => renderer` for PixiJS, or
-  `({ renderer, scene, camera }, ctx) => renderer` for Three.js.
+  `({ renderer, scene, camera, requestRender }, ctx) => renderer` for Three.js. `requestRender()`
+  draws one frame without stepping the simulation, e.g. when the user rotates the camera while
+  paused ([ADR 0008](docs/decisions/0008-interactive-3d-camera.md)).
 - `pixi-host.ts` / `three-host.ts` own engine lifecycle: creating the canvas once, device
   pixel ratio, resizing, and cleanup. The PixiJS ticker is disabled; the viewport decides when
   to render, so a paused visualization costs nothing.
@@ -372,8 +374,8 @@ Notes:
 ## Adding a new visualization
 
 As an example, here is how to add a hypothetical `bond-percolation` visualization. Use
-`src/visualizations/random-walk/` (main thread) and `src/visualizations/percolation/` (Web
-Worker) as references throughout.
+`src/visualizations/random-walk/` (main thread), `src/visualizations/percolation/` (Web Worker)
+and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
 
 1. **Create the folder** `src/visualizations/bond-percolation/`.
 
@@ -492,8 +494,8 @@ The essentials:
 
 The roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), organized as milestones with exit
 criteria. Current progress is in [docs/STATUS.md](docs/STATUS.md). Highlights of what's next:
-a first Three.js visualization, boolean and enum parameters, and a visualization that needs
-the worker for speed.
+boolean and enum parameters, home page filtering, and a visualization that needs the worker for
+speed.
 
 ## License
 

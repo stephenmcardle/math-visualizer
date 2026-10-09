@@ -33,6 +33,11 @@ export interface ThreeContext {
   renderer: WebGLRenderer;
   scene: Scene;
   camera: PerspectiveCamera;
+  /**
+   * Ask for one frame to be drawn, e.g. after the user moves the camera while
+   * the visualization is paused. Does not advance the simulation.
+   */
+  requestRender(): void;
 }
 
 export type ThreeRendererFactory<TParams, TState> = (
