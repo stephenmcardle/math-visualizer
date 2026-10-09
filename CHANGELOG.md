@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Site percolation visualization: a seeded Newman–Ziff sweep on a square lattice of up to
+  512×512 sites, with cluster coloring, a highlighted spanning cluster and the p at which it
+  first spans. It is the first visualization that runs its simulation in a Web Worker.
 - Development docs in `docs/`: status, roadmap, capture log, and architecture decision records
   (ADRs 0001–0007).
 - This changelog.
@@ -43,5 +46,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 - `CLAUDE.md` now explains how a visualization runs end to end (build-time page, URL-backed
   configuration, the frame loop and its restart/redraw/resize controls), single-test commands,
   and Base UI / Turbopack / static-export gotchas.
+
+### Fixed
+
+- A failing simulation worker now stops the run and shows a message in the viewport, instead of
+  leaving the canvas frozen with only a console error.
 
 [Unreleased]: https://github.com/stephenmcardle/math-visualizer/commits/main

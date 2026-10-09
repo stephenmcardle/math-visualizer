@@ -1,0 +1,65 @@
+## What this shows
+
+The grid is a square lattice of **sites**. Sites open one at a time, in a
+random order, until every site is open. Open sites that touch along an edge
+(up, down, left or right, not diagonally) belong to the same **cluster**, and
+each cluster gets its own color.
+
+The fraction of open sites is the **occupation probability** _p_, shown in the
+corner. At first the clusters are small and scattered. Then, in a short window
+of _p_, they merge rapidly, and one cluster connects the top row to the bottom
+row: it **spans** the grid. From then on the spanning cluster stays bright and
+the others are dimmed, and the corner also shows the value of _p_ at which the
+first spanning cluster appeared.
+
+## How the visualization works
+
+- Each step opens one closed site chosen uniformly at random, using a seeded
+  pseudo-random generator. The same seed and grid size always open the same
+  sites in the same order, so a shared link replays the same sweep.
+- Clusters are tracked as the sweep runs. When a new site joins two clusters,
+  every site of the smaller one is relabeled into the larger. Each site can be
+  relabeled at most about log₂ _N_ times, because its cluster at least doubles
+  every time, so a whole sweep of _N_ sites stays fast.
+- This sweep is the idea behind the Newman–Ziff algorithm: a single run passes
+  through every value of _p_ from 0 to 1, instead of building a separate random
+  grid for each _p_.
+- The simulation runs in a Web Worker, off the main thread, and sends the
+  current grid to the page for drawing.
+
+## Parameters
+
+- **Grid size**: sites along each side of the square. Changing it restarts the
+  sweep from the seed.
+- **Sweep time**: how many seconds it takes to open every site. Applies
+  immediately.
+
+## Mathematical background
+
+In _site percolation_, each site of an infinite lattice is open independently
+with probability _p_. Percolation theory asks when the open sites form an
+infinite connected cluster. There is a sharp **critical probability** _p_<sub>c</sub>:
+below it, every cluster is finite; above it, an infinite cluster exists. Both
+statements hold with probability one. It is one of the simplest models with a
+phase transition.
+
+For site percolation on the square lattice, no exact formula for
+_p_<sub>c</sub> is known. Newman and Ziff estimated it numerically as
+_p_<sub>c</sub> = 0.59274621(13), with the uncertainty in the last two digits.
+
+A finite grid has no infinite cluster, so "spans top to bottom" stands in for
+it. On a finite grid the first spanning happens at a slightly different _p_ in
+each run, scattered around _p_<sub>c</sub>. The scatter shrinks as the grid
+gets larger, so try a few seeds at a small grid size and then at a large one.
+
+The sweep opens an exact number of sites, while the textbook model opens each
+site independently. After _k_ steps, every set of _k_ open sites is equally
+likely. For large grids this behaves like independent opening with
+_p_ = _k_ / _N_, and Newman and Ziff show how to convert results between the
+two exactly.
+
+## References
+
+Broadbent and Hammersley introduced percolation in 1957. The sweep and the
+numerical value of _p_<sub>c</sub> come from Newman and Ziff (2000). Full
+citations are listed below.

@@ -1,14 +1,14 @@
 # Status
 
 **Last updated:** 2026-10-08
-**Phase:** Milestone 2 (Public launch) complete; Milestone 3 (Prove the extension points) next.
+**Phase:** Milestone 3 (Prove the extension points) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
-four architecture layers and one demo visualization (2D random walk) work in the production
-build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
+four architecture layers and two visualizations (2D random walk on the main thread, site
+percolation in a Web Worker) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
 is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every merge to
 `main`.
 
@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 42 tests, build               |
+| `npm run check` (local)  | Passing: lint, typecheck, 54 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
@@ -30,8 +30,8 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 - Fixed-step simulation loop outside React; zero DOM mutations while animating (verified in a
   headless browser).
 - PixiJS engine host; Three.js engine host (unused so far).
-- Main-thread and Web Worker runners. The worker path was verified in the browser by temporarily
-  switching the random walk to `execution: "worker"`.
+- Main-thread and Web Worker runners. Site percolation runs in the worker in production; a worker
+  failure stops the run and shows a message in the viewport instead of freezing it.
 - Render quality: Auto / Low / Medium / High, with auto step-down on slow frames.
 - MDX explanations rendered at build time.
 - Light/dark theme, keyboard-accessible controls, reduced-motion start-paused, mobile bottom
@@ -41,11 +41,14 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-_Nothing._
+- Milestone 3: site percolation (second 2D visualization, first worker-executed one) is in
+  review.
 
 ## Next up
 
-1. Milestone 3: prove the extension points (see ROADMAP).
+1. A first Three.js visualization.
+2. Boolean and enum parameter types.
+3. A visualization that needs the worker for speed (e.g. an Ising model).
 
 ## Known limitations
 

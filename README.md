@@ -372,7 +372,8 @@ Notes:
 ## Adding a new visualization
 
 As an example, here is how to add a hypothetical `bond-percolation` visualization. Use
-`src/visualizations/random-walk/` as a reference throughout.
+`src/visualizations/random-walk/` (main thread) and `src/visualizations/percolation/` (Web
+Worker) as references throughout.
 
 1. **Create the folder** `src/visualizations/bond-percolation/`.
 
@@ -491,8 +492,8 @@ The essentials:
 
 The roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), organized as milestones with exit
 criteria. Current progress is in [docs/STATUS.md](docs/STATUS.md). Highlights of what's next:
-a second 2D visualization, a first Three.js visualization and a first worker-executed
-visualization.
+a first Three.js visualization, boolean and enum parameters, and a visualization that needs
+the worker for speed.
 
 ## License
 
