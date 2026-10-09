@@ -31,6 +31,8 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- Pull requests get Cloudflare Worker Previews: `wrangler.jsonc` has the required `previews` block
+  and Workers Builds runs `npx wrangler preview` for non-production branches.
 - The site is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every
   merge to `main`. The README has a screenshot, the demo link and the Workers Builds settings.
 - The repository is public, and `main` is protected: changes need a pull request with a passing,

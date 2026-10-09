@@ -306,6 +306,7 @@ Worker script, adapter or server runtime is required.
   "name": "math-visualizer",
   "compatibility_date": "2026-10-01",
   "assets": { "directory": "./out", "not_found_handling": "404-page" },
+  "previews": {},
 }
 ```
 
@@ -321,14 +322,14 @@ The live site at [mathvisualizer.org](https://mathvisualizer.org) deploys automa
 Workers Builds: the Cloudflare dashboard is connected to this repository, and every merge to
 `main` is built and deployed. Its settings:
 
-| Setting         | Value                                                        |
-| --------------- | ------------------------------------------------------------ |
-| Worker name     | `math-visualizer` (must match `name` in `wrangler.jsonc`)    |
-| Build command   | `npm run build`                                              |
-| Deploy command  | `npx wrangler deploy`                                        |
-| Preview command | `npx wrangler versions upload` (preview URL for each branch) |
-| Path            | `/`                                                          |
-| Build variable  | `NODE_VERSION=22`, matching CI                               |
+| Setting         | Value                                                                         |
+| --------------- | ----------------------------------------------------------------------------- |
+| Worker name     | `math-visualizer` (must match `name` in `wrangler.jsonc`)                     |
+| Build command   | `npm run build`                                                               |
+| Deploy command  | `npx wrangler deploy`                                                         |
+| Preview command | `npx wrangler preview` (a Worker Preview per branch, URL commented on the PR) |
+| Path            | `/`                                                                           |
+| Build variable  | `NODE_VERSION=22`, matching CI                                                |
 
 The custom domain is attached under the Worker's **Settings → Domains & Routes**.
 
