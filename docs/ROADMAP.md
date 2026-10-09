@@ -45,15 +45,17 @@ Goal: a deployed site that outside contributors can find and use.
 Exit: the site is live, the repository is public, and the README links to the demo. Met
 2026-10-08.
 
-## Milestone 3: Prove the extension points ⬜
+## Milestone 3: Prove the extension points 🚧
 
 Goal: exercise the parts of the architecture the random walk does not.
 
-- ⬜ A second 2D visualization from a different area (e.g. percolation, cellular automata or a
-  graph algorithm)
+- ✅ A second 2D visualization from a different area: site percolation
 - ⬜ A first Three.js visualization
-- ⬜ A first CPU-heavy visualization running in the worker, with transferable-buffer snapshots
-  if profiling justifies them
+- ✅ A first visualization running in the worker: site percolation. Profiling: a full 512×512
+  sweep takes ~37 ms of compute and cloning the state ~1.2 ms per frame, so snapshots stay on
+  structured clone and transferable buffers are not justified yet.
+- ⬜ A visualization that needs the worker for speed, not just to prove the path (e.g. an Ising
+  model with many sweeps per frame)
 - ⬜ Boolean and enum parameter types; optional per-visualization custom controls
 - ⬜ Home page filtering by category, difficulty and tag
 

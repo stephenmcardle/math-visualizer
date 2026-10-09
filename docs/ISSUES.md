@@ -50,23 +50,16 @@ Keep closed entries; they explain why things are the way they are.
 - A temporary slowdown (e.g. a background tab waking up) permanently lowers "auto" quality until
   reload. Consider stepping back up after sustained headroom, with hysteresis.
 
-### ISS-008: Worker runner stalls after a worker crash
-
-- **Captured:** 2026-10-08 · **Type:** debt · **Severity:** low
-- **Where:** `src/lib/simulation/worker-runner.ts`
-- **Status:** open
-- `worker.onerror` logs the error but leaves `inFlight = true`, so no further steps are sent and
-  the viewport freezes silently. No visualization uses the worker yet. Fix before the first one
-  does: surface the error in the UI or restart the worker.
-
 ### ISS-006: Font preload warnings seen once in headless Chrome
 
 - **Captured:** 2026-10-08 · **Type:** question · **Severity:** low
 - **Where:** `src/app/layout.tsx` (next/font)
-- **Status:** open (needs repro)
+- **Status:** open (reproduced)
 - During the first browser check, Chrome warned that two Geist `.woff2` files were preloaded but
   not used within a few seconds. A second run did not reproduce it. If it recurs, consider
   `preload: false` for Geist Mono.
+- 2026-10-08: recurred in headless Chromium on `/visualizations/percolation` (both preloaded
+  `.woff2` files) against a local production build.
 
 ### ISS-005: Cross-browser floating point can differ in the last bit
 
@@ -115,6 +108,15 @@ Keep closed entries; they explain why things are the way they are.
   [ADR 0005](decisions/0005-simulation-runners-and-workers.md)). Re-check on Next.js upgrades.
 
 ## Closed
+
+### ISS-008: Worker runner stalls after a worker crash
+
+- **Captured:** 2026-10-08 · **Type:** debt · **Severity:** low
+- **Where:** `src/lib/simulation/worker-runner.ts`
+- **Status:** fixed (percolation PR: failures are terminal and shown in the viewport; no automatic restart)
+- `worker.onerror` logs the error but leaves `inFlight = true`, so no further steps are sent and
+  the viewport freezes silently. No visualization uses the worker yet. Fix before the first one
+  does: surface the error in the UI or restart the worker.
 
 ### ISS-011: GitHub can't enforce branch protection on `main` yet
 

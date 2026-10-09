@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   detectAutoLevel,
@@ -90,6 +90,7 @@ export function VisualizationViewport({
 }: VisualizationViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const loopRef = useRef<LoopControls>(IDLE_LOOP);
+  const [failedSlug, setFailedSlug] = useState<string | null>(null);
 
   // Latest props, read by the loop without re-running effects.
   const latest = useRef({ params, seed, playing, quality, onQualityLevelChange });
@@ -116,7 +117,9 @@ export function VisualizationViewport({
 
     const runner: SimulationRunner<Params, unknown> =
       definition.execution === "worker"
-        ? new WorkerSimulationRunner(definition.metadata.slug, schedule)
+        ? new WorkerSimulationRunner(definition.metadata.slug, schedule, () =>
+            setFailedSlug(definition.metadata.slug),
+          )
         : new LocalSimulationRunner(definition.simulation);
 
     const currentLevel = (): QualityLevel => {
@@ -247,12 +250,22 @@ export function VisualizationViewport({
   }, [playing, params]);
 
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      style={{ touchAction: "manipulation" }}
-      role="img"
-      aria-label={`${definition.metadata.title} visualization`}
-    />
+    <div className={`relative ${className ?? ""}`}>
+      <div
+        ref={containerRef}
+        className="absolute inset-0"
+        style={{ touchAction: "manipulation" }}
+        role="img"
+        aria-label={`${definition.metadata.title} visualization`}
+      />
+      {failedSlug === definition.metadata.slug && (
+        <div
+          role="alert"
+          className="absolute inset-0 flex items-center justify-center bg-card/90 p-6 text-center text-sm text-muted-foreground"
+        >
+          The simulation stopped because of an error. Reload the page to try again.
+        </div>
+      )}
+    </div>
   );
 }
