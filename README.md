@@ -451,9 +451,15 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
        engine: "pixi",
        load: () => import("./renderer").then((m) => m.createPercolationRenderer),
      },
+     describe: describePercolation,
      explanation: () => import("./explanation.mdx"),
    });
    ```
+
+   `describe(state, params)` returns one or two plain sentences about the current state for
+   screen readers (e.g. "p = 0.5932: 1215 of 2048 sites open…"). It is read while paused and
+   announced when the user pauses; a test fails if a visualization lacks one. Keep it in its own
+   `describe.ts`.
 
 8. **Register it** by adding `bondPercolation` to the array in `src/visualizations/registry.ts`.
    The home page card, the static route `/visualizations/bond-percolation`, the controls and

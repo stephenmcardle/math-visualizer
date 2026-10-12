@@ -20,13 +20,18 @@ const test = base.extend<{ noPageErrors: void }>({
   ],
 });
 
-/** Saves the current frame through the UI and returns the share of non-background pixels. */
-async function saveFrame(page: Page): Promise<{ width: number; drawn: number; opaque: boolean }> {
+/** Saves the current frame through the UI and returns the PNG file. */
+async function saveFramePng(page: Page): Promise<Buffer> {
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.getByRole("button", { name: "Save image" }).click(),
   ]);
-  const png = await readFile(await download.path());
+  return readFile(await download.path());
+}
+
+/** Saves the current frame and returns the share of non-background pixels. */
+async function saveFrame(page: Page): Promise<{ width: number; drawn: number; opaque: boolean }> {
+  const png = await saveFramePng(page);
   return page.evaluate(
     async (src) => {
       const image = new Image();
@@ -109,6 +114,38 @@ test("animation runs without touching the DOM", async ({ page }) => {
       }),
   );
   expect(mutations).toBe(0);
+});
+
+test("pausing describes the current state to screen readers", async ({ page }) => {
+  await page.goto("/visualizations/random-walk?walkers=50&seed=7");
+  const viewport = page.getByRole("img", { name: /visualization$/ });
+  await expect(viewport).toHaveAccessibleDescription(/^Running\./);
+  await page.waitForTimeout(1000);
+  await page.getByRole("button", { name: "Pause" }).click();
+  await expect(viewport).toHaveAccessibleDescription(/^50 walkers after \d+ steps\./);
+  await expect(
+    page.locator("[aria-live=polite]").filter({ hasText: /^Paused\. 50 walkers/ }),
+  ).toHaveCount(1);
+  // Only interactive renderers make the viewport focusable.
+  await expect(viewport).not.toHaveAttribute("tabindex");
+});
+
+test("the 3D camera rotates with the arrow keys", async ({ page }) => {
+  await page.goto("/visualizations/lorenz-attractor?seed=7");
+  const viewport = page.getByRole("img", { name: /visualization$/ });
+  await expect(viewport).toHaveAccessibleDescription(/arrow keys to rotate/);
+  await page.waitForTimeout(1000);
+  await page.getByRole("button", { name: "Pause" }).click();
+  const before = await saveFramePng(page);
+  // Saving moves focus to the button, so focus the viewport before each set of key presses.
+  await viewport.focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowLeft");
+  const after = await saveFramePng(page);
+  expect(after.equals(before)).toBe(false);
+  // Rotating back returns to the same view; the simulation did not advance while paused.
+  await viewport.focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
+  expect((await saveFramePng(page)).equals(before)).toBe(true);
 });
 
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {

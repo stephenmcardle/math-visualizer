@@ -1,4 +1,5 @@
 import { defineVisualization } from "@/lib/visualization/types";
+import { describePercolation } from "@/visualizations/percolation/describe";
 import { percolationMetadata } from "@/visualizations/percolation/metadata";
 import { percolationParams } from "@/visualizations/percolation/params";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
@@ -14,5 +15,6 @@ export const percolation = defineVisualization({
     engine: "pixi",
     load: () => import("./renderer").then((m) => m.createPercolationRenderer),
   },
+  describe: describePercolation,
   explanation: () => import("./explanation.mdx"),
 });

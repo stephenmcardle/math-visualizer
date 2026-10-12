@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
+import { useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import {
   detectAutoLevel,
@@ -59,6 +59,12 @@ const IDLE_LOOP: LoopControls = {
   capture: () => Promise.reject(new Error("The visualization hasn't started yet.")),
 };
 
+/**
+ * The description only changes while paused: rewriting it every frame would
+ * mean DOM work during animation and a moving target for screen readers.
+ */
+const PLAYING_DESCRIPTION = "Running. Pause to hear a description of the current state.";
+
 /** Changes to these restart the simulation; `live` params apply in place. */
 function simulationKey(definition: AnyVisualizationDefinition, params: Params, seed: number) {
   const restartParams = Object.keys(definition.params)
@@ -109,8 +115,13 @@ export function VisualizationViewport({
 }: VisualizationViewportProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const announcementRef = useRef<HTMLParagraphElement>(null);
   const loopRef = useRef<LoopControls>(IDLE_LOOP);
   const [failedSlug, setFailedSlug] = useState<string | null>(null);
+  const [keyboardHelp, setKeyboardHelp] = useState<string | null>(null);
+  const descriptionId = useId();
+  const keyboardHelpId = useId();
 
   // Latest props, read by the loop without re-running effects.
   const latest = useRef({ params, seed, playing, quality, onQualityLevelChange });
@@ -124,13 +135,16 @@ export function VisualizationViewport({
   useEffect(() => {
     const container = containerRef.current;
     const root = rootRef.current;
-    if (!container || !root) return;
+    const description = descriptionRef.current;
+    const announcement = announcementRef.current;
+    if (!container || !root || !description || !announcement) return;
 
     let disposed = false;
     let frameId = 0;
     let renderedGeneration = -1;
     let needsReset = true;
     let autoLevel: QualityLevel | null = null;
+    let wasPlaying = latest.current.playing;
     const clock = new StepClock();
     const monitor = new FrameTimeMonitor();
 
@@ -181,6 +195,14 @@ export function VisualizationViewport({
       host.present();
     };
 
+    const describe = (snapshot: Snapshot<unknown>, params: Params, playing: boolean) => {
+      if (!definition.describe) return;
+      const text = playing ? PLAYING_DESCRIPTION : definition.describe(snapshot.state, params);
+      if (description.textContent !== text) description.textContent = text;
+      if (wasPlaying && !playing) announcement.textContent = `Paused. ${text}`;
+      wasPlaying = playing;
+    };
+
     function frame(now: number) {
       frameId = 0;
       if (!host) return;
@@ -204,7 +226,10 @@ export function VisualizationViewport({
       }
 
       const snapshot = runner.current();
-      if (snapshot) draw(snapshot, params);
+      if (snapshot) {
+        draw(snapshot, params);
+        describe(snapshot, params, playing);
+      }
 
       if (playing) schedule();
     }
@@ -255,11 +280,17 @@ export function VisualizationViewport({
           return;
         }
         host = created;
+        setKeyboardHelp(created.renderer.keyboard?.help ?? null);
         schedule();
       })
       .catch((error: unknown) => {
         console.error(`Failed to start renderer for "${definition.metadata.slug}":`, error);
       });
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (host?.renderer.keyboard?.onKeyDown(event)) event.preventDefault();
+    };
+    container.addEventListener("keydown", onKeyDown);
 
     const resizeObserver = new ResizeObserver(() => applyContext());
     resizeObserver.observe(container);
@@ -276,6 +307,7 @@ export function VisualizationViewport({
       disposed = true;
       cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
+      container.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       runner.dispose();
       host?.destroy();
@@ -304,11 +336,20 @@ export function VisualizationViewport({
     <div ref={rootRef} className={`relative ${className ?? ""}`}>
       <div
         ref={containerRef}
-        className="absolute inset-0"
+        className="absolute inset-0 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
         style={{ touchAction: "manipulation" }}
         role="img"
         aria-label={`${definition.metadata.title} visualization`}
+        aria-describedby={keyboardHelp ? `${descriptionId} ${keyboardHelpId}` : descriptionId}
+        tabIndex={keyboardHelp ? 0 : undefined}
       />
+      <p ref={descriptionRef} id={descriptionId} className="sr-only" />
+      {keyboardHelp && (
+        <p id={keyboardHelpId} className="sr-only">
+          {keyboardHelp}
+        </p>
+      )}
+      <p ref={announcementRef} aria-live="polite" className="sr-only" />
       {failedSlug === definition.metadata.slug && (
         <div
           role="alert"

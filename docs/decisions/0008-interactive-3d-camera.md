@@ -1,6 +1,6 @@
 # 0008: Interactive 3D camera: renderer-requested frames and a touch policy
 
-- **Status:** Accepted
+- **Status:** Accepted (extended by 0011)
 - **Date:** 2026-10-08
 
 ## Context

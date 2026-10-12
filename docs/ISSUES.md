@@ -32,16 +32,6 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
-### ISS-015: `npm audit` reports 9 high-severity advisories in dev tooling
-
-- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
-- **Where:** `package-lock.json` (`shadcn`, `eslint-config-next`)
-- **Status:** open
-- All come from `braces` (stack-exhaustion DoS) through `micromatch` / `fast-glob`, used by the
-  shadcn CLI and the Next ESLint plugin. Both run only on developer machines and in CI, never in
-  the static site. Update when upstream releases fixed versions; `npm audit fix --force` would
-  downgrade shadcn.
-
 ### ISS-014: Per-visualization custom controls
 
 - **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low
@@ -60,16 +50,6 @@ Keep closed entries; they explain why things are the way they are.
   pixel wide. At 390px wide, a 128-site grid gets 2px per site (256px) out of ~330px available.
   Fractional scales with `nearest` sampling would fill the space at the cost of uneven site
   sizes; decide which looks better on a real phone.
-
-### ISS-012: 3D camera is not keyboard-operable
-
-- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium
-- **Where:** `src/visualizations/lorenz-attractor/renderer.ts`, ADR 0008
-- **Status:** open
-- The Lorenz camera rotates only by pointer drag. Keyboard users can't change the view, and the
-  canvas isn't focusable. Options: make the viewport focusable and map arrow keys to rotation
-  (OrbitControls' built-in keys pan, which is disabled), or add rotate buttons. Related to
-  ISS-004.
 
 ### ISS-010: CI's `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19
 
@@ -110,15 +90,6 @@ Keep closed entries; they explain why things are the way they are.
   could visibly diverge over long runs. Options if needed: a deterministic math helper module,
   or documenting per-visualization guarantees.
 
-### ISS-004: Canvas state is not available to screen readers
-
-- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium
-- **Where:** `src/components/visualization/visualization-viewport.tsx`
-- **Status:** promoted (Roadmap M4)
-- The viewport has `role="img"` and a label, but nothing describes what is happening. Idea: an
-  optional `describe(state, params): string` on definitions, announced politely on pause or at
-  a low rate.
-
 ### ISS-003: Random-walk trails reset on resize and quality change
 
 - **Captured:** 2026-10-08 · **Type:** debt · **Severity:** low
@@ -128,13 +99,15 @@ Keep closed entries; they explain why things are the way they are.
   phone rotation, so accumulated trails disappear. Possible fix: copy the old texture into the
   new one, offset by the change in center.
 
-### ISS-002: `npm audit` reports 5 high-severity issues in dev tooling
+### ISS-002: `npm audit` reports high-severity issues in dev tooling
 
 - **Captured:** 2026-10-08 · **Type:** chore · **Severity:** low
 - **Where:** `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` → `micromatch` → `braces`
 - **Status:** open (waiting on upstream)
 - Dev-only; not in the shipped bundle. `npm audit fix --force` would downgrade
   `eslint-config-next` to v14, so don't. Re-check when upgrading Next.js.
+- 2026-10-12: now 9 advisories, all from the same `braces` issue; the shadcn CLI (`shadcn` →
+  `@shadcn/registry`, `ts-morph`) pulls it in through `fast-glob` too. Still dev-only.
 
 ### ISS-001: Build emits an unreferenced copy of the worker source
 
@@ -147,6 +120,36 @@ Keep closed entries; they explain why things are the way they are.
   [ADR 0005](decisions/0005-simulation-runners-and-workers.md)). Re-check on Next.js upgrades.
 
 ## Closed
+
+### ISS-012: 3D camera is not keyboard-operable
+
+- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium
+- **Where:** `src/visualizations/lorenz-attractor/renderer.ts`, ADR 0008
+- **Status:** fixed (ADR 0011: the viewport is focusable and the arrow keys rotate the camera)
+- The Lorenz camera rotates only by pointer drag. Keyboard users can't change the view, and the
+  canvas isn't focusable. Options: make the viewport focusable and map arrow keys to rotation
+  (OrbitControls' built-in keys pan, which is disabled), or add rotate buttons. Related to
+  ISS-004.
+
+### ISS-004: Canvas state is not available to screen readers
+
+- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium
+- **Where:** `src/components/visualization/visualization-viewport.tsx`
+- **Status:** fixed (ADR 0011: `describe` on all four definitions, used as the description while
+  paused and announced on pause)
+- The viewport has `role="img"` and a label, but nothing describes what is happening. Idea: an
+  optional `describe(state, params): string` on definitions, announced politely on pause or at
+  a low rate.
+
+### ISS-015: `npm audit` reports 9 high-severity advisories in dev tooling
+
+- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
+- **Where:** `package-lock.json` (`shadcn`, `eslint-config-next`)
+- **Status:** won't fix (duplicate of ISS-002, which now has the current count)
+- All come from `braces` (stack-exhaustion DoS) through `micromatch` / `fast-glob`, used by the
+  shadcn CLI and the Next ESLint plugin. Both run only on developer machines and in CI, never in
+  the static site. Update when upstream releases fixed versions; `npm audit fix --force` would
+  downgrade shadcn.
 
 ### ISS-008: Worker runner stalls after a worker crash
 

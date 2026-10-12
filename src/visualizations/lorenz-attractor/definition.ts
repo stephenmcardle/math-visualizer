@@ -1,4 +1,5 @@
 import { defineVisualization } from "@/lib/visualization/types";
+import { describeLorenz } from "@/visualizations/lorenz-attractor/describe";
 import { lorenzMetadata } from "@/visualizations/lorenz-attractor/metadata";
 import { lorenzParams } from "@/visualizations/lorenz-attractor/params";
 import { lorenzSimulation } from "@/visualizations/lorenz-attractor/simulation";
@@ -13,5 +14,6 @@ export const lorenzAttractor = defineVisualization({
     engine: "three",
     load: () => import("./renderer").then((m) => m.createLorenzRenderer),
   },
+  describe: describeLorenz,
   explanation: () => import("./explanation.mdx"),
 });

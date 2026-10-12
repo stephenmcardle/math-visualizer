@@ -69,7 +69,7 @@ closed 2026-10-12 with the Ising model.
 ## Milestone 4: Polish and reach 🚧
 
 - ⬜ Pan and zoom in the viewport
-- ⬜ Screen-reader summaries of visualization state
+- ✅ Screen-reader summaries of visualization state, and a keyboard-operable 3D camera (ADR 0011)
 - ✅ Copy share link and export frame as image
 - ⬜ Math typesetting in MDX explanations (e.g. KaTeX)
 - ✅ End-to-end smoke tests for the host page and every visualization (ADR 0010)
