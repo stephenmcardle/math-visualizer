@@ -31,3 +31,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run format:check
+
+      # End-to-end smoke tests against the build above.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

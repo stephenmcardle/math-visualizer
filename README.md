@@ -74,20 +74,20 @@ model (Web Worker), and the Lorenz attractor (Three.js).
 
 ## Technology stack
 
-| Concern           | Choice                                                        |
-| ----------------- | ------------------------------------------------------------- |
-| Framework         | [Next.js](https://nextjs.org/) 16 (App Router, static export) |
-| Language          | TypeScript (strict)                                           |
-| Styling           | Tailwind CSS 4                                                |
-| UI components     | [shadcn/ui](https://ui.shadcn.com/) (Base UI primitives)      |
-| 2D rendering      | [PixiJS](https://pixijs.com/) 8                               |
-| 3D rendering      | [Three.js](https://threejs.org/)                              |
-| Long-form content | MDX via `@next/mdx`                                           |
-| Themes            | `next-themes`                                                 |
-| Tests             | [Vitest](https://vitest.dev/)                                 |
-| Lint / format     | ESLint (`eslint-config-next`), Prettier                       |
-| Package manager   | npm                                                           |
-| Hosting target    | Cloudflare (static assets)                                    |
+| Concern           | Choice                                                                            |
+| ----------------- | --------------------------------------------------------------------------------- |
+| Framework         | [Next.js](https://nextjs.org/) 16 (App Router, static export)                     |
+| Language          | TypeScript (strict)                                                               |
+| Styling           | Tailwind CSS 4                                                                    |
+| UI components     | [shadcn/ui](https://ui.shadcn.com/) (Base UI primitives)                          |
+| 2D rendering      | [PixiJS](https://pixijs.com/) 8                                                   |
+| 3D rendering      | [Three.js](https://threejs.org/)                                                  |
+| Long-form content | MDX via `@next/mdx`                                                               |
+| Themes            | `next-themes`                                                                     |
+| Tests             | [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) (end-to-end) |
+| Lint / format     | ESLint (`eslint-config-next`), Prettier                                           |
+| Package manager   | npm                                                                               |
+| Hosting target    | Cloudflare (static assets)                                                        |
 
 ## Architecture overview
 
@@ -215,6 +215,7 @@ interface VisualizationRenderer<TParams, TState> {
 .
 ├── .github/                      # CI workflow, issue and pull request templates
 ├── docs/                         # Status, roadmap, capture log, ADRs (see docs/README.md)
+├── e2e/                          # Playwright smoke tests and the static server they use
 ├── public/_headers               # Cloudflare cache headers for static assets
 ├── src/
 │   ├── app/                      # Next.js routes
@@ -251,6 +252,7 @@ interface VisualizationRenderer<TParams, TState> {
 ├── CHANGELOG.md                  # Keep a Changelog
 ├── CLAUDE.md                     # workflow guide for AI coding agents
 ├── next.config.ts                # static export + MDX
+├── playwright.config.ts          # end-to-end tests against out/
 ├── wrangler.jsonc                # Cloudflare deployment config
 └── vitest.config.mts
 ```
@@ -269,17 +271,18 @@ npm install
 npm run dev            # http://localhost:3000
 ```
 
-| Command                | What it does                                   |
-| ---------------------- | ---------------------------------------------- |
-| `npm run dev`          | Dev server with Turbopack                      |
-| `npm run lint`         | ESLint                                         |
-| `npm run typecheck`    | Generate Next route types, then `tsc --noEmit` |
-| `npm test`             | Run Vitest once                                |
-| `npm run test:watch`   | Vitest in watch mode                           |
-| `npm run format`       | Prettier (write)                               |
-| `npm run format:check` | Prettier (check only)                          |
-| `npm run build`        | Production static export to `out/`             |
-| `npm run check`        | lint + typecheck + test + build                |
+| Command                | What it does                                        |
+| ---------------------- | --------------------------------------------------- |
+| `npm run dev`          | Dev server with Turbopack                           |
+| `npm run lint`         | ESLint                                              |
+| `npm run typecheck`    | Generate Next route types, then `tsc --noEmit`      |
+| `npm test`             | Run Vitest once                                     |
+| `npm run test:watch`   | Vitest in watch mode                                |
+| `npm run format`       | Prettier (write)                                    |
+| `npm run format:check` | Prettier (check only)                               |
+| `npm run build`        | Production static export to `out/`                  |
+| `npm run check`        | lint + typecheck + test + build                     |
+| `npm run test:e2e`     | Playwright smoke tests against `out/` (build first) |
 
 ## Building
 
@@ -478,7 +481,8 @@ The essentials:
 - cite the papers, books or code your visualization is based on;
 - only reuse external code whose license is compatible with Apache-2.0, with attribution;
 - make controls keyboard- and touch-friendly;
-- run `npm run check` before opening a PR.
+- run `npm run check` before opening a PR (and `npm run test:e2e` if you changed the UI or a
+  renderer).
 
 ## Performance philosophy
 

@@ -32,6 +32,16 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-015: `npm audit` reports 9 high-severity advisories in dev tooling
+
+- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
+- **Where:** `package-lock.json` (`shadcn`, `eslint-config-next`)
+- **Status:** open
+- All come from `braces` (stack-exhaustion DoS) through `micromatch` / `fast-glob`, used by the
+  shadcn CLI and the Next ESLint plugin. Both run only on developer machines and in CI, never in
+  the static site. Update when upstream releases fixed versions; `npm audit fix --force` would
+  downgrade shadcn.
+
 ### ISS-014: Per-visualization custom controls
 
 - **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low

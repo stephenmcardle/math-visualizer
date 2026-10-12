@@ -24,10 +24,16 @@ npm run format       # Prettier
 Individual commands: `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:watch`,
 `npm run build`.
 
+End-to-end smoke tests run the production build in Chromium. Install the browser once with
+`npx playwright install chromium`, then run `npm run build && npm run test:e2e`. They check that
+every visualization renders a frame, writes its URL and logs no errors, plus URL state, Copy link,
+the phone layout and the 404 page. A new visualization is covered automatically.
+
 ## Branches and pull requests
 
 - Every change, including maintainers', lands on `main` through a pull request, and the CI
-  `check` job (lint, typecheck, tests, build, format check) must pass before merging.
+  `check` job (lint, typecheck, tests, build, format check, end-to-end tests) must pass before
+  merging.
 - Branch from `main`, using a descriptive name such as `viz/percolation` or `fix/seed-input`.
 - Keep pull requests focused: one visualization or one change per PR.
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages, e.g.
@@ -51,7 +57,8 @@ Working documents live in [`docs/`](docs/README.md):
 Update [CHANGELOG.md](CHANGELOG.md) (under Unreleased) in the same PR for any change a user or
 contributor would notice, and update STATUS/ROADMAP/ISSUES if your change affects them.
 
-CI runs `npm run check` and `npm run format:check` on every push and pull request to `main`.
+CI runs `npm run check`, `npm run format:check` and `npm run test:e2e` on every push and pull
+request to `main`.
 
 ## Adding a visualization
 

@@ -20,12 +20,17 @@ adding a visualization; [CONTRIBUTING.md](CONTRIBUTING.md) has conventions.
 | `npx vitest run src/lib/random/prng.test.ts` | One test file                                   |
 | `npx vitest run -t "round-trips"`            | Tests whose name matches                        |
 | `npm run build` then `npx serve out`         | Build the static site to `out/` and preview it  |
+| `npm run build` then `npm run test:e2e`      | Playwright smoke tests against `out/` (CI too)  |
+| `npx playwright test -g "ising"`             | E2E tests whose name matches                    |
 
 `npm run typecheck` runs `next typegen` before `tsc`: the global `PageProps<...>` /
 `LayoutProps<...>` types used by routes are generated, so plain `tsc` fails on a fresh clone.
 
 Vitest runs in the `node` environment and only picks up `src/**/*.test.ts` (no DOM, no `.tsx`
-tests); config is `vitest.config.mts`.
+tests); config is `vitest.config.mts`. Browser behavior is covered by the Playwright smoke tests
+in `e2e/` (ADR 0010), which loop over the registry, so a new visualization gets a render test for
+free; first run needs `npx playwright install chromium`. Use them instead of ad hoc browser
+scripts, and add a test when you add host-level UI.
 
 ## Workflow
 
@@ -40,7 +45,8 @@ tests); config is `vitest.config.mts`.
   with `gh pr create` following `.github/pull_request_template.md`, and leave merging to the
   maintainer unless asked. Branch protection enforces this, for admins too: direct pushes and
   force-pushes to `main` are rejected, and PR branches must be up to date with `main`.
-- **Before committing:** `npm run check` and `npm run format:check` pass, and docs are updated in
+- **Before committing:** `npm run check` and `npm run format:check` pass (plus
+  `npm run test:e2e` when UI or rendering changed), and docs are updated in
   the same commit: `CHANGELOG.md` (Unreleased), `docs/STATUS.md` (bump "Last updated"),
   `docs/ROADMAP.md`, resolved `docs/ISSUES.md` entries. Conventional commits
   (`feat|fix|chore|test|refactor|docs(scope): ...`).
