@@ -1,7 +1,10 @@
 "use client";
 
+import { LocateFixedIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
 import { useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 
+import { attachPanZoomInput } from "@/components/visualization/pan-zoom-input";
+import { Button } from "@/components/ui/button";
 import {
   AutoQuality,
   detectAutoLevel,
@@ -10,6 +13,14 @@ import {
   type QualitySetting,
 } from "@/lib/rendering/quality";
 import type { EngineHost, RenderContext } from "@/lib/rendering/types";
+import {
+  DEFAULT_VIEW,
+  clampView,
+  isDefaultView,
+  panView,
+  zoomView,
+  type View,
+} from "@/lib/rendering/view";
 import {
   LocalSimulationRunner,
   type SimulationRunner,
@@ -49,12 +60,17 @@ interface LoopControls {
   /** Re-read viewport size and quality and resize the engine. */
   applyContext(): void;
   capture(): Promise<Blob>;
+  /** Zoom about the viewport center; no-op without pan and zoom. */
+  zoom(factor: number): void;
+  resetView(): void;
 }
 
 const IDLE_LOOP: LoopControls = {
   restart() {},
   redraw() {},
   applyContext() {},
+  zoom() {},
+  resetView() {},
   capture: () => Promise.reject(new Error("The visualization hasn't started yet.")),
 };
 
@@ -63,6 +79,24 @@ const IDLE_LOOP: LoopControls = {
  * mean DOM work during animation and a moving target for screen readers.
  */
 const PLAYING_DESCRIPTION = "Running. Pause to hear a description of the current state.";
+
+const PAN_ZOOM_HELP =
+  "Press plus or minus to zoom, the arrow keys to pan, and 0 to reset the view.";
+/** Zoom per key press or button click. */
+const ZOOM_STEP = 1.25;
+/** Pan per arrow key press, in CSS pixels. */
+const PAN_STEP = 40;
+
+/** What the zoom buttons can do; null when the renderer has no pan and zoom. */
+interface ViewButtons {
+  canZoomIn: boolean;
+  canZoomOut: boolean;
+  canReset: boolean;
+}
+
+function sameButtons(a: ViewButtons | null, b: ViewButtons) {
+  return a?.canZoomIn === b.canZoomIn && a.canZoomOut === b.canZoomOut && a.canReset === b.canReset;
+}
 
 /** Changes to these restart the simulation; `live` params apply in place. */
 function simulationKey(definition: AnyVisualizationDefinition, params: Params, seed: number) {
@@ -119,6 +153,7 @@ export function VisualizationViewport({
   const loopRef = useRef<LoopControls>(IDLE_LOOP);
   const [failedSlug, setFailedSlug] = useState<string | null>(null);
   const [keyboardHelp, setKeyboardHelp] = useState<string | null>(null);
+  const [viewButtons, setViewButtons] = useState<ViewButtons | null>(null);
   const descriptionId = useId();
   const keyboardHelpId = useId();
 
@@ -177,10 +212,71 @@ export function VisualizationViewport({
     });
 
     let host: EngineHost<Params, unknown> | null = null;
+    let view: View = DEFAULT_VIEW;
+    let detachPanZoom = () => {};
+
+    // View changes come from user input, never the frame loop, so updating the
+    // buttons' React state here doesn't put React in the animation path.
+    const setView = (next: View) => {
+      const panZoom = host?.renderer.panZoom;
+      if (!panZoom) return;
+      view = clampView(next, renderContext(), panZoom);
+      panZoom.setView(view);
+      const buttons = {
+        canZoomIn: view.scale < panZoom.maxScale,
+        canZoomOut: view.scale > panZoom.minScale,
+        canReset: !isDefaultView(view),
+      };
+      setViewButtons((previous) => (sameButtons(previous, buttons) ? previous : buttons));
+      schedule();
+    };
+
+    const zoomAboutCenter = (factor: number) => {
+      const panZoom = host?.renderer.panZoom;
+      if (!panZoom) return;
+      const size = renderContext();
+      setView(zoomView(view, factor, size.width / 2, size.height / 2, size, panZoom));
+    };
+
+    /** Keys for pan and zoom; modified keys are left to the browser (Ctrl + plus zooms the page). */
+    const onViewKey = (event: KeyboardEvent): boolean => {
+      if (!host?.renderer.panZoom || event.ctrlKey || event.altKey || event.metaKey) return false;
+      const pan = (dx: number, dy: number) =>
+        setView({ ...view, panX: view.panX + dx, panY: view.panY + dy });
+      switch (event.key) {
+        case "+":
+        case "=":
+          zoomAboutCenter(ZOOM_STEP);
+          return true;
+        case "-":
+        case "_":
+          zoomAboutCenter(1 / ZOOM_STEP);
+          return true;
+        case "0":
+          setView(DEFAULT_VIEW);
+          return true;
+        case "ArrowLeft":
+          pan(PAN_STEP, 0);
+          return true;
+        case "ArrowRight":
+          pan(-PAN_STEP, 0);
+          return true;
+        case "ArrowUp":
+          pan(0, PAN_STEP);
+          return true;
+        case "ArrowDown":
+          pan(0, -PAN_STEP);
+          return true;
+        default:
+          return false;
+      }
+    };
 
     const applyContext = () => {
       const context = renderContext();
       host?.resize(context);
+      // The same pan may now reach past the content's edge.
+      setView(view);
       latest.current.onQualityLevelChange?.(context.quality.level);
       schedule();
     };
@@ -238,6 +334,8 @@ export function VisualizationViewport({
         schedule();
       },
       applyContext,
+      zoom: zoomAboutCenter,
+      resetView: () => setView(DEFAULT_VIEW),
       capture() {
         const snapshot = runner.current();
         if (!host || !snapshot) {
@@ -274,7 +372,15 @@ export function VisualizationViewport({
           return;
         }
         host = created;
-        setKeyboardHelp(created.renderer.keyboard?.help ?? null);
+        const { keyboard, panZoom } = created.renderer;
+        setKeyboardHelp(keyboard?.help ?? (panZoom ? PAN_ZOOM_HELP : null));
+        if (panZoom) {
+          detachPanZoom = attachPanZoomInput(container, {
+            pan: (dx, dy) => setView(panView(view, dx, dy, renderContext(), panZoom)),
+            zoom: (factor, x, y) => setView(zoomView(view, factor, x, y, renderContext(), panZoom)),
+          });
+          setView(view);
+        }
         schedule();
       })
       .catch((error: unknown) => {
@@ -282,7 +388,7 @@ export function VisualizationViewport({
       });
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (host?.renderer.keyboard?.onKeyDown(event)) event.preventDefault();
+      if (host?.renderer.keyboard?.onKeyDown(event) || onViewKey(event)) event.preventDefault();
     };
     container.addEventListener("keydown", onKeyDown);
 
@@ -302,6 +408,8 @@ export function VisualizationViewport({
       cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
       container.removeEventListener("keydown", onKeyDown);
+      detachPanZoom();
+      setViewButtons(null);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       runner.dispose();
       host?.destroy();
@@ -331,7 +439,9 @@ export function VisualizationViewport({
       <div
         ref={containerRef}
         className="absolute inset-0 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
-        style={{ touchAction: "manipulation" }}
+        // Pan and zoom take two-finger gestures, so the browser keeps only
+        // one-finger scrolling there (ADR 0012).
+        style={{ touchAction: viewButtons ? "pan-x pan-y" : "manipulation" }}
         role="img"
         aria-label={`${definition.metadata.title} visualization`}
         aria-describedby={keyboardHelp ? `${descriptionId} ${keyboardHelpId}` : descriptionId}
@@ -344,6 +454,37 @@ export function VisualizationViewport({
         </p>
       )}
       <p ref={announcementRef} aria-live="polite" className="sr-only" />
+      {viewButtons && (
+        <div className="absolute right-2 bottom-2 flex gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Zoom out"
+            disabled={!viewButtons.canZoomOut}
+            onClick={() => loopRef.current.zoom(1 / ZOOM_STEP)}
+          >
+            <ZoomOutIcon />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Zoom in"
+            disabled={!viewButtons.canZoomIn}
+            onClick={() => loopRef.current.zoom(ZOOM_STEP)}
+          >
+            <ZoomInIcon />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Reset view"
+            disabled={!viewButtons.canReset}
+            onClick={() => loopRef.current.resetView()}
+          >
+            <LocateFixedIcon />
+          </Button>
+        </div>
+      )}
       {failedSlug === definition.metadata.slug && (
         <div
           role="alert"

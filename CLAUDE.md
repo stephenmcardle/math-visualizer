@@ -105,7 +105,10 @@ quality change, auto step down or up), which is a no-op re-render unless the lev
   The Three.js factory also gets `requestRender()` (draw one frame without stepping) for camera
   controls; the Lorenz renderer shows the rotate-only, `touch-action: pan-y` setup (ADR 0008).
   A renderer may return `keyboard: { help, onKeyDown }`; the viewport then becomes focusable and
-  forwards keys (Lorenz arrow-key rotation, ADR 0011).
+  forwards keys (Lorenz arrow-key rotation, ADR 0011). 2D renderers return
+  `panZoom: { minScale, maxScale, setView }` and apply `viewTransform` (`view.ts`) to their
+  content; the viewport owns the gestures (`pan-zoom-input.ts`), keys and zoom buttons, and sets
+  `touch-action: pan-x pan-y` so one finger still scrolls the page (ADR 0012).
 - Descriptions: each definition's `describe(state, params)` (in `describe.ts`) is the viewport's
   screen-reader description, written only while paused and announced on pause (ADR 0011). While
   playing it is a fixed sentence, so the loop still never touches the DOM.
@@ -123,6 +126,9 @@ quality change, auto step down or up), which is a no-op re-render unless the lev
   bundling a worker (ADR 0005).
 - The PRNG test pins exact outputs. If it fails, every shared URL replays differently; treat that
   as a breaking change, not a snapshot to update.
+- `pixi-host.ts` detaches Pixi's event system: it sets `touch-action: none` on the canvas,
+  which stops swipes from scrolling the page. Renderers that want pointer input go through the
+  viewport, not Pixi's `eventMode`.
 - Static export: no route handlers reading the request, middleware/proxy, `next.config`
   redirects/rewrites/headers, ISR or default image optimization. Cache headers live in
   `public/_headers`.

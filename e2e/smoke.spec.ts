@@ -165,8 +165,6 @@ test("pausing describes the current state to screen readers", async ({ page }) =
   await expect(
     page.locator("[aria-live=polite]").filter({ hasText: /^Paused\. 50 walkers/ }),
   ).toHaveCount(1);
-  // Only interactive renderers make the viewport focusable.
-  await expect(viewport).not.toHaveAttribute("tabindex");
 });
 
 test("the 3D camera rotates with the arrow keys", async ({ page }) => {
@@ -185,6 +183,45 @@ test("the 3D camera rotates with the arrow keys", async ({ page }) => {
   await viewport.focus();
   for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
   expect((await saveFramePng(page)).equals(before)).toBe(true);
+});
+
+test("2D views pan and zoom with buttons, keys, Ctrl + wheel and drag", async ({ page }) => {
+  await page.goto("/visualizations/ising-model?seed=7");
+  const viewport = page.getByRole("img", { name: /visualization$/ });
+  const resetView = page.getByRole("button", { name: "Reset view" });
+  await expect(viewport).toHaveAccessibleDescription(/plus or minus to zoom/);
+  await expect(resetView).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Zoom out" })).toBeDisabled();
+  await page.waitForTimeout(1000);
+  await page.getByRole("button", { name: "Pause" }).click();
+  const before = await saveFramePng(page);
+
+  await page.getByRole("button", { name: "Zoom in" }).click();
+  await expect(resetView).toBeEnabled();
+  expect((await saveFramePng(page)).equals(before)).toBe(false);
+  // Zooming doesn't advance the simulation, so the default view looks the same as before.
+  await viewport.focus();
+  await page.keyboard.press("0");
+  await expect(resetView).toBeDisabled();
+  expect((await saveFramePng(page)).equals(before)).toBe(true);
+
+  const box = (await viewport.boundingBox())!;
+  const scrolled = await page.evaluate(() => scrollY);
+  await page.mouse.move(box.x + box.width / 3, box.y + box.height / 3);
+  await page.keyboard.down("Control");
+  await page.mouse.wheel(0, -100);
+  await page.keyboard.up("Control");
+  await expect(resetView).toBeEnabled();
+  // Ctrl + wheel zooms the visualization instead of scrolling (or zooming) the page.
+  expect(await page.evaluate(() => scrollY)).toBe(scrolled);
+  await resetView.click();
+  await expect(resetView).toBeDisabled();
+
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 80, box.y + box.height / 2 + 40, { steps: 4 });
+  await page.mouse.up();
+  await expect(resetView).toBeEnabled();
 });
 
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {
@@ -228,6 +265,44 @@ test.describe("on a phone", () => {
     );
     await page.getByRole("button", { name: "Controls" }).tap();
     await expect(page.getByRole("dialog").getByRole("slider", { name: "Grid size" })).toBeVisible();
+  });
+
+  test("two fingers over the viewport zoom, and one finger scrolls the page", async ({ page }) => {
+    await page.goto("/visualizations/ising-model?seed=7");
+    const viewport = page.getByRole("img", { name: /visualization$/ });
+    await expect(page.getByRole("button", { name: "Reset view" })).toBeDisabled();
+    const box = (await viewport.boundingBox())!;
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    // Playwright's touchscreen API only taps, so send raw touch events.
+    const cdp = await page.context().newCDPSession(page);
+    const touch = (
+      type: "touchStart" | "touchMove" | "touchEnd",
+      touchPoints: { x: number; y: number; id: number }[],
+    ) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints });
+
+    await touch("touchStart", [
+      { x: x - 20, y, id: 1 },
+      { x: x + 20, y, id: 2 },
+    ]);
+    for (let i = 1; i <= 8; i++) {
+      await touch("touchMove", [
+        { x: x - 20 - i * 10, y, id: 1 },
+        { x: x + 20 + i * 10, y, id: 2 },
+      ]);
+    }
+    await touch("touchEnd", []);
+    await expect(page.getByRole("button", { name: "Reset view" })).toBeEnabled();
+    // The pinch zoomed the visualization, not the page.
+    expect(await page.evaluate(() => [scrollY, visualViewport!.scale])).toEqual([0, 1]);
+    await page.getByRole("button", { name: "Reset view" }).tap();
+
+    await touch("touchStart", [{ x, y, id: 1 }]);
+    for (let i = 1; i <= 8; i++) await touch("touchMove", [{ x, y: y - i * 25, id: 1 }]);
+    await touch("touchEnd", []);
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
+    // A one-finger swipe isn't a view gesture.
+    await expect(page.getByRole("button", { name: "Reset view" })).toBeDisabled();
   });
 });
 

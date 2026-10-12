@@ -1,7 +1,7 @@
 # Status
 
 **Last updated:** 2026-10-12
-**Phase:** Milestone 4 (Polish and reach) in progress.
+**Phase:** Milestones 0–4 complete; the next milestone is not planned yet.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
@@ -16,14 +16,16 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 107 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 114 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 15 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 17 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
+- Pan and zoom on the 2D visualizations (mouse, touch, keyboard and buttons); one-finger swipes
+  and plain scrolling still scroll the page.
 - Home page filters (category, difficulty, tag) stored in the URL.
 - Routes: `/`, `/about`, `/visualizations/[slug]` (static export, one HTML file per route).
 - Visualization registry with validation; generic host page; schema-generated controls for
@@ -48,13 +50,12 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 4: home page filtering is in review. Copy link, Save image, end-to-end smoke tests,
-  screen-reader descriptions, the keyboard 3D camera, KaTeX math and auto quality stepping back
-  up shipped; Milestone 3 closed 2026-10-12.
+- Nothing. Milestone 4 closed 2026-10-12 with pan and zoom.
 
 ## Next up
 
-1. Pan and zoom in the viewport, the last Milestone 4 item.
+1. Plan the next milestone (e.g. more visualizations) from the ideas in [ISSUES.md](ISSUES.md).
+2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations
 
@@ -66,3 +67,4 @@ Tracked in more detail in [ISSUES.md](ISSUES.md).
 - Bit-for-bit reproducibility is guaranteed within one JavaScript engine; across browsers,
   `Math.cos`/`Math.sin` may differ in the last bit.
 - Screen-reader descriptions update only while paused; while playing they say so.
+- Zooming into the random walk shows older trails at the resolution they were drawn at.

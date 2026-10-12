@@ -1,6 +1,8 @@
-import { BufferImageSource, Sprite, Text, Texture } from "pixi.js";
+import { BufferImageSource, Container, Sprite, Texture } from "pixi.js";
 
+import { createOverlayLabel } from "@/lib/rendering/overlay-label";
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
+import { DEFAULT_VIEW, isDefaultView, viewTransform } from "@/lib/rendering/view";
 import type { IsingParams } from "@/visualizations/ising-model/params";
 import type { IsingState } from "@/visualizations/ising-model/simulation";
 
@@ -8,7 +10,8 @@ import type { IsingState } from "@/visualizations/ising-model/simulation";
 const UP = 0xe8833a;
 const DOWN = 0x3a76c4;
 const MARGIN = 0.92;
-const NEUTRAL = 0x8a8a8a;
+/** Enough to pick out single spins in a 512² lattice on a phone. */
+const MAX_ZOOM = 16;
 
 /** Pack opaque RGB into one little-endian RGBA pixel (byte order R, G, B, A). */
 function packPixel(color: number): number {
@@ -36,32 +39,42 @@ export const createIsingRenderer: PixiRendererFactory<IsingParams, IsingState> =
   const down = packPixel(DOWN);
 
   const lattice = new Sprite();
-  const label = new Text({
-    text: "",
-    style: { fontFamily: "ui-monospace, monospace", fontSize: 13, fill: NEUTRAL },
-  });
-  label.position.set(12, 10);
-  app.stage.addChild(lattice, label);
+  const label = createOverlayLabel();
+  // Pan and zoom move the lattice; the label stays put.
+  const world = new Container();
+  world.addChild(lattice);
+  app.stage.addChild(world, label.container);
 
   let side = 0;
   let pixels = new Uint32Array(0);
   let source: BufferImageSource | null = null;
+  let view = DEFAULT_VIEW;
+  let fitScale = 1;
   let drawnSweeps = -1;
-  let labelText = "";
+
+  const applyView = () => {
+    const transform = viewTransform(view, context);
+    world.position.set(transform.x, transform.y);
+    world.scale.set(transform.scale);
+    label.setBacked(!isDefaultView(view));
+    // Sharp edges once a spin covers a screen pixel or more; smooth sampling
+    // below that avoids shimmering.
+    if (source) source.scaleMode = fitScale * view.scale >= 1 ? "nearest" : "linear";
+  };
 
   const layout = () => {
     if (side === 0) return;
     const fit = Math.min(context.width, context.height) * MARGIN;
-    // Whole-number scales keep every spin the same size on screen; below one
-    // pixel per spin, smooth sampling avoids shimmering.
+    // Whole-number scales keep every spin the same size on screen.
     const scale = fit >= side ? Math.floor(fit / side) : fit / side;
-    if (source) source.scaleMode = scale >= 1 ? "nearest" : "linear";
+    fitScale = scale;
     const size = side * scale;
     lattice.position.set(
       Math.round((context.width - size) / 2),
       Math.round((context.height - size) / 2),
     );
     lattice.scale.set(scale);
+    applyView();
   };
 
   const replaceTexture = (nextSide: number) => {
@@ -98,12 +111,21 @@ export const createIsingRenderer: PixiRendererFactory<IsingParams, IsingState> =
       // The temperature is live, so it can change while paused.
       const m = state.magnetization / state.spins.length;
       const text = `T = ${params.temperature.toFixed(2)}\nm = ${formatSigned(m)}  sweep ${state.sweeps}`;
-      if (text !== labelText) label.text = labelText = text;
+      label.setText(text);
     },
 
     resize(next: RenderContext) {
       context = next;
       layout();
+    },
+
+    panZoom: {
+      minScale: 1,
+      maxScale: MAX_ZOOM,
+      setView(next) {
+        view = next;
+        applyView();
+      },
     },
 
     destroy() {

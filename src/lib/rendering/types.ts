@@ -2,6 +2,7 @@ import type { Application } from "pixi.js";
 import type { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 
 import type { QualityProfile } from "@/lib/rendering/quality";
+import type { View, ViewLimits } from "@/lib/rendering/view";
 
 export interface RenderContext {
   /** Viewport size in CSS pixels. */
@@ -28,6 +29,12 @@ export interface VisualizationRenderer<TParams, TState> {
    * presses; return true for keys that were handled.
    */
   keyboard?: { help: string; onKeyDown(event: KeyboardEvent): boolean };
+  /**
+   * Optional pan and zoom for 2D renderers. The viewport handles the input
+   * (drag, Ctrl/⌘ + wheel, two-finger touch, keys and buttons) and passes the
+   * view to apply; the renderer keeps it across `resize` calls.
+   */
+  panZoom?: ViewLimits & { setView(view: View): void };
 }
 
 export type PixiRendererFactory<TParams, TState> = (

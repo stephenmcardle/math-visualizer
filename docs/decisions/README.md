@@ -29,3 +29,4 @@ likely to be questioned later. Small, local choices belong in code comments.
 | [0009](0009-boolean-and-enum-params.md)            | Boolean and enum parameters                        | Accepted | 2026-10-09 |
 | [0010](0010-playwright-smoke-tests.md)             | End-to-end smoke tests with Playwright             | Accepted | 2026-10-12 |
 | [0011](0011-state-descriptions-and-keyboard.md)    | Screen-reader descriptions and renderer keyboard   | Accepted | 2026-10-12 |
+| [0012](0012-2d-pan-and-zoom.md)                    | Pan and zoom for 2D renderers, and touch policy    | Accepted | 2026-10-12 |
