@@ -30,3 +30,4 @@ likely to be questioned later. Small, local choices belong in code comments.
 | [0010](0010-playwright-smoke-tests.md)             | End-to-end smoke tests with Playwright             | Accepted | 2026-10-12 |
 | [0011](0011-state-descriptions-and-keyboard.md)    | Screen-reader descriptions and renderer keyboard   | Accepted | 2026-10-12 |
 | [0012](0012-2d-pan-and-zoom.md)                    | Pan and zoom for 2D renderers, and touch policy    | Accepted | 2026-10-12 |
+| [0013](0013-color-palettes.md)                     | Shared color palettes as a live param              | Accepted | 2026-10-12 |

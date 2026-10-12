@@ -109,6 +109,10 @@ quality change, auto step down or up), which is a no-op re-render unless the lev
   `panZoom: { minScale, maxScale, setView }` and apply `viewTransform` (`view.ts`) to their
   content; the viewport owns the gestures (`pan-zoom-input.ts`), keys and zoom buttons, and sets
   `touch-action: pan-x pan-y` so one finger still scrolls the page (ADR 0012).
+- Colors: every visualization's params include the shared `palette: paletteParam` (a live enum;
+  a test enforces it), and renderers take colors from `palette(params.palette)` in
+  `src/lib/rendering/palettes.ts` (`.colors(n)` or `.pair`), recoloring in `render` when it
+  changes instead of restarting (ADR 0013).
 - Descriptions: each definition's `describe(state, params)` (in `describe.ts`) is the viewport's
   screen-reader description, written only while paused and announced on pause (ADR 0011). While
   playing it is a fixed sentence, so the loop still never touches the DOM.

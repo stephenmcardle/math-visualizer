@@ -1,14 +1,12 @@
 import { BufferImageSource, Container, Sprite, Texture } from "pixi.js";
 
+import { palette } from "@/lib/rendering/palettes";
 import { createOverlayLabel } from "@/lib/rendering/overlay-label";
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
 import { DEFAULT_VIEW, isDefaultView, viewTransform } from "@/lib/rendering/view";
 import type { IsingParams } from "@/visualizations/ising-model/params";
 import type { IsingState } from "@/visualizations/ising-model/simulation";
 
-/** Orange and blue stay distinct with the common forms of color blindness. */
-const UP = 0xe8833a;
-const DOWN = 0x3a76c4;
 const MARGIN = 0.92;
 /** Enough to pick out single spins in a 512² lattice on a phone. */
 const MAX_ZOOM = 16;
@@ -35,8 +33,16 @@ export const createIsingRenderer: PixiRendererFactory<IsingParams, IsingState> =
   initialContext,
 ) => {
   let context = initialContext;
-  const up = packPixel(UP);
-  const down = packPixel(DOWN);
+  let paletteValue = "";
+  let up = 0;
+  let down = 0;
+  /** Spin up and down take the palette's contrasting pair. Returns true if it changed. */
+  const applyPalette = (value: string) => {
+    if (value === paletteValue) return false;
+    paletteValue = value;
+    [up, down] = palette(value).pair.map((color) => packPixel(color));
+    return true;
+  };
 
   const lattice = new Sprite();
   const label = createOverlayLabel();
@@ -95,12 +101,15 @@ export const createIsingRenderer: PixiRendererFactory<IsingParams, IsingState> =
   };
 
   return {
-    reset(state) {
+    reset(state, params) {
       if (state.side !== side) replaceTexture(state.side);
+      applyPalette(params.palette);
       drawnSweeps = -1;
     },
 
     render(state, params) {
+      // The palette is live: repaint the current spins in the new colors.
+      if (applyPalette(params.palette)) drawnSweeps = -1;
       if (state.sweeps !== drawnSweeps && source) {
         drawnSweeps = state.sweeps;
         const { spins } = state;

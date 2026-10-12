@@ -1,3 +1,4 @@
+import { paletteParam } from "@/lib/rendering/palettes";
 import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
 
 export const isingParams = {
@@ -40,6 +41,7 @@ export const isingParams = {
     unit: "sweeps/s",
     live: true,
   },
+  palette: paletteParam,
 } satisfies ParamSchema;
 
 export type IsingParams = ParamValues<typeof isingParams>;

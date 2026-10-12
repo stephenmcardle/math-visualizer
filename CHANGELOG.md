@@ -13,6 +13,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- A **Palette** choice on every visualization: Classic (the previous colors), Okabe–Ito
+  (color-blind safe), Viridis, Plasma, Cividis, Turbo and Grayscale. Switching recolors the
+  current run instead of restarting it (random-walk trails start fresh in the new colors), and
+  the palette is kept in the URL and shared links (ADR 0013).
 - Pan and zoom on the 2D visualizations (random walk, percolation, Ising model): drag and
   Ctrl/⌘ + scroll with a mouse, two fingers on a touchscreen, plus/minus, arrows and 0 on the
   keyboard, and **Zoom in**, **Zoom out** and **Reset view** buttons in the viewport's corner.

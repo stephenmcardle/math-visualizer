@@ -1,3 +1,4 @@
+import { paletteParam } from "@/lib/rendering/palettes";
 import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
 
 export const lorenzParams = {
@@ -35,6 +36,7 @@ export const lorenzParams = {
     unit: "steps/s",
     live: true,
   },
+  palette: paletteParam,
 } satisfies ParamSchema;
 
 export type LorenzParams = ParamValues<typeof lorenzParams>;
