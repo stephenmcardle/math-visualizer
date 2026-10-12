@@ -132,3 +132,14 @@
     @apply font-sans;
   }
 }
+
+/* KaTeX's default 1.21em makes inline symbols look oversized next to body text. */
+.katex {
+  font-size: 1.1em;
+}
+
+/* Long display equations in explanations scroll on their own instead of widening the page. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

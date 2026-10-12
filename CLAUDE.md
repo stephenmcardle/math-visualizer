@@ -125,5 +125,9 @@ quality change, auto step-down), which is a no-op re-render unless the level act
   prop (e.g. `<SheetTrigger render={<Button />}>`), not `asChild`; `Slider` needs an array
   `value={[v]}` (a scalar renders two thumbs). Generated components import `cn` from the `cn`
   package and `src/components/ui/` is excluded from Prettier.
+- Explanation math is TeX (`$…$`, `$$…$$` on their own lines), rendered by KaTeX at build time
+  (`next.config.ts` names the plugins as strings for Turbopack). rehype-katex renders invalid
+  TeX as red text instead of failing the build; `src/visualizations/explanations.test.ts`
+  catches it. Keep equations narrow (e.g. `aligned` across lines) so they fit a phone.
 - Cite only references you have verified (e.g. resolve the DOI); never invent citations in
   `metadata.ts` or `explanation.mdx`.

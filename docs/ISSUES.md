@@ -108,6 +108,9 @@ Keep closed entries; they explain why things are the way they are.
   `eslint-config-next` to v14, so don't. Re-check when upgrading Next.js.
 - 2026-10-12: now 9 advisories, all from the same `braces` issue; the shadcn CLI (`shadcn` →
   `@shadcn/registry`, `ts-morph`) pulls it in through `fast-glob` too. Still dev-only.
+- 2026-10-12: `katex` 0.16 adds 4 low advisories (GHSA-238p-pmpm-9mq7, prototype pollution
+  bypassing `trust`; fixed in 0.18.2). KaTeX runs only at build time on our own MDX, so it doesn't
+  apply. `rehype-katex` 7 depends on `katex` ^0.16; move up when it allows 0.18.
 
 ### ISS-001: Build emits an unreferenced copy of the worker source
 

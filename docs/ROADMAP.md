@@ -71,7 +71,7 @@ closed 2026-10-12 with the Ising model.
 - ⬜ Pan and zoom in the viewport
 - ✅ Screen-reader summaries of visualization state, and a keyboard-operable 3D camera (ADR 0011)
 - ✅ Copy share link and export frame as image
-- ⬜ Math typesetting in MDX explanations (e.g. KaTeX)
+- ✅ Math typesetting in MDX explanations (KaTeX at build time)
 - ✅ End-to-end smoke tests for the host page and every visualization (ADR 0010)
 - ⬜ Auto quality that can step back up after a downgrade
 - ⬜ Home page filtering by category, difficulty and tag (moved from Milestone 3)
