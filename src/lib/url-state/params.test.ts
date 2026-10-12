@@ -6,6 +6,7 @@ import {
   parseParams,
   parseSeed,
   serializeParams,
+  shareUrl,
   type ParamSchema,
 } from "@/lib/url-state/params";
 
@@ -132,5 +133,19 @@ describe("serializeParams", () => {
     const query = serializeParams(schema, values, 77);
     expect(parseParams(schema, query)).toEqual(values);
     expect(parseSeed(query)).toBe(77);
+  });
+});
+
+describe("shareUrl", () => {
+  it("replaces the query and drops the hash", () => {
+    const url = shareUrl(
+      "https://mathvisualizer.org/visualizations/random-walk?walkers=3&junk=1#about",
+      schema,
+      { walkers: 100, stepSize: 2, rate: 0.3 },
+      12345,
+    );
+    expect(url).toBe(
+      "https://mathvisualizer.org/visualizations/random-walk?walkers=100&stepSize=2&rate=0.3&seed=12345",
+    );
   });
 });

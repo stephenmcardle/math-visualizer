@@ -54,7 +54,8 @@ visualizations where each one is:
   supplies its parameters, simulation, renderer and metadata.
 - Seeded PRNG (sfc32) with pinned regression tests.
 - Fixed-step simulation loop: results don't depend on frame rate.
-- Shareable URLs such as `/visualizations/random-walk?walkers=100&stepSize=3&speed=30&seed=12345`.
+- Shareable URLs such as `/visualizations/random-walk?walkers=100&stepSize=3&speed=30&seed=12345`,
+  with a **Copy link** button, and **Save image** to download the current frame as a PNG.
 - Parameter controls generated from a schema: sliders for numbers, switches for on/off options and
   selects for choices, with labels, units and descriptions.
 - Play/pause, reset, seed entry and randomization.
@@ -68,8 +69,8 @@ visualizations where each one is:
   support.
 - Fully static output; no backend, database or accounts.
 
-**Included visualization:** a seeded 2D random walk (isotropic / Pearson random walk) with
-configurable walker count, step size and speed. It exists mainly to validate the architecture.
+**Included visualizations:** a 2D random walk (main thread), site percolation and the 2D Ising
+model (Web Worker), and the Lorenz attractor (Three.js).
 
 ## Technology stack
 

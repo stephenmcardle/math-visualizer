@@ -70,7 +70,7 @@ closed 2026-10-12 with the Ising model.
 
 - ⬜ Pan and zoom in the viewport
 - ⬜ Screen-reader summaries of visualization state
-- ⬜ Copy share link and export frame as image
+- ✅ Copy share link and export frame as image
 - ⬜ Math typesetting in MDX explanations (e.g. KaTeX)
 - ⬜ End-to-end smoke tests for the host page
 - ⬜ Auto quality that can step back up after a downgrade

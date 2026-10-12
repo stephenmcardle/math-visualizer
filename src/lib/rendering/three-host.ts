@@ -25,6 +25,7 @@ export async function createThreeHost<TParams, TState>(
 
   return {
     renderer,
+    canvas: webgl.domElement,
     resize(next) {
       camera.aspect = next.width / next.height;
       camera.updateProjectionMatrix();

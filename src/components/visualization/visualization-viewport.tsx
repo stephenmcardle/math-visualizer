@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import {
   detectAutoLevel,
@@ -11,13 +11,22 @@ import {
   type QualitySetting,
 } from "@/lib/rendering/quality";
 import type { EngineHost, RenderContext } from "@/lib/rendering/types";
-import { LocalSimulationRunner, type SimulationRunner } from "@/lib/simulation/runner";
+import {
+  LocalSimulationRunner,
+  type SimulationRunner,
+  type Snapshot,
+} from "@/lib/simulation/runner";
 import { StepClock } from "@/lib/simulation/step-clock";
 import { WorkerSimulationRunner } from "@/lib/simulation/worker-runner";
 import type { ParamValue } from "@/lib/url-state/params";
 import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
 
 type Params = Record<string, ParamValue>;
+
+export interface ViewportHandle {
+  /** The current frame as a PNG, on the viewport's background color. */
+  capture(): Promise<Blob>;
+}
 
 export interface VisualizationViewportProps {
   definition: AnyVisualizationDefinition;
@@ -30,6 +39,7 @@ export interface VisualizationViewportProps {
   /** Reports the level actually in use, which differs from the setting under "auto". */
   onQualityLevelChange?: (level: QualityLevel) => void;
   className?: string;
+  ref?: Ref<ViewportHandle>;
 }
 
 interface LoopControls {
@@ -39,9 +49,15 @@ interface LoopControls {
   redraw(): void;
   /** Re-read viewport size and quality and resize the engine. */
   applyContext(): void;
+  capture(): Promise<Blob>;
 }
 
-const IDLE_LOOP: LoopControls = { restart() {}, redraw() {}, applyContext() {} };
+const IDLE_LOOP: LoopControls = {
+  restart() {},
+  redraw() {},
+  applyContext() {},
+  capture: () => Promise.reject(new Error("The visualization hasn't started yet.")),
+};
 
 /** Changes to these restart the simulation; `live` params apply in place. */
 function simulationKey(definition: AnyVisualizationDefinition, params: Params, seed: number) {
@@ -89,7 +105,9 @@ export function VisualizationViewport({
   resetToken,
   onQualityLevelChange,
   className,
+  ref,
 }: VisualizationViewportProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const loopRef = useRef<LoopControls>(IDLE_LOOP);
   const [failedSlug, setFailedSlug] = useState<string | null>(null);
@@ -101,9 +119,12 @@ export function VisualizationViewport({
   });
 
   // Engine, runner and frame loop: created once per visualization.
+  useImperativeHandle(ref, () => ({ capture: () => loopRef.current.capture() }), []);
+
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    const root = rootRef.current;
+    if (!container || !root) return;
 
     let disposed = false;
     let frameId = 0;
@@ -150,6 +171,16 @@ export function VisualizationViewport({
       schedule();
     };
 
+    const draw = (snapshot: Snapshot<unknown>, params: Params) => {
+      if (!host) return;
+      if (snapshot.generation !== renderedGeneration) {
+        renderedGeneration = snapshot.generation;
+        host.renderer.reset(snapshot.state, params);
+      }
+      host.renderer.render(snapshot.state, params);
+      host.present();
+    };
+
     function frame(now: number) {
       frameId = 0;
       if (!host) return;
@@ -173,14 +204,7 @@ export function VisualizationViewport({
       }
 
       const snapshot = runner.current();
-      if (snapshot) {
-        if (snapshot.generation !== renderedGeneration) {
-          renderedGeneration = snapshot.generation;
-          host.renderer.reset(snapshot.state, params);
-        }
-        host.renderer.render(snapshot.state, params);
-        host.present();
-      }
+      if (snapshot) draw(snapshot, params);
 
       if (playing) schedule();
     }
@@ -195,6 +219,31 @@ export function VisualizationViewport({
         schedule();
       },
       applyContext,
+      capture() {
+        const snapshot = runner.current();
+        if (!host || !snapshot) {
+          return Promise.reject(new Error("The visualization hasn't drawn a frame yet."));
+        }
+        // WebGL may clear its canvas once a frame is composited, so draw and
+        // copy in the same task.
+        draw(snapshot, latest.current.params);
+        const source = host.canvas;
+        const image = document.createElement("canvas");
+        image.width = source.width;
+        image.height = source.height;
+        const context2d = image.getContext("2d");
+        if (!context2d) return Promise.reject(new Error("2D canvas is not available."));
+        // Engine canvases are transparent over the themed card; keep its color.
+        context2d.fillStyle = getComputedStyle(root).backgroundColor;
+        context2d.fillRect(0, 0, image.width, image.height);
+        context2d.drawImage(source, 0, 0);
+        return new Promise((resolve, reject) => {
+          image.toBlob(
+            (blob) => (blob ? resolve(blob) : reject(new Error("Encoding the image failed."))),
+            "image/png",
+          );
+        });
+      },
     };
 
     const initialContext = renderContext();
@@ -252,7 +301,7 @@ export function VisualizationViewport({
   }, [playing, params]);
 
   return (
-    <div className={`relative ${className ?? ""}`}>
+    <div ref={rootRef} className={`relative ${className ?? ""}`}>
       <div
         ref={containerRef}
         className="absolute inset-0"

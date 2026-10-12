@@ -13,6 +13,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **Copy link** and **Save image** buttons on every visualization. The link is built from the
+  current params and seed (not the address bar, which updates after a short delay); the image is
+  the current frame as a PNG on the viewport's background color, named after the visualization
+  and seed. Engine hosts expose their canvas for this.
 - Ising model visualization: Metropolis sweeps of up to 512×512 spins in a Web Worker, with a
   live temperature control, random or all-up starting spins, and the magnetization per spin. It
   is the first visualization that needs the worker for speed. Flip probabilities avoid
