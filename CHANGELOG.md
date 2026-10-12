@@ -47,6 +47,8 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- Milestone 3 is complete. Home page filtering moved to Milestone 4, and per-visualization
+  custom controls to the capture log until a visualization needs them.
 - Pull requests get Cloudflare Worker Previews: `wrangler.jsonc` has the required `previews` block
   and Workers Builds runs `npx wrangler preview` for non-production branches.
 - The site is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every

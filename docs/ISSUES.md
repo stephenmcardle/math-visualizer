@@ -32,6 +32,15 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-014: Per-visualization custom controls
+
+- **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low
+- **Where:** `src/components/visualization/param-controls.tsx`, `VisualizationDefinition`
+- **Status:** open (moved from Roadmap M3)
+- Controls are generated from the param schema only (ADR 0004, 0009). Add an optional
+  per-visualization controls component once a visualization needs a control the schema can't
+  express (e.g. drawing initial conditions on the canvas). Not needed by the four current ones.
+
 ### ISS-013: Lattices use well under the viewport width on phones
 
 - **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low

@@ -1,7 +1,7 @@
 # Status
 
 **Last updated:** 2026-10-12
-**Phase:** Milestone 3 (Prove the extension points) in progress.
+**Phase:** Milestone 4 (Polish and reach) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
@@ -42,13 +42,12 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 3: the Ising model is in review. The milestone's exit criterion (Pixi, Three and
-  worker execution covered) was met with the Lorenz attractor.
+- Milestone 4: copy share link and export frame as image. Milestone 3 closed 2026-10-12.
 
 ## Next up
 
-1. Home page filtering by category, difficulty and tag (or defer to Milestone 4).
-2. Per-visualization custom controls, once a visualization needs one.
+1. End-to-end smoke tests for the host page, replacing the ad hoc browser checks.
+2. Keyboard-operable 3D camera (ISS-012) and screen-reader summaries of visualization state.
 
 ## Known limitations
 
