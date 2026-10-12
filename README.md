@@ -58,6 +58,7 @@ visualizations where each one is:
   with a **Copy link** button, and **Save image** to download the current frame as a PNG.
 - Parameter controls generated from a schema: sliders for numbers, switches for on/off options and
   selects for choices, with labels, units and descriptions.
+- Home page filters by category, difficulty and tag, kept in the URL.
 - Play/pause, reset, seed entry and randomization.
 - Render quality setting (Auto / Low / Medium / High). Auto starts from a device heuristic and
   steps down if frames are persistently slow, then back up (never above

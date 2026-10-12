@@ -64,6 +64,11 @@ the definition's MDX `explanation()` into static HTML, and mounts `Visualization
 `<Suspense>`. The Suspense boundary is required: the host reads `useSearchParams`, which only
 exists in the browser under static export.
 
+**Home page.** `src/app/page.tsx` passes plain metadata (not definitions, to keep simulation
+code out of the bundle) to `VisualizationBrowser`, which filters client-side from the query
+string; its `<Suspense>` fallback is the same view with the filters disabled, so the static HTML
+lists everything without a layout shift.
+
 **Configuration (React).** `VisualizationHost` owns params + seed via `useVisualizationUrlState`
 (parse from the query string, debounced `history.replaceState` back), plus playing / quality /
 reset counter. Controls are generated from the definition's param schema (`params.ts`): number

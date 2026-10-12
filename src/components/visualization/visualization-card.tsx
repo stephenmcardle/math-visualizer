@@ -1,10 +1,15 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
+import type { VisualizationMetadata } from "@/lib/visualization/types";
 
-export function VisualizationCard({ definition }: { definition: AnyVisualizationDefinition }) {
-  const { metadata, renderer } = definition;
+/** What a card shows. Plain data, so the client-side filter can render cards without the registry. */
+export interface VisualizationSummary {
+  metadata: VisualizationMetadata;
+  engine: "pixi" | "three";
+}
+
+export function VisualizationCard({ metadata, engine }: VisualizationSummary) {
   return (
     <Link
       href={`/visualizations/${metadata.slug}`}
@@ -13,12 +18,24 @@ export function VisualizationCard({ definition }: { definition: AnyVisualization
       <div className="flex flex-wrap gap-1.5">
         <Badge variant="secondary">{metadata.category}</Badge>
         <Badge variant="outline">{metadata.difficulty}</Badge>
-        <Badge variant="outline">{renderer.engine === "pixi" ? "2D" : "3D"}</Badge>
+        <Badge variant="outline">{engine === "pixi" ? "2D" : "3D"}</Badge>
       </div>
       <h3 className="text-lg font-semibold tracking-tight group-hover:underline group-hover:underline-offset-4">
         {metadata.title}
       </h3>
       <p className="text-sm leading-6 text-muted-foreground">{metadata.description}</p>
     </Link>
+  );
+}
+
+export function VisualizationGrid({ items }: { items: readonly VisualizationSummary[] }) {
+  return (
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((item) => (
+        <li key={item.metadata.slug} className="flex">
+          <VisualizationCard {...item} />
+        </li>
+      ))}
+    </ul>
   );
 }
