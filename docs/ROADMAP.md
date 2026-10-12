@@ -45,7 +45,7 @@ Goal: a deployed site that outside contributors can find and use.
 Exit: the site is live, the repository is public, and the README links to the demo. Met
 2026-10-08.
 
-## Milestone 3: Prove the extension points 🚧
+## Milestone 3: Prove the extension points ✅
 
 Goal: exercise the parts of the architecture the random walk does not.
 
@@ -58,14 +58,15 @@ Goal: exercise the parts of the architecture the random walk does not.
   takes ~8 ms on a desktop, and 100 sweeps per second keep the page at 60 fps with no long
   tasks on the main thread.
 - ✅ Boolean and enum parameter types (ADR 0009; first used by the random walk)
-- ⬜ Optional per-visualization custom controls, when a visualization needs one
-- ⬜ Home page filtering by category, difficulty and tag
+- Moved: home page filtering to Milestone 4 (four visualizations don't need it yet), and
+  per-visualization custom controls to the capture log (ISS-014; no visualization needs one
+  yet).
 
 Exit: at least three visualizations covering Pixi, Three and worker execution, with no
-visualization-specific code in the host. Met 2026-10-08 with the Lorenz attractor; the
-remaining items above are still open.
+visualization-specific code in the host. Met 2026-10-08 with the Lorenz attractor; the milestone
+closed 2026-10-12 with the Ising model.
 
-## Milestone 4: Polish and reach ⬜
+## Milestone 4: Polish and reach 🚧
 
 - ⬜ Pan and zoom in the viewport
 - ⬜ Screen-reader summaries of visualization state
@@ -73,6 +74,7 @@ remaining items above are still open.
 - ⬜ Math typesetting in MDX explanations (e.g. KaTeX)
 - ⬜ End-to-end smoke tests for the host page
 - ⬜ Auto quality that can step back up after a downgrade
+- ⬜ Home page filtering by category, difficulty and tag (moved from Milestone 3)
 
 ## Ideas (not scheduled)
 
