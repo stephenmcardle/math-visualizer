@@ -62,6 +62,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- "Auto" render quality now steps back up after a slowdown ends: one level after a sustained run
+  of fast frames, never above the device's starting level, with the wait doubling after each step
+  down so it can't oscillate. Frame times are judged per 90-frame window, so occasional long
+  frames don't block recovery. Previously it only ever stepped down until reload (ISS-009).
 - Milestone 3 is complete. Home page filtering moved to Milestone 4, and per-visualization
   custom controls to the capture log until a visualization needs them.
 - Pull requests get Cloudflare Worker Previews: `wrangler.jsonc` has the required `previews` block

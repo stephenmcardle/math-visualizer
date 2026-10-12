@@ -29,7 +29,7 @@ export interface DeviceHints {
   viewportWidth: number;
 }
 
-/** Initial guess for "auto"; `FrameTimeMonitor` corrects it at runtime. */
+/** Initial guess for "auto"; `AutoQuality` corrects it at runtime. */
 export function detectAutoLevel(hints: DeviceHints): QualityLevel {
   const cores = hints.hardwareConcurrency ?? 4;
   if (cores <= 4) return "low";
@@ -38,48 +38,87 @@ export function detectAutoLevel(hints: DeviceHints): QualityLevel {
   return cores >= 8 ? "high" : "medium";
 }
 
-export function lowerQuality(level: QualityLevel): QualityLevel | null {
-  if (level === "high") return "medium";
-  if (level === "medium") return "low";
-  return null;
-}
+const LEVELS: readonly QualityLevel[] = ["low", "medium", "high"];
+
+/** Frame times are judged as the mean over windows of this many frames. */
+const WINDOW_FRAMES = 90;
+/** A window averaging more than this (under 40 fps) steps down. */
+const SLOW_FRAME_MS = 1000 / 40;
+/** A window averaging less than this (about 50 fps or better; 60 Hz frames are 16.7 ms) is fast. */
+const FAST_FRAME_MS = 1000 / 50;
+/** Frames in consecutive fast windows before the first step up (about 10 s at 60 fps)… */
+const FAST_FRAMES_INITIAL = 600;
+/** …doubling after every step down, up to about 3 minutes. */
+const FAST_FRAMES_MAX = 9600;
+/** Gaps longer than this (tab switches, debugger) are ignored rather than counted as slow frames. */
+const MAX_FRAME_GAP_MS = 250;
 
 /**
- * Tracks average frame time and reports when it stays above budget, so
- * "auto" quality can step down. Deliberately simple: an exponential moving
- * average plus a minimum sample count before each decision.
+ * Chooses the level for the "auto" setting from frame times. It steps down
+ * one level when a window of frames is over budget, and back up (never above
+ * the starting level, the device heuristic's guess) after a long run of fast
+ * windows, so a temporary slowdown doesn't lower quality for good. Each step
+ * down doubles the run needed to step up again, so a device that can't
+ * sustain a level settles below it instead of oscillating.
+ *
+ * Window means, unlike a moving average, shrug off the odd long frame (a
+ * garbage collection), which would otherwise keep resetting the fast run.
+ * Frame times come from requestAnimationFrame, so a fast device reads as the
+ * display's refresh interval: fast means "keeping up", not "idle".
  */
-export class FrameTimeMonitor {
-  private average = 0;
-  private samples = 0;
+export class AutoQuality {
+  private readonly ceiling: number;
+  private index: number;
+  private windowTime = 0;
+  private windowFrames = 0;
+  private fastFrames = 0;
+  private fastNeeded = FAST_FRAMES_INITIAL;
   private last: number | null = null;
 
-  constructor(
-    private readonly budgetMs = 1000 / 40,
-    private readonly minSamples = 90,
-  ) {}
+  constructor(initial: QualityLevel) {
+    this.index = LEVELS.indexOf(initial);
+    this.ceiling = this.index;
+  }
 
-  reset(): void {
-    this.average = 0;
-    this.samples = 0;
+  get level(): QualityLevel {
+    return LEVELS[this.index];
+  }
+
+  /** Forget timing, e.g. after the tab was hidden or the level changed. */
+  resetTiming(): void {
+    this.windowTime = 0;
+    this.windowFrames = 0;
+    this.fastFrames = 0;
     this.last = null;
   }
 
-  /** Feed a frame timestamp; returns `true` when the frame budget is persistently exceeded. */
-  sample(now: number): boolean {
-    if (this.last !== null) {
-      const dt = now - this.last;
-      // Ignore huge gaps (tab switches, debugger) rather than treating them as slow frames.
-      if (dt < 250) {
-        this.average = this.samples === 0 ? dt : this.average * 0.95 + dt * 0.05;
-        this.samples++;
-      }
-    }
+  /** Feed a frame timestamp; returns the new level when it changes, otherwise null. */
+  sample(now: number): QualityLevel | null {
+    const last = this.last;
     this.last = now;
-    if (this.samples >= this.minSamples && this.average > this.budgetMs) {
-      this.reset();
-      return true;
+    if (last === null || now - last >= MAX_FRAME_GAP_MS) return null;
+
+    this.windowTime += now - last;
+    this.windowFrames++;
+    if (this.windowFrames < WINDOW_FRAMES) return null;
+
+    const mean = this.windowTime / this.windowFrames;
+    const frames = this.windowFrames;
+    this.windowTime = 0;
+    this.windowFrames = 0;
+
+    if (mean > SLOW_FRAME_MS && this.index > 0) {
+      this.index--;
+      this.fastNeeded = Math.min(this.fastNeeded * 2, FAST_FRAMES_MAX);
+      this.resetTiming();
+      return this.level;
     }
-    return false;
+    this.fastFrames = mean < FAST_FRAME_MS ? this.fastFrames + frames : 0;
+    if (this.fastFrames >= this.fastNeeded && this.index < this.ceiling) {
+      this.index++;
+      this.resetTiming();
+      return this.level;
+    }
+    return null;
   }
 }

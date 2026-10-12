@@ -3,9 +3,8 @@
 import { useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import {
+  AutoQuality,
   detectAutoLevel,
-  FrameTimeMonitor,
-  lowerQuality,
   qualityProfile,
   type QualityLevel,
   type QualitySetting,
@@ -143,10 +142,9 @@ export function VisualizationViewport({
     let frameId = 0;
     let renderedGeneration = -1;
     let needsReset = true;
-    let autoLevel: QualityLevel | null = null;
+    let auto: AutoQuality | null = null;
     let wasPlaying = latest.current.playing;
     const clock = new StepClock();
-    const monitor = new FrameTimeMonitor();
 
     const schedule = () => {
       if (!frameId && !disposed) frameId = requestAnimationFrame(frame);
@@ -162,12 +160,14 @@ export function VisualizationViewport({
     const currentLevel = (): QualityLevel => {
       const setting = latest.current.quality;
       if (setting !== "auto") return setting;
-      autoLevel ??= detectAutoLevel({
-        devicePixelRatio: window.devicePixelRatio,
-        hardwareConcurrency: navigator.hardwareConcurrency,
-        viewportWidth: window.innerWidth,
-      });
-      return autoLevel;
+      auto ??= new AutoQuality(
+        detectAutoLevel({
+          devicePixelRatio: window.devicePixelRatio,
+          hardwareConcurrency: navigator.hardwareConcurrency,
+          viewportWidth: window.innerWidth,
+        }),
+      );
+      return auto.level;
     };
 
     const renderContext = (): RenderContext => ({
@@ -216,13 +216,7 @@ export function VisualizationViewport({
 
       if (playing) {
         runner.advance(params, clock.tick(now, definition.stepsPerSecond(params)));
-        if (quality === "auto" && monitor.sample(now)) {
-          const lower = lowerQuality(currentLevel());
-          if (lower) {
-            autoLevel = lower;
-            applyContext();
-          }
-        }
+        if (quality === "auto" && auto?.sample(now)) applyContext();
       }
 
       const snapshot = runner.current();
@@ -298,7 +292,7 @@ export function VisualizationViewport({
     // Restart timing after the tab was hidden so the loop doesn't try to catch up.
     const onVisibilityChange = () => {
       clock.reset();
-      monitor.reset();
+      auto?.resetTiming();
       if (!document.hidden) schedule();
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
