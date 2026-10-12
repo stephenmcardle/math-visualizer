@@ -1,10 +1,22 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { VisualizationCard } from "@/components/visualization/visualization-card";
+import {
+  VisualizationBrowser,
+  VisualizationBrowserFallback,
+} from "@/components/visualization/visualization-browser";
+import type { VisualizationSummary } from "@/components/visualization/visualization-card";
 import { GITHUB_URL, SITE_NAME } from "@/lib/site";
 import { visualizations } from "@/visualizations/registry";
 
 export default function HomePage() {
+  // Plain data for the client-side filter, so the home page bundle doesn't
+  // include the registry's simulation code.
+  const items: VisualizationSummary[] = visualizations.list().map((definition) => ({
+    metadata: definition.metadata,
+    engine: definition.renderer.engine,
+  }));
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:py-16">
       <section className="max-w-2xl space-y-4">
@@ -32,13 +44,10 @@ export default function HomePage() {
         <h2 id="visualizations-heading" className="mb-4 text-xl font-semibold tracking-tight">
           Visualizations
         </h2>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {visualizations.list().map((definition) => (
-            <li key={definition.metadata.slug} className="flex">
-              <VisualizationCard definition={definition} />
-            </li>
-          ))}
-        </ul>
+        {/* The static HTML (and the page without JavaScript) shows every visualization. */}
+        <Suspense fallback={<VisualizationBrowserFallback items={items} />}>
+          <VisualizationBrowser items={items} />
+        </Suspense>
       </section>
     </div>
   );

@@ -13,6 +13,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Home page filters for category, difficulty and tag, with a match count and **Clear filters**.
+  Filters are kept in the URL (`/?tag=phase+transition`) so a filtered list can be shared; the
+  static HTML still lists every visualization, and the controls render disabled until the page
+  loads so nothing shifts.
 - Math in explanations is typeset with KaTeX at build time (TeX in MDX via `remark-math` and
   `rehype-katex`), with MathML for screen readers; only the stylesheet and fonts load in the
   browser. All four explanations now use it. A test fails on invalid TeX.

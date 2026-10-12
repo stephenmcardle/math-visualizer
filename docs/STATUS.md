@@ -16,14 +16,15 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 103 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 107 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 13 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 15 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
+- Home page filters (category, difficulty, tag) stored in the URL.
 - Routes: `/`, `/about`, `/visualizations/[slug]` (static export, one HTML file per route).
 - Visualization registry with validation; generic host page; schema-generated controls for
   number, boolean and enum params.
@@ -47,14 +48,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 4: auto quality stepping back up (ISS-009) is in review. Copy link, Save image,
-  end-to-end smoke tests, screen-reader descriptions, the keyboard 3D camera and KaTeX math
-  shipped; Milestone 3 closed 2026-10-12.
+- Milestone 4: home page filtering is in review. Copy link, Save image, end-to-end smoke tests,
+  screen-reader descriptions, the keyboard 3D camera, KaTeX math and auto quality stepping back
+  up shipped; Milestone 3 closed 2026-10-12.
 
 ## Next up
 
-1. Home page filtering by category, difficulty and tag.
-2. Pan and zoom in the viewport.
+1. Pan and zoom in the viewport, the last Milestone 4 item.
 
 ## Known limitations
 

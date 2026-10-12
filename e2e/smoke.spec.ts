@@ -67,6 +67,39 @@ test("the home page links to every visualization", async ({ page }) => {
   }
 });
 
+test("the home page filters by tag, keeps filters in the URL, and clears them", async ({
+  page,
+}) => {
+  const all = visualizations.list().map((definition) => definition.metadata);
+  const tagged = all.filter((metadata) => metadata.tags.includes("phase transition"));
+  expect(tagged.length).toBeGreaterThan(0);
+  const cards = page.locator("main li a[href^='/visualizations/']");
+
+  await page.goto("/");
+  await page.getByRole("combobox", { name: "Tag" }).click();
+  await page.getByRole("option", { name: "phase transition" }).click();
+  await expect(cards).toHaveCount(tagged.length);
+  await expect(page.getByRole("status")).toHaveText(
+    `Showing ${tagged.length} of ${all.length} visualizations.`,
+  );
+  await expect(page).toHaveURL(/\?tag=phase\+transition$/);
+
+  await page.reload();
+  await expect(cards).toHaveCount(tagged.length);
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(cards).toHaveCount(all.length);
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test("a shared filter link applies, and unknown values are ignored", async ({ page }) => {
+  const all = visualizations.list().map((definition) => definition.metadata);
+  const category = all[0].category;
+  const inCategory = all.filter((metadata) => metadata.category === category);
+  await page.goto(`/?category=${encodeURIComponent(category)}&difficulty=impossible`);
+  await expect(page.locator("main li a[href^='/visualizations/']")).toHaveCount(inCategory.length);
+  await expect(page.getByRole("combobox", { name: "Difficulty" })).toContainText("Any difficulty");
+});
+
 for (const definition of visualizations.list()) {
   const { slug, title } = definition.metadata;
 
