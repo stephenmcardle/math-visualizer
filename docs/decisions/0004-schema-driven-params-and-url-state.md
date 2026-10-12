@@ -1,6 +1,6 @@
 # 0004: Schema-driven params, controls and URL state
 
-- **Status:** Accepted
+- **Status:** Accepted (extended by [0009](0009-boolean-and-enum-params.md))
 - **Date:** 2026-10-08
 
 ## Context

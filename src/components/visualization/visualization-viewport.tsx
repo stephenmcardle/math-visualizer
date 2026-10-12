@@ -14,9 +14,10 @@ import type { EngineHost, RenderContext } from "@/lib/rendering/types";
 import { LocalSimulationRunner, type SimulationRunner } from "@/lib/simulation/runner";
 import { StepClock } from "@/lib/simulation/step-clock";
 import { WorkerSimulationRunner } from "@/lib/simulation/worker-runner";
+import type { ParamValue } from "@/lib/url-state/params";
 import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
 
-type Params = Record<string, number>;
+type Params = Record<string, ParamValue>;
 
 export interface VisualizationViewportProps {
   definition: AnyVisualizationDefinition;

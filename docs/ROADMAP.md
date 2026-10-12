@@ -56,7 +56,8 @@ Goal: exercise the parts of the architecture the random walk does not.
   structured clone and transferable buffers are not justified yet.
 - ⬜ A visualization that needs the worker for speed, not just to prove the path (e.g. an Ising
   model with many sweeps per frame)
-- ⬜ Boolean and enum parameter types; optional per-visualization custom controls
+- ✅ Boolean and enum parameter types (ADR 0009; first used by the random walk)
+- ⬜ Optional per-visualization custom controls, when a visualization needs one
 - ⬜ Home page filtering by category, difficulty and tag
 
 Exit: at least three visualizations covering Pixi, Three and worker execution, with no

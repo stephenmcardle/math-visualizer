@@ -1,10 +1,12 @@
-import { createRng, nextFloat, type Rng } from "@/lib/random/prng";
+import { createRng, nextFloat, nextInt, type Rng } from "@/lib/random/prng";
 import type { Simulation } from "@/lib/simulation/types";
 import type { RandomWalkParams } from "@/visualizations/random-walk/params";
 
 /**
- * Isotropic 2D random walk (Pearson's random walk): every step has fixed
- * length and a direction drawn uniformly from [0, 2π).
+ * 2D random walk with fixed step length. With `directions: "any"` it is
+ * Pearson's isotropic walk (direction uniform in [0, 2π)); with `"grid"` it is
+ * the simple random walk on the square lattice (one of four axis directions).
+ * Both draw exactly one random number per walker per step.
  */
 export interface RandomWalkState {
   /** Steps taken since creation. */
@@ -29,10 +31,21 @@ export const randomWalkSimulation: Simulation<RandomWalkParams, RandomWalkState>
 
   step(state, params) {
     const { x, y, rng } = state;
-    for (let i = 0; i < x.length; i++) {
-      const angle = TAU * nextFloat(rng);
-      x[i] += params.stepSize * Math.cos(angle);
-      y[i] += params.stepSize * Math.sin(angle);
+    const s = params.stepSize;
+    if (params.directions === "grid") {
+      for (let i = 0; i < x.length; i++) {
+        const direction = nextInt(rng, 4);
+        if (direction === 0) x[i] += s;
+        else if (direction === 1) x[i] -= s;
+        else if (direction === 2) y[i] += s;
+        else y[i] -= s;
+      }
+    } else {
+      for (let i = 0; i < x.length; i++) {
+        const angle = TAU * nextFloat(rng);
+        x[i] += s * Math.cos(angle);
+        y[i] += s * Math.sin(angle);
+      }
     }
     state.step++;
   },

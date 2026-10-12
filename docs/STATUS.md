@@ -1,6 +1,6 @@
 # Status
 
-**Last updated:** 2026-10-08
+**Last updated:** 2026-10-09
 **Phase:** Milestone 3 (Prove the extension points) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 61 tests, build               |
+| `npm run check` (local)  | Passing: lint, typecheck, 74 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
@@ -24,7 +24,8 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 ## What works
 
 - Routes: `/`, `/about`, `/visualizations/[slug]` (static export, one HTML file per route).
-- Visualization registry with validation; generic host page; schema-generated controls.
+- Visualization registry with validation; generic host page; schema-generated controls for
+  number, boolean and enum params.
 - URL state: params and seed in the query string, debounced `replaceState`.
 - Seeded PRNG (sfc32) with pinned reference outputs.
 - Fixed-step simulation loop outside React; zero DOM mutations while animating (verified in a
@@ -41,14 +42,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 3: the Lorenz attractor (first Three.js visualization) is in review. With it, the
-  milestone's exit criterion (Pixi, Three and worker execution covered) is met.
+- Milestone 3: boolean and enum params are in review. The milestone's exit criterion (Pixi,
+  Three and worker execution covered) was met with the Lorenz attractor.
 
 ## Next up
 
-1. Boolean and enum parameter types.
-2. Home page filtering by category, difficulty and tag.
-3. A visualization that needs the worker for speed (e.g. an Ising model).
+1. A visualization that needs the worker for speed (e.g. an Ising model).
+2. Home page filtering by category, difficulty and tag (or defer to Milestone 4).
 
 ## Known limitations
 

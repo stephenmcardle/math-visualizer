@@ -26,3 +26,4 @@ likely to be questioned later. Small, local choices belong in code comments.
 | [0006](0006-engine-hosts-and-lazy-renderers.md)    | Engine hosts and lazily loaded renderers           | Accepted | 2026-10-08 |
 | [0007](0007-in-repo-project-tracking.md)           | In-repo status, roadmap and capture log            | Accepted | 2026-10-08 |
 | [0008](0008-interactive-3d-camera.md)              | Interactive 3D camera and touch policy             | Accepted | 2026-10-08 |
+| [0009](0009-boolean-and-enum-params.md)            | Boolean and enum parameters                        | Accepted | 2026-10-09 |

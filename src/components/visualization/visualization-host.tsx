@@ -11,6 +11,7 @@ import { QualityControl } from "@/components/visualization/quality-control";
 import { SeedControl } from "@/components/visualization/seed-control";
 import { VisualizationViewport } from "@/components/visualization/visualization-viewport";
 import type { QualityLevel, QualitySetting } from "@/lib/rendering/quality";
+import type { ParamValue } from "@/lib/url-state/params";
 import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
 import { useVisualizationUrlState } from "@/lib/url-state/use-visualization-url-state";
 import { visualizations } from "@/visualizations/registry";
@@ -23,8 +24,8 @@ function prefersReducedMotion(): boolean {
 
 function ControlPanel(props: {
   definition: AnyVisualizationDefinition;
-  params: Record<string, number>;
-  onParamChange: (key: string, value: number) => void;
+  params: Record<string, ParamValue>;
+  onParamChange: (key: string, value: ParamValue) => void;
   seed: number;
   onSeedChange: (seed: number) => void;
   quality: QualitySetting;

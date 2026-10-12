@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Boolean and enum parameters, shown as switches and selects and stored in the URL as `1`/`0` and
+  option names (ADR 0009). The random walk uses them for **Step directions** (any direction or
+  the four grid directions) and **Show trails**. Existing links replay unchanged.
 - Lorenz attractor visualization, the first in Three.js: hundreds of seeded trajectories
   integrated with RK4 spread across the attractor, with fading trails and a drag-to-rotate
   camera. Shared links replay exactly in every browser because the integrator uses only basic

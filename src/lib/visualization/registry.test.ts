@@ -70,4 +70,33 @@ describe("validateDefinition", () => {
       expect.stringContaining("outside"),
     ]);
   });
+
+  it("checks boolean and enum params", () => {
+    const enumParam = (spec: object) => ({
+      ...randomWalk,
+      params: { p: { type: "enum", label: "p", options: [], default: "a", ...spec } },
+    });
+    const two = [
+      { value: "a", label: "A" },
+      { value: "b", label: "B" },
+    ];
+    expect(validateDefinition(enumParam({ options: two }))).toEqual([]);
+    expect(validateDefinition(enumParam({ options: [two[0]] }))).toEqual([
+      expect.stringContaining("at least two"),
+    ]);
+    expect(validateDefinition(enumParam({ options: [two[0], two[0]] }))).toEqual([
+      expect.stringContaining("duplicate"),
+    ]);
+    expect(
+      validateDefinition(enumParam({ options: [...two, { value: "Big C", label: "C" }] })),
+    ).toEqual([expect.stringContaining("kebab-case")]);
+    expect(validateDefinition(enumParam({ options: two, default: "z" }))).toEqual([
+      expect.stringContaining("not one of its options"),
+    ]);
+    const booleanParam = {
+      ...randomWalk,
+      params: { p: { type: "boolean", label: "p", default: "yes" } },
+    } as unknown as AnyVisualizationDefinition;
+    expect(validateDefinition(booleanParam)).toEqual([expect.stringContaining("true or false")]);
+  });
 });
