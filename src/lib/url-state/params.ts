@@ -159,3 +159,19 @@ export function serializeParams<S extends ParamSchema>(
   search.set(SEED_KEY, String(seed));
   return search;
 }
+
+/**
+ * Absolute link that replays this run: the page URL with every param and the
+ * seed, replacing whatever query and hash it had.
+ */
+export function shareUrl<S extends ParamSchema>(
+  pageUrl: string,
+  schema: S,
+  values: ParamValues<S>,
+  seed: number,
+): string {
+  const url = new URL(pageUrl);
+  url.search = serializeParams(schema, values, seed).toString();
+  url.hash = "";
+  return url.href;
+}

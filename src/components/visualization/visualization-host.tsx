@@ -1,7 +1,14 @@
 "use client";
 
-import { PauseIcon, PlayIcon, RotateCcwIcon, SlidersHorizontalIcon } from "lucide-react";
-import { useId, useState } from "react";
+import {
+  ImageDownIcon,
+  LinkIcon,
+  PauseIcon,
+  PlayIcon,
+  RotateCcwIcon,
+  SlidersHorizontalIcon,
+} from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,9 +16,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ParamControls } from "@/components/visualization/param-controls";
 import { QualityControl } from "@/components/visualization/quality-control";
 import { SeedControl } from "@/components/visualization/seed-control";
-import { VisualizationViewport } from "@/components/visualization/visualization-viewport";
+import {
+  VisualizationViewport,
+  type ViewportHandle,
+} from "@/components/visualization/visualization-viewport";
 import type { QualityLevel, QualitySetting } from "@/lib/rendering/quality";
-import type { ParamValue } from "@/lib/url-state/params";
+import { shareUrl, type ParamValue } from "@/lib/url-state/params";
 import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
 import { useVisualizationUrlState } from "@/lib/url-state/use-visualization-url-state";
 import { visualizations } from "@/visualizations/registry";
@@ -20,6 +30,18 @@ function prefersReducedMotion(): boolean {
   return (
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
+}
+
+const STATUS_CLEAR_MS = 4000;
+
+function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  // The download has started by the time click() returns; the URL isn't needed after that.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 function ControlPanel(props: {
@@ -78,6 +100,38 @@ export function VisualizationHost({ slug }: { slug: string }) {
   const [quality, setQuality] = useState<QualitySetting>("auto");
   const [activeLevel, setActiveLevel] = useState<QualityLevel | null>(null);
   const [resetToken, setResetToken] = useState(0);
+  const viewportRef = useRef<ViewportHandle>(null);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (!status) return;
+    const timer = window.setTimeout(() => setStatus(""), STATUS_CLEAR_MS);
+    return () => window.clearTimeout(timer);
+  }, [status]);
+
+  const copyLink = async () => {
+    // Built from current state rather than the address bar, which updates after a short delay.
+    const url = shareUrl(window.location.href, definition.params, params, seed);
+    try {
+      if (!navigator.clipboard) throw new Error("Clipboard API unavailable");
+      await navigator.clipboard.writeText(url);
+      setStatus("Link copied. It replays this run from the start.");
+    } catch (error) {
+      console.error("Copying the link failed:", error);
+      setStatus("Couldn't copy the link. Copy it from the address bar instead.");
+    }
+  };
+
+  const saveImage = async () => {
+    try {
+      const blob = await viewportRef.current!.capture();
+      downloadBlob(blob, `${slug}-seed-${seed}.png`);
+      setStatus("Image saved.");
+    } catch (error) {
+      console.error("Saving the image failed:", error);
+      setStatus("Couldn't save the image.");
+    }
+  };
 
   const controls = (
     <ControlPanel
@@ -96,6 +150,7 @@ export function VisualizationHost({ slug }: { slug: string }) {
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="min-w-0 space-y-3">
         <VisualizationViewport
+          ref={viewportRef}
           definition={definition}
           params={params}
           seed={seed}
@@ -110,9 +165,18 @@ export function VisualizationHost({ slug }: { slug: string }) {
             {playing ? <PauseIcon aria-hidden /> : <PlayIcon aria-hidden />}
             {playing ? "Pause" : "Play"}
           </Button>
-          <Button variant="outline" onClick={() => setResetToken((t) => t + 1)}>
+          {/* Icon-only below `sm` so the row, including Controls, fits a phone. */}
+          <Button variant="outline" onClick={() => setResetToken((t) => t + 1)} aria-label="Reset">
             <RotateCcwIcon aria-hidden />
-            Reset
+            <span className="hidden sm:inline">Reset</span>
+          </Button>
+          <Button variant="outline" onClick={copyLink} aria-label="Copy link">
+            <LinkIcon aria-hidden />
+            <span className="hidden sm:inline">Copy link</span>
+          </Button>
+          <Button variant="outline" onClick={saveImage} aria-label="Save image">
+            <ImageDownIcon aria-hidden />
+            <span className="hidden sm:inline">Save image</span>
           </Button>
           <Sheet>
             <SheetTrigger render={<Button variant="outline" className="ml-auto lg:hidden" />}>
@@ -127,6 +191,9 @@ export function VisualizationHost({ slug }: { slug: string }) {
             </SheetContent>
           </Sheet>
         </div>
+        <p role="status" className="min-h-5 text-sm text-muted-foreground">
+          {status}
+        </p>
         {reducedMotion && !playing && (
           <p className="text-sm text-muted-foreground">
             Animation starts paused because your system requests reduced motion. Press Play to

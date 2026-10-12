@@ -29,6 +29,7 @@ export async function createPixiHost<TParams, TState>(
 
   return {
     renderer,
+    canvas: app.canvas,
     resize(next) {
       app.renderer.resize(next.width, next.height, next.quality.resolution);
       renderer.resize(next);

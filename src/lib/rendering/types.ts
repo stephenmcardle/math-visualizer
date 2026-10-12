@@ -56,6 +56,8 @@ export type RendererBinding<TParams, TState> =
 /** What the viewport needs from an engine, independent of which engine it is. */
 export interface EngineHost<TParams, TState> {
   renderer: VisualizationRenderer<TParams, TState>;
+  /** The engine's canvas. WebGL may clear it after compositing, so read it right after `present`. */
+  canvas: HTMLCanvasElement;
   resize(context: RenderContext): void;
   /** Flush the frame to the canvas after `renderer.render`. */
   present(): void;
