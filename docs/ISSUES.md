@@ -61,14 +61,6 @@ Keep closed entries; they explain why things are the way they are.
   action is expected. If CI breaks after that date, pin `runs-on: ubuntu-24.04` while
   investigating.
 
-### ISS-009: Auto quality only ever steps down
-
-- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** low
-- **Where:** `src/lib/rendering/quality.ts`, `src/components/visualization/visualization-viewport.tsx`
-- **Status:** promoted (Roadmap M4)
-- A temporary slowdown (e.g. a background tab waking up) permanently lowers "auto" quality until
-  reload. Consider stepping back up after sustained headroom, with hysteresis.
-
 ### ISS-006: Font preload warnings seen once in headless Chrome
 
 - **Captured:** 2026-10-08 · **Type:** question · **Severity:** low
@@ -123,6 +115,15 @@ Keep closed entries; they explain why things are the way they are.
   [ADR 0005](decisions/0005-simulation-runners-and-workers.md)). Re-check on Next.js upgrades.
 
 ## Closed
+
+### ISS-009: Auto quality only ever steps down
+
+- **Captured:** 2026-10-08 · **Type:** idea · **Severity:** low
+- **Where:** `src/lib/rendering/quality.ts`, `src/components/visualization/visualization-viewport.tsx`
+- **Status:** fixed (`AutoQuality` in `quality.ts`: steps back up after fast windows, never above
+  the starting level, with a doubling wait)
+- A temporary slowdown (e.g. a background tab waking up) permanently lowers "auto" quality until
+  reload. Consider stepping back up after sustained headroom, with hysteresis.
 
 ### ISS-012: 3D camera is not keyboard-operable
 

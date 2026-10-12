@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 94 tests, build               |
+| `npm run check` (local)  | Passing: lint, typecheck, 103 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | `npm run test:e2e`       | Passing: 13 Playwright smoke tests (also in CI)         |
@@ -35,7 +35,8 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 - Main-thread and Web Worker runners. Site percolation and the Ising model run in the worker in production; a worker
   failure stops the run and shows a message in the viewport instead of freezing it.
 - Copy link (current params and seed) and save the current frame as a PNG.
-- Render quality: Auto / Low / Medium / High, with auto step-down on slow frames.
+- Render quality: Auto / Low / Medium / High; auto steps down on slow frames and back up after
+  sustained fast ones.
 - MDX explanations rendered at build time, with KaTeX math.
 - Screen-reader state descriptions (on pause) and an arrow-key 3D camera.
 - Light/dark theme, keyboard-accessible controls, reduced-motion start-paused, mobile bottom
@@ -46,14 +47,14 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 4: KaTeX math in explanations is in review. Copy link, Save image, end-to-end smoke
-  tests, screen-reader descriptions and the keyboard 3D camera shipped; Milestone 3 closed
-  2026-10-12.
+- Milestone 4: auto quality stepping back up (ISS-009) is in review. Copy link, Save image,
+  end-to-end smoke tests, screen-reader descriptions, the keyboard 3D camera and KaTeX math
+  shipped; Milestone 3 closed 2026-10-12.
 
 ## Next up
 
-1. Auto quality that can step back up (ISS-009).
-2. Home page filtering, then pan and zoom.
+1. Home page filtering by category, difficulty and tag.
+2. Pan and zoom in the viewport.
 
 ## Known limitations
 

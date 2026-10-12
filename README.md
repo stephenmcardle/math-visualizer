@@ -60,7 +60,8 @@ visualizations where each one is:
   selects for choices, with labels, units and descriptions.
 - Play/pause, reset, seed entry and randomization.
 - Render quality setting (Auto / Low / Medium / High). Auto starts from a device heuristic and
-  steps down if frames are persistently slow.
+  steps down if frames are persistently slow, then back up (never above
+  that guess) once they have been fast for a while.
 - PixiJS 2D rendering and Three.js 3D rendering, with a drag-to-rotate camera for 3D.
 - Optional Web Worker execution for CPU-heavy simulations, behind the same interface as
   main-thread execution.
@@ -501,7 +502,8 @@ The essentials:
   renderer draws at most once per animation frame, and the loop stops entirely when paused.
 - **Pay only for what you use.** PixiJS and Three.js are loaded lazily, per page.
 - **Quality is adaptive and visual-only.** Quality levels cap the canvas resolution (1×, 1.5×,
-  2× device pixels) and let renderers drop detail. Auto mode steps down when frames stay slow.
+  2× device pixels) and let renderers drop detail. Auto mode steps down when frames stay slow
+  and back up after a sustained stretch of fast ones.
 - **Bounded work per frame.** The step clock caps steps per frame and drops backlog after long
   pauses or hidden tabs.
 - **Plan for heavy simulations.** Plain-data state and the runner interface let CPU-heavy work

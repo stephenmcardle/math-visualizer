@@ -86,7 +86,7 @@ Each frame: `StepClock` converts elapsed time into whole steps (`definition.step
 `runner.advance(params, steps)`, then if the runner's snapshot `generation` changed the renderer
 gets `reset(state)`, then `render(state)` and `host.present()`. The loop stops scheduling when
 paused. The only React state it touches is `onQualityLevelChange` from `applyContext` (resize,
-quality change, auto step-down), which is a no-op re-render unless the level actually changes.
+quality change, auto step down or up), which is a no-op re-render unless the level actually changes.
 
 **Layers and their contracts**
 
