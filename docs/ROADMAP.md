@@ -72,7 +72,7 @@ closed 2026-10-12 with the Ising model.
 - ⬜ Screen-reader summaries of visualization state
 - ✅ Copy share link and export frame as image
 - ⬜ Math typesetting in MDX explanations (e.g. KaTeX)
-- ⬜ End-to-end smoke tests for the host page
+- ✅ End-to-end smoke tests for the host page and every visualization (ADR 0010)
 - ⬜ Auto quality that can step back up after a downgrade
 - ⬜ Home page filtering by category, difficulty and tag (moved from Milestone 3)
 

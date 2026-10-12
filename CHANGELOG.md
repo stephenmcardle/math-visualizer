@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- End-to-end smoke tests (Playwright, Chromium) against the production build, run in CI after the
+  build (ADR 0010). Every registered visualization is checked for a drawn frame, a complete URL
+  and a clean console; host tests cover URL state, Copy link, the phone layout and the 404 page.
 - **Copy link** and **Save image** buttons on every visualization. The link is built from the
   current params and seed (not the address bar, which updates after a short delay); the image is
   the current frame as a PNG on the viewport's background color, named after the visualization

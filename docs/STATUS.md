@@ -19,6 +19,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 | `npm run check` (local)  | Passing: lint, typecheck, 85 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
+| `npm run test:e2e`       | Passing: 11 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
@@ -39,17 +40,19 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 - Light/dark theme, keyboard-accessible controls, reduced-motion start-paused, mobile bottom
   sheet, no horizontal scroll at 390px.
 
-- Development docs (`docs/`), changelog, `CLAUDE.md` agent workflow, and GitHub Actions CI.
+- Development docs (`docs/`), changelog, `CLAUDE.md` agent workflow, and GitHub Actions CI with
+  end-to-end smoke tests.
 
 ## In progress
 
-- Milestone 4: copy share link and export frame as image are in review. Milestone 3 closed
-  2026-10-12.
+- Milestone 4: end-to-end smoke tests are in review. Copy link and Save image shipped; Milestone
+  3 closed 2026-10-12.
 
 ## Next up
 
-1. End-to-end smoke tests for the host page, replacing the ad hoc browser checks.
-2. Keyboard-operable 3D camera (ISS-012) and screen-reader summaries of visualization state.
+1. Keyboard-operable 3D camera (ISS-012) and screen-reader summaries of visualization state.
+2. Math typesetting in explanations (KaTeX).
+3. Auto quality that can step back up (ISS-009).
 
 ## Known limitations
 

@@ -7,3 +7,6 @@ src/components/ui
 LICENSE
 CODE_OF_CONDUCT.md
 AGENTS.md
+test-results
+playwright-report
+blob-report
