@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 90 tests, build               |
+| `npm run check` (local)  | Passing: lint, typecheck, 94 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | `npm run test:e2e`       | Passing: 13 Playwright smoke tests (also in CI)         |
@@ -36,7 +36,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
   failure stops the run and shows a message in the viewport instead of freezing it.
 - Copy link (current params and seed) and save the current frame as a PNG.
 - Render quality: Auto / Low / Medium / High, with auto step-down on slow frames.
-- MDX explanations rendered at build time.
+- MDX explanations rendered at build time, with KaTeX math.
 - Screen-reader state descriptions (on pause) and an arrow-key 3D camera.
 - Light/dark theme, keyboard-accessible controls, reduced-motion start-paused, mobile bottom
   sheet, no horizontal scroll at 390px.
@@ -46,14 +46,14 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 4: screen-reader descriptions and the keyboard-operable 3D camera are in review.
-  Copy link, Save image and end-to-end smoke tests shipped; Milestone 3 closed 2026-10-12.
+- Milestone 4: KaTeX math in explanations is in review. Copy link, Save image, end-to-end smoke
+  tests, screen-reader descriptions and the keyboard 3D camera shipped; Milestone 3 closed
+  2026-10-12.
 
 ## Next up
 
-1. Math typesetting in explanations (KaTeX).
-2. Auto quality that can step back up (ISS-009).
-3. Home page filtering, then pan and zoom.
+1. Auto quality that can step back up (ISS-009).
+2. Home page filtering, then pan and zoom.
 
 ## Known limitations
 

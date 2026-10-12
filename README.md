@@ -82,7 +82,7 @@ model (Web Worker), and the Lorenz attractor (Three.js).
 | UI components     | [shadcn/ui](https://ui.shadcn.com/) (Base UI primitives)                          |
 | 2D rendering      | [PixiJS](https://pixijs.com/) 8                                                   |
 | 3D rendering      | [Three.js](https://threejs.org/)                                                  |
-| Long-form content | MDX via `@next/mdx`                                                               |
+| Long-form content | MDX via `@next/mdx`, math by KaTeX (`remark-math`, `rehype-katex`) at build time  |
 | Themes            | `next-themes`                                                                     |
 | Tests             | [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) (end-to-end) |
 | Lint / format     | ESLint (`eslint-config-next`), Prettier                                           |
@@ -436,7 +436,9 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
 
 6. **Optionally explain it** in `explanation.mdx`: what the system represents, how the
    visualization works, its parameters, the mathematical background, and citations. Start
-   headings at `##`; the page supplies the `h1`.
+   headings at `##`; the page supplies the `h1`. Write math as TeX: `$T_c$` inline, and `$$`
+   on lines of their own around display equations. KaTeX renders it to HTML and MathML at build
+   time; a test fails on invalid TeX.
 
 7. **Define it** in `definition.ts`:
 

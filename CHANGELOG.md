@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Math in explanations is typeset with KaTeX at build time (TeX in MDX via `remark-math` and
+  `rehype-katex`), with MathML for screen readers; only the stylesheet and fonts load in the
+  browser. All four explanations now use it. A test fails on invalid TeX.
 - Screen-reader descriptions of each visualization's state, such as "50 walkers after 450 steps…"
   or the Ising magnetization. They are the viewport's description while paused, and pausing
   announces them (ADR 0011).

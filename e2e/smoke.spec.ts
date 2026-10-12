@@ -89,6 +89,12 @@ for (const definition of visualizations.list()) {
     expect(frame.opaque).toBe(true);
     expect(frame.drawn).toBeGreaterThan(0.001);
     expect(workers.length).toBe(definition.execution === "worker" ? 1 : 0);
+
+    // Explanation math: no KaTeX error output, and the stylesheet loaded (it hides
+    // the MathML copy; without it every formula would show twice).
+    await expect(page.locator(".katex-error")).toHaveCount(0);
+    const mathml = page.locator(".katex-mathml");
+    if ((await mathml.count()) > 0) await expect(mathml.first()).toHaveCSS("position", "absolute");
   });
 }
 

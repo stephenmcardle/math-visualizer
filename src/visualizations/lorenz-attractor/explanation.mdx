@@ -42,17 +42,23 @@ touch screen, drag sideways to rotate and swipe up or down to scroll the page.
 Edward Lorenz derived the system in 1963 as a drastically simplified model of
 convection in a layer of fluid heated from below:
 
-x′ = σ(y − x), y′ = x(ρ − z) − y, z′ = xy − βz.
+$$
+\begin{aligned}
+x' &= \sigma(y - x), \\
+y' &= x(\rho - z) - y, \\
+z' &= xy - \beta z.
+\end{aligned}
+$$
 
-Here σ = 10 and β = 8/3 are fixed, as in Lorenz's paper, and ρ (proportional to
+Here $\sigma = 10$ and $\beta = 8/3$ are fixed, as in Lorenz's paper, and $\rho$ (proportional to
 the Rayleigh number) is adjustable.
 
-- For ρ < 1, the origin is the only equilibrium and every trajectory decays to
+- For $\rho < 1$, the origin is the only equilibrium and every trajectory decays to
   it.
-- For ρ > 1, two more equilibria appear at
-  (±√(β(ρ − 1)), ±√(β(ρ − 1)), ρ − 1), the centers of the two wings.
-- These equilibria lose stability at ρ = σ(σ + β + 3) / (σ − β − 1), about 24.74
-  for these values of σ and β. At Lorenz's value ρ = 28, trajectories never
+- For $\rho > 1$, two more equilibria appear at
+  $\bigl(\pm\sqrt{\beta(\rho - 1)}, \pm\sqrt{\beta(\rho - 1)}, \rho - 1\bigr)$, the centers of the two wings.
+- These equilibria lose stability at $\rho = \sigma(\sigma + \beta + 3) / (\sigma - \beta - 1)$, about 24.74
+  for these values of $\sigma$ and $\beta$. At Lorenz's value $\rho = 28$, trajectories never
   settle down and never exactly repeat.
 
 Two trajectories that start close together separate roughly exponentially, until
