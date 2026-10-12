@@ -1,0 +1,99 @@
+## What this shows
+
+Each square is a **spin**, a tiny magnet that points either up (orange) or down
+(blue). Neighboring spins lower their energy by pointing the same way, while
+temperature flips them at random. Which effect wins depends on the
+**temperature** _T_:
+
+- Below the critical temperature _T_<sub>c</sub> ≈ 2.269, alignment wins.
+  Regions of one color grow, and given enough time one color takes over: the
+  grid is **magnetized**.
+- Above _T_<sub>c</sub>, the random flips win. Small patches appear and vanish,
+  and on average half the spins point each way.
+- Near _T_<sub>c</sub>, patches of every size appear at once, from single spins
+  to regions nearly as large as the grid.
+
+The corner shows the temperature and the **magnetization per spin** _m_, the
+average of all spins (+1 for up, −1 for down).
+
+Things to try: start just above _T_<sub>c</sub> (the default), then drag the
+temperature down to 1.5 and watch the regions grow and their boundaries
+straighten. Or start with every spin up and raise the temperature past
+_T_<sub>c</sub>.
+
+## How the visualization works
+
+- Spins are updated with the **Metropolis algorithm**. Each attempt picks a
+  spin at random and works out how much flipping it would change the energy,
+  Δ*E*. If the energy would not go up, the spin flips. Otherwise it flips with
+  probability e<sup>−Δ*E*/_T_</sup>, so energy-raising flips are rare when
+  it's cold and common when it's hot.
+- One **sweep** is as many attempts as there are spins, so each spin gets one
+  attempt on average.
+- The grid wraps around: spins on the right edge are neighbors of spins on the
+  left edge, and the same for top and bottom. No spin sits on a boundary.
+- All randomness comes from a seeded pseudo-random generator. The two flip
+  probabilities are computed with only addition, subtraction, multiplication
+  and division, which every browser must round the same way (the built-in
+  exponential function has no such guarantee). A shared link therefore replays
+  exactly.
+- The simulation runs in a Web Worker. The largest grid has 262,144 spins, so
+  a single sweep is far too much work for the page's own thread at high speed.
+  If a device can't keep up, the simulation runs slower than requested instead
+  of freezing the page.
+
+## Parameters
+
+- **Grid size**: spins along each side. Restarts the run.
+- **Temperature**: applies immediately, from the next sweep. A shared link
+  replays the run from the start at the temperature in the link, so changes
+  made during a run are not part of it.
+- **Starting spins**: random (as if infinitely hot) or all up (as if at
+  absolute zero). Restarts the run.
+- **Speed**: sweeps per second. Applies immediately and never changes the
+  results.
+
+## Mathematical background
+
+A configuration assigns _s_<sub>_i_</sub> = +1 or −1 to every site _i_. Its
+energy is
+
+_H_ = −Σ _s_<sub>_i_</sub> _s_<sub>_j_</sub>,
+
+summed over all pairs of neighboring sites. Each aligned pair contributes −1
+and each opposed pair +1. At temperature _T_, a configuration occurs with
+probability proportional to e<sup>−*H*/_T_</sup> (the **Boltzmann
+distribution**). At low temperatures the low-energy, aligned configurations
+dominate; at high temperatures every configuration is almost equally likely.
+The Metropolis algorithm is a Markov chain whose long-run distribution is
+exactly this one, which is why it is used to sample it.
+
+Ernst Ising solved the one-dimensional chain in 1925 and found no phase
+transition at any positive temperature. In two dimensions there is one. Lars
+Onsager solved the square-lattice model exactly in 1944, with the transition at
+
+_T_<sub>c</sub> = 2 / ln(1 + √2) ≈ 2.269.
+
+C. N. Yang later derived the magnetization below _T_<sub>c</sub>:
+
+_m_ = (1 − sinh<sup>−4</sup>(2/_T_))<sup>1/8</sup>,
+
+about 0.986 at _T_ = 1.5 and 0.911 at _T_ = 2. It falls to zero at
+_T_<sub>c</sub> very steeply, and stays zero above it.
+
+A finite grid differs from these infinite-lattice results in a few ways you
+can see:
+
+- Up and down are symmetric, so which color wins from a random start is a
+  matter of chance.
+- Starting from random spins below _T_<sub>c</sub>, the regions grow slowly,
+  roughly like the square root of the number of sweeps. Stripes that wrap all
+  the way around the grid can last a very long time.
+- Near _T_<sub>c</sub>, large regions take many sweeps to change. This
+  **critical slowing down** is a property of single-spin algorithms like
+  Metropolis, not of the model itself.
+
+## References
+
+Full citations for Ising (1925), Onsager (1944), Yang (1952) and Metropolis et
+al. (1953) are listed below.

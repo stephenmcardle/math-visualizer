@@ -1,14 +1,14 @@
 # Status
 
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-12
 **Phase:** Milestone 3 (Prove the extension points) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
-four architecture layers and three visualizations (2D random walk on the main thread, site
-percolation in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
+four architecture layers and four visualizations (2D random walk on the main thread, site
+percolation and the Ising model in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
 is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every merge to
 `main`.
 
@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 74 tests, build               |
+| `npm run check` (local)  | Passing: lint, typecheck, 84 tests, build               |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
@@ -31,7 +31,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 - Fixed-step simulation loop outside React; zero DOM mutations while animating (verified in a
   headless browser).
 - PixiJS engine host; Three.js engine host with drag-to-rotate camera (Lorenz attractor).
-- Main-thread and Web Worker runners. Site percolation runs in the worker in production; a worker
+- Main-thread and Web Worker runners. Site percolation and the Ising model run in the worker in production; a worker
   failure stops the run and shows a message in the viewport instead of freezing it.
 - Render quality: Auto / Low / Medium / High, with auto step-down on slow frames.
 - MDX explanations rendered at build time.
@@ -42,13 +42,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Milestone 3: boolean and enum params are in review. The milestone's exit criterion (Pixi,
-  Three and worker execution covered) was met with the Lorenz attractor.
+- Milestone 3: the Ising model is in review. The milestone's exit criterion (Pixi, Three and
+  worker execution covered) was met with the Lorenz attractor.
 
 ## Next up
 
-1. A visualization that needs the worker for speed (e.g. an Ising model).
-2. Home page filtering by category, difficulty and tag (or defer to Milestone 4).
+1. Home page filtering by category, difficulty and tag (or defer to Milestone 4).
+2. Per-visualization custom controls, once a visualization needs one.
 
 ## Known limitations
 

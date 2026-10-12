@@ -13,6 +13,10 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Ising model visualization: Metropolis sweeps of up to 512×512 spins in a Web Worker, with a
+  live temperature control, random or all-up starting spins, and the magnetization per spin. It
+  is the first visualization that needs the worker for speed. Flip probabilities avoid
+  `Math.exp`, so shared links replay exactly in every browser.
 - Boolean and enum parameters, shown as switches and selects and stored in the URL as `1`/`0` and
   option names (ADR 0009). The random walk uses them for **Step directions** (any direction or
   the four grid directions) and **Show trails**. Existing links replay unchanged.
@@ -57,6 +61,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
   and Base UI / Turbopack / static-export gotchas.
 
 ### Fixed
+
+- A worker that can't keep up no longer falls further behind with every batch: a batch of steps
+  is never larger than the one in flight, so the simulation slows down instead.
 
 - A failing simulation worker now stops the run and shows a message in the viewport, instead of
   leaving the canvas frozen with only a console error.
