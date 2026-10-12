@@ -51,11 +51,14 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Color palettes (ADR 0013) are in review. Milestone 4 closed 2026-10-12 with pan and zoom.
+- Reviewed openai/math for visualizable results
+  ([research/openai-math-candidates.md](research/openai-math-candidates.md)): 11 fit existing
+  templates now, 28 need new templates. Next: plan the visualization template system from it.
 
 ## Next up
 
-1. Plan the next milestone (e.g. more visualizations) from the ideas in [ISSUES.md](ISSUES.md).
+1. Plan the visualization template system (lattice Markov chain, lattice growth, planar
+   particles first) from the openai/math review, then the next milestone around it.
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations
