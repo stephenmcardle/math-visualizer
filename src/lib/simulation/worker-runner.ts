@@ -3,8 +3,9 @@ import type { WorkerRequest, WorkerResponse } from "@/lib/simulation/worker-prot
 
 /**
  * Runs a simulation in a dedicated Web Worker. At most one request is in
- * flight; steps requested meanwhile are batched into the next request, so a
- * slow simulation drops frames instead of building an unbounded queue.
+ * flight; steps requested meanwhile are batched into the next request. A
+ * batch is never larger than the one in flight, so a worker that can't keep
+ * up runs the simulation more slowly instead of falling ever further behind.
  *
  * Any worker failure is terminal: the worker is stopped, no further requests
  * are sent, and `onError` is called once so the page can say so instead of
@@ -16,6 +17,8 @@ export class WorkerSimulationRunner<TParams, TState> implements SimulationRunner
   private generation = 0;
   private inFlight = false;
   private pendingSteps = 0;
+  /** Steps in the request in flight; unbounded while a reset is in flight. */
+  private inFlightSteps = Infinity;
   private pendingParams: TParams | null = null;
   private failed = false;
 
@@ -45,11 +48,14 @@ export class WorkerSimulationRunner<TParams, TState> implements SimulationRunner
     this.generation++;
     this.pendingSteps = 0;
     this.inFlight = true;
+    this.inFlightSteps = Infinity;
     this.post({ type: "reset", slug: this.slug, params, seed, generation: this.generation });
   }
 
   advance(params: TParams, steps: number): void {
-    this.pendingSteps += steps;
+    // Without this cap, a slow worker gets a bigger batch each round trip
+    // (each one taking longer than the last) and never catches up.
+    this.pendingSteps = Math.min(this.pendingSteps + steps, Math.max(this.inFlightSteps, steps));
     this.pendingParams = params;
     this.flush();
   }
@@ -67,6 +73,7 @@ export class WorkerSimulationRunner<TParams, TState> implements SimulationRunner
     if (this.failed || this.inFlight) return;
     if (this.pendingSteps === 0 || this.pendingParams === null) return;
     this.inFlight = true;
+    this.inFlightSteps = this.pendingSteps;
     this.post({
       type: "advance",
       params: this.pendingParams,

@@ -1,4 +1,5 @@
 import type { Simulation } from "@/lib/simulation/types";
+import { isingSimulation } from "@/visualizations/ising-model/simulation";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
 
 /**
@@ -9,4 +10,5 @@ import { percolationSimulation } from "@/visualizations/percolation/simulation";
  */
 export const workerSimulations: Record<string, Simulation<unknown, unknown>> = {
   percolation: percolationSimulation as Simulation<unknown, unknown>,
+  "ising-model": isingSimulation as Simulation<unknown, unknown>,
 };

@@ -32,6 +32,16 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-013: Lattices use well under the viewport width on phones
+
+- **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low
+- **Where:** `src/visualizations/percolation/renderer.ts`, `src/visualizations/ising-model/renderer.ts`
+- **Status:** open
+- Both renderers scale the lattice by a whole number of pixels per site when a site is at least a
+  pixel wide. At 390px wide, a 128-site grid gets 2px per site (256px) out of ~330px available.
+  Fractional scales with `nearest` sampling would fill the space at the cost of uneven site
+  sizes; decide which looks better on a real phone.
+
 ### ISS-012: 3D camera is not keyboard-operable
 
 - **Captured:** 2026-10-08 · **Type:** idea · **Severity:** medium

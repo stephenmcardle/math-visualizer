@@ -54,8 +54,9 @@ Goal: exercise the parts of the architecture the random walk does not.
 - ✅ A first visualization running in the worker: site percolation. Profiling: a full 512×512
   sweep takes ~37 ms of compute and cloning the state ~1.2 ms per frame, so snapshots stay on
   structured clone and transferable buffers are not justified yet.
-- ⬜ A visualization that needs the worker for speed, not just to prove the path (e.g. an Ising
-  model with many sweeps per frame)
+- ✅ A visualization that needs the worker for speed: the Ising model. A 512×512 Metropolis sweep
+  takes ~8 ms on a desktop, and 100 sweeps per second keep the page at 60 fps with no long
+  tasks on the main thread.
 - ✅ Boolean and enum parameter types (ADR 0009; first used by the random walk)
 - ⬜ Optional per-visualization custom controls, when a visualization needs one
 - ⬜ Home page filtering by category, difficulty and tag

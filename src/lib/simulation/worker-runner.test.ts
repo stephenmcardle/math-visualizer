@@ -65,6 +65,23 @@ describe("WorkerSimulationRunner", () => {
     });
   });
 
+  it("never sends a batch larger than the one in flight", () => {
+    const { runner, worker } = setup();
+    runner.reset({ n: 1 }, 1);
+    worker.reply({ type: "snapshot", state: "s0", generation: 1 });
+    runner.advance({ n: 1 }, 10);
+    // The worker is slow: three frames' worth of steps arrive before it replies.
+    runner.advance({ n: 1 }, 10);
+    runner.advance({ n: 1 }, 10);
+    runner.advance({ n: 1 }, 10);
+    worker.reply({ type: "snapshot", state: "s1", generation: 1 });
+    expect(worker.posted.map((r) => (r.type === "advance" ? r.steps : r.type))).toEqual([
+      "reset",
+      10,
+      10,
+    ]);
+  });
+
   it("ignores replies from before the latest reset", () => {
     const { runner, worker } = setup();
     runner.reset({ n: 1 }, 1);
