@@ -16,14 +16,15 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 114 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 121 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 17 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 18 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
+- Seven color palettes on every visualization, switchable mid-run and stored in the URL.
 - Pan and zoom on the 2D visualizations (mouse, touch, keyboard and buttons); one-finger swipes
   and plain scrolling still scroll the page.
 - Home page filters (category, difficulty, tag) stored in the URL.
@@ -50,7 +51,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Nothing. Milestone 4 closed 2026-10-12 with pan and zoom.
+- Color palettes (ADR 0013) are in review. Milestone 4 closed 2026-10-12 with pan and zoom.
 
 ## Next up
 

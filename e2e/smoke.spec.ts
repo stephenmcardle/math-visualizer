@@ -224,6 +224,30 @@ test("2D views pan and zoom with buttons, keys, Ctrl + wheel and drag", async ({
   await expect(resetView).toBeEnabled();
 });
 
+test("switching the palette recolors the run without restarting it", async ({ page }) => {
+  await page.goto("/visualizations/ising-model?seed=7");
+  const viewport = page.getByRole("img", { name: /visualization$/ });
+  await page.waitForTimeout(1000);
+  await page.getByRole("button", { name: "Pause" }).click();
+  await expect(viewport).toHaveAccessibleDescription(/after \d+ sweeps/);
+  const stateText = async () => {
+    const ids = await viewport.getAttribute("aria-describedby");
+    return page.locator(`[id="${ids!.split(" ")[0]}"]`).textContent();
+  };
+  const state = await stateText();
+  const before = await saveFramePng(page);
+
+  await page.getByRole("combobox", { name: "Palette" }).click();
+  await page.getByRole("option", { name: "Viridis" }).click();
+  await expect(page).toHaveURL(/palette=viridis/);
+  expect((await saveFramePng(page)).equals(before)).toBe(false);
+  // Same sweep count and magnetization: the run was not restarted.
+  expect(await stateText()).toBe(state);
+
+  await page.reload();
+  await expect(page.getByRole("combobox", { name: "Palette" })).toContainText("Viridis");
+});
+
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {
   await page.goto("/visualizations/random-walk?seed=7");
   await page.getByRole("switch", { name: "Show trails" }).click();
@@ -239,7 +263,7 @@ test("controls write to the URL, and reloading keeps them", async ({ page }) => 
 
 test("invalid URL values fall back to defaults", async ({ page }) => {
   await page.goto("/visualizations/random-walk?walkers=abc&directions=hex&trails=maybe&seed=7");
-  await expect(page).toHaveURL(/walkers=100&.*directions=any&trails=1&seed=7/);
+  await expect(page).toHaveURL(/walkers=100&.*directions=any&trails=1&palette=classic&seed=7/);
 });
 
 test("Copy link copies a link to this run", async ({ page, context }) => {

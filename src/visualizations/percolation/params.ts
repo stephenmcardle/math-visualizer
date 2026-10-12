@@ -1,3 +1,4 @@
+import { paletteParam } from "@/lib/rendering/palettes";
 import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
 
 export const percolationParams = {
@@ -20,6 +21,7 @@ export const percolationParams = {
     unit: "s",
     live: true,
   },
+  palette: paletteParam,
 } satisfies ParamSchema;
 
 export type PercolationParams = ParamValues<typeof percolationParams>;

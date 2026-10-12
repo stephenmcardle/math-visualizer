@@ -78,6 +78,12 @@ closed 2026-10-12 with the Ising model.
 
 Exit: every item above is shipped. Met 2026-10-12.
 
+## Milestone 5: not yet planned 🚧
+
+Goal and exit criterion to be set. Work shipped since Milestone 4 closed:
+
+- ✅ Color palettes on every visualization, switchable mid-run (ADR 0013)
+
 ## Ideas (not scheduled)
 
 Capture new ideas in [ISSUES.md](ISSUES.md) first; promote them here once they have a rough

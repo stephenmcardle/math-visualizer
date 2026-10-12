@@ -1,5 +1,6 @@
-import { Color, Container, Graphics, RenderTexture, Sprite } from "pixi.js";
+import { Container, Graphics, RenderTexture, Sprite } from "pixi.js";
 
+import { palette } from "@/lib/rendering/palettes";
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
 import { DEFAULT_VIEW, viewTransform, type ViewTransform } from "@/lib/rendering/view";
 import type { RandomWalkParams } from "@/visualizations/random-walk/params";
@@ -7,20 +8,11 @@ import type { RandomWalkState } from "@/visualizations/random-walk/simulation";
 
 const TRAIL_ALPHA = 0.55;
 const HEAD_RADIUS = 2;
-const GOLDEN_ANGLE_DEGREES = 137.508;
 /** Walkers spread out over time, so zooming out matters as much as zooming in. */
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 8;
 /** How long the view must be still before trails are redrawn at the new zoom. */
 const SETTLE_MS = 200;
-
-function walkerColors(count: number): number[] {
-  // Golden-angle hue spacing keeps neighboring walkers distinguishable; mid
-  // lightness reads on both light and dark backgrounds.
-  return Array.from({ length: count }, (_, i) =>
-    new Color({ h: (i * GOLDEN_ANGLE_DEGREES) % 360, s: 70, l: 52 }).toNumber(),
-  );
-}
 
 function createTrailTexture(context: RenderContext): RenderTexture {
   return RenderTexture.create({
@@ -57,6 +49,7 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
   app.stage.addChild(trailSprite, heads);
 
   let colors: number[] = [];
+  let paletteValue = "";
   let trailsShown = true;
   let prevX = new Float64Array(0);
   let prevY = new Float64Array(0);
@@ -104,8 +97,9 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
   };
 
   return {
-    reset(state) {
-      colors = walkerColors(state.x.length);
+    reset(state, params) {
+      paletteValue = params.palette;
+      colors = palette(paletteValue).colors(state.x.length);
       prevX = state.x.slice();
       prevY = state.y.slice();
       clearTrails();
@@ -116,6 +110,13 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
       const ox = context.width / 2;
       const oy = context.height / 2;
       const current = viewTransform(view, context);
+      // Drawn trails can't be recolored, so a new palette starts them afresh;
+      // the walkers carry on.
+      if (params.palette !== paletteValue) {
+        paletteValue = params.palette;
+        colors = palette(paletteValue).colors(x.length);
+        clearTrails();
+      }
       if (
         (baked.scale !== current.scale || baked.x !== current.x || baked.y !== current.y) &&
         performance.now() - viewChangedAt > SETTLE_MS

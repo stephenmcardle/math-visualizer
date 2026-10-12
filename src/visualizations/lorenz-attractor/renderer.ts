@@ -10,6 +10,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+import { palette } from "@/lib/rendering/palettes";
 import type { ThreeRendererFactory } from "@/lib/rendering/types";
 import type { LorenzParams } from "@/visualizations/lorenz-attractor/params";
 import type { LorenzState } from "@/visualizations/lorenz-attractor/simulation";
@@ -20,7 +21,6 @@ const TRAIL_ALPHA = 0.8;
 const HEAD_SIZE = 3;
 /** Camera rotation per arrow-key press. */
 const KEY_ROTATION = (5 * Math.PI) / 180;
-const GOLDEN_ANGLE = 137.508 / 360;
 
 // Each segment stores the frame it was drawn in; the shader fades it by age,
 // so a frame only uploads the newest segment of every trajectory.
@@ -105,7 +105,31 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
   let frame = 0;
   let drawnStep = -1;
   let framedRho = Number.NaN;
+  let paletteValue = "";
   const prev = { x: new Float64Array(0), y: new Float64Array(0), z: new Float64Array(0) };
+
+  /** Color every trajectory, including the trail it has already drawn. */
+  const paint = (value: string) => {
+    if (!trails || !heads) return;
+    paletteValue = value;
+    const headColors = heads.geometry.getAttribute("color") as BufferAttribute;
+    const trailTints = trails.geometry.getAttribute("tint") as BufferAttribute;
+    const tints = headColors.array as Float32Array;
+    const color = new Color();
+    palette(value)
+      .colors(count)
+      .forEach((hex, i) => color.setHex(hex).toArray(tints, i * 3));
+    const t = trailTints.array as Float32Array;
+    for (let s = 0; s < TRAIL_FRAMES; s++) {
+      for (let i = 0; i < count; i++) {
+        const v = (s * count + i) * 2;
+        t.set(tints.subarray(i * 3, i * 3 + 3), v * 3);
+        t.set(tints.subarray(i * 3, i * 3 + 3), (v + 1) * 3);
+      }
+    }
+    headColors.needsUpdate = true;
+    trailTints.needsUpdate = true;
+  };
 
   const disposeObjects = () => {
     for (const object of [trails, heads]) {
@@ -127,7 +151,7 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
   };
 
   return {
-    reset(state) {
+    reset(state, params) {
       disposeObjects();
       count = state.x.length;
       slot = 0;
@@ -136,12 +160,6 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
       prev.x = state.x.slice();
       prev.y = state.y.slice();
       prev.z = state.z.slice();
-
-      const tints = new Float32Array(count * 3);
-      const color = new Color();
-      for (let i = 0; i < count; i++) {
-        color.setHSL((i * GOLDEN_ANGLE) % 1, 0.7, 0.52).toArray(tints, i * 3);
-      }
 
       const segments = TRAIL_FRAMES * count;
       const trailGeometry = new BufferGeometry();
@@ -156,15 +174,10 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
           DynamicDrawUsage,
         ),
       );
-      const trailTints = new Float32Array(segments * 2 * 3);
-      for (let s = 0; s < TRAIL_FRAMES; s++) {
-        for (let i = 0; i < count; i++) {
-          const v = (s * count + i) * 2;
-          trailTints.set(tints.subarray(i * 3, i * 3 + 3), v * 3);
-          trailTints.set(tints.subarray(i * 3, i * 3 + 3), (v + 1) * 3);
-        }
-      }
-      trailGeometry.setAttribute("tint", new BufferAttribute(trailTints, 3));
+      trailGeometry.setAttribute(
+        "tint",
+        new BufferAttribute(new Float32Array(segments * 2 * 3), 3),
+      );
       trails = new LineSegments(trailGeometry, trailMaterial);
       trails.frustumCulled = false;
 
@@ -173,9 +186,10 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
         "position",
         new BufferAttribute(new Float32Array(count * 3), 3).setUsage(DynamicDrawUsage),
       );
-      headGeometry.setAttribute("color", new BufferAttribute(tints, 3));
+      headGeometry.setAttribute("color", new BufferAttribute(new Float32Array(count * 3), 3));
       heads = new Points(headGeometry, headMaterial);
       heads.frustumCulled = false;
+      paint(params.palette);
       scene.add(trails, heads);
 
       if (state.rho !== framedRho) {
@@ -184,8 +198,9 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
       }
     },
 
-    render(state) {
+    render(state, params) {
       if (!trails || !heads) return;
+      if (params.palette !== paletteValue) paint(params.palette);
       const zc = zCenter(state.rho);
       const { x, y, z } = state;
 

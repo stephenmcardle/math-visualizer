@@ -1,5 +1,6 @@
-import { BufferImageSource, Color, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { BufferImageSource, Container, Graphics, Sprite, Texture } from "pixi.js";
 
+import { palette } from "@/lib/rendering/palettes";
 import { createOverlayLabel } from "@/lib/rendering/overlay-label";
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
 import { DEFAULT_VIEW, isDefaultView, viewTransform } from "@/lib/rendering/view";
@@ -7,7 +8,6 @@ import type { PercolationParams } from "@/visualizations/percolation/params";
 import { SPANS, type PercolationState } from "@/visualizations/percolation/simulation";
 
 const PALETTE_SIZE = 64;
-const GOLDEN_ANGLE_DEGREES = 137.508;
 /** Alpha for clusters that don't span, once some cluster does. */
 const DIM_ALPHA = 0.3;
 const MARGIN = 0.92;
@@ -24,12 +24,8 @@ function packPixel(color: number, alpha: number): number {
   return (r | (g << 8) | (b << 16) | (a << 24)) >>> 0;
 }
 
-function buildPalette(alpha: number): Uint32Array {
-  // Golden-angle hues at mid lightness, as in the random walk: neighbors stay
-  // distinguishable and the colors read on light and dark backgrounds.
-  return Uint32Array.from({ length: PALETTE_SIZE }, (_, i) =>
-    packPixel(new Color({ h: (i * GOLDEN_ANGLE_DEGREES) % 360, s: 70, l: 52 }).toNumber(), alpha),
-  );
+function packPalette(colors: readonly number[], alpha: number): Uint32Array {
+  return Uint32Array.from(colors, (color) => packPixel(color, alpha));
 }
 
 /** Spread cluster ids (site indices, so neighbors are close numbers) across the palette. */
@@ -52,8 +48,18 @@ export const createPercolationRenderer: PixiRendererFactory<PercolationParams, P
   initialContext,
 ) => {
   let context = initialContext;
-  const bright = buildPalette(1);
-  const dim = buildPalette(DIM_ALPHA);
+  let paletteValue = "";
+  let bright: Uint32Array = new Uint32Array(PALETTE_SIZE);
+  let dim = bright;
+  /** Returns true if the palette changed, so the lattice needs repainting. */
+  const applyPalette = (value: string) => {
+    if (value === paletteValue) return false;
+    paletteValue = value;
+    const colors = palette(value).colors(PALETTE_SIZE);
+    bright = packPalette(colors, 1);
+    dim = packPalette(colors, DIM_ALPHA);
+    return true;
+  };
 
   const backing = new Graphics();
   const lattice = new Sprite();
@@ -113,12 +119,15 @@ export const createPercolationRenderer: PixiRendererFactory<PercolationParams, P
   };
 
   return {
-    reset(state) {
+    reset(state, params) {
       if (state.side !== side) replaceTexture(state.side);
+      applyPalette(params.palette);
       drawnOpened = -1;
     },
 
-    render(state) {
+    render(state, params) {
+      // The palette is live: repaint the current lattice in the new colors.
+      if (applyPalette(params.palette)) drawnOpened = -1;
       if (state.opened === drawnOpened || !source) return;
       drawnOpened = state.opened;
 

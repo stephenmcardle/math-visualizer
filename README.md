@@ -68,6 +68,8 @@ visualizations where each one is:
 - Optional Web Worker execution for CPU-heavy simulations, behind the same interface as
   main-thread execution.
 - Long-form MDX explanations, rendered to static HTML at build time.
+- Seven color palettes on every visualization (Classic, Okabe–Ito, Viridis, Plasma, Cividis, Turbo,
+  Grayscale), switchable mid-run and kept in shared links.
 - Light and dark themes (system default plus toggle), keyboard-accessible controls, reduced-motion
   support.
 - Fully static output; no backend, database or accounts.
@@ -391,12 +393,14 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
 2. **Declare parameters** in `params.ts`:
 
    ```ts
+   import { paletteParam } from "@/lib/rendering/palettes";
    import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
 
    export const percolationParams = {
      size: { label: "Grid size", min: 10, max: 200, step: 1, default: 60 },
      p: { label: "Open probability", min: 0, max: 1, step: 0.01, default: 0.5 },
      speed: { label: "Speed", min: 1, max: 120, step: 1, default: 30, unit: "steps/s", live: true },
+     palette: paletteParam,
    } satisfies ParamSchema;
 
    export type PercolationParams = ParamValues<typeof percolationParams>;
@@ -422,6 +426,10 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
    keep values stable once shipped). When adding a param to an existing visualization, pick a
    default that reproduces the old behavior so shared links still replay.
 
+   Every visualization includes the shared `palette: paletteParam` (a test checks), so viewers
+   can switch between the same color palettes everywhere
+   ([ADR 0013](docs/decisions/0013-color-palettes.md)).
+
 3. **Write the simulation** in `simulation.ts`, implementing `Simulation<PercolationParams, State>`:
    - `create(params, seed)` returns plain-data state and stores `createRng(seed)` in it;
    - `step(state, params)` advances one fixed step in place, using `nextFloat(state.rng)` etc.;
@@ -431,7 +439,10 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
 4. **Write the renderer** in `renderer.ts`, exporting a `PixiRendererFactory<Params, State>`
    (or `ThreeRendererFactory` for 3D) that returns `{ reset, render, resize, destroy }`. Add
    display objects to `app.stage`, read state in `render`, and free textures and graphics in
-   `destroy`. `context.quality.level` lets you reduce detail at low quality. For pan and zoom,
+   `destroy`. `context.quality.level` lets you reduce detail at low quality. Take colors from
+   `palette(params.palette)`: `.colors(n)` for n distinct things, `.pair` for two states. The
+   palette is live, so when `params.palette` changes in `render`, recolor what is on screen
+   without restarting. For pan and zoom,
    also return `panZoom: { minScale, maxScale, setView }` and apply `viewTransform(view,
 context)` to a container holding your content; the viewport handles every gesture
    ([ADR 0012](docs/decisions/0012-2d-pan-and-zoom.md)).

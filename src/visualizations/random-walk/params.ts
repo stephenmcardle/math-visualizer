@@ -1,3 +1,4 @@
+import { paletteParam } from "@/lib/rendering/palettes";
 import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
 
 export const randomWalkParams = {
@@ -46,6 +47,7 @@ export const randomWalkParams = {
     default: true,
     live: true,
   },
+  palette: paletteParam,
 } satisfies ParamSchema;
 
 export type RandomWalkParams = ParamValues<typeof randomWalkParams>;
