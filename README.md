@@ -63,7 +63,8 @@ visualizations where each one is:
 - Render quality setting (Auto / Low / Medium / High). Auto starts from a device heuristic and
   steps down if frames are persistently slow, then back up (never above
   that guess) once they have been fast for a while.
-- PixiJS 2D rendering and Three.js 3D rendering, with a drag-to-rotate camera for 3D.
+- PixiJS 2D rendering with pan and zoom (mouse, two-finger touch, keyboard and buttons), and
+  Three.js 3D rendering with a drag-to-rotate camera.
 - Optional Web Worker execution for CPU-heavy simulations, behind the same interface as
   main-thread execution.
 - Long-form MDX explanations, rendered to static HTML at build time.
@@ -227,12 +228,12 @@ interface VisualizationRenderer<TParams, TState> {
 │   │   └── visualizations/[slug]/page.tsx  # generic visualization host page
 │   ├── components/
 │   │   ├── ui/                   # shadcn/ui components (generated)
-│   │   ├── visualization/        # host, viewport, controls, card
+│   │   ├── visualization/        # host, viewport, pan/zoom input, controls, card
 │   │   ├── site-header.tsx
 │   │   └── theme-toggle.tsx
 │   ├── lib/
 │   │   ├── random/prng.ts        # seeded PRNG
-│   │   ├── rendering/            # renderer contracts, Pixi/Three hosts, quality
+│   │   ├── rendering/            # renderer contracts, Pixi/Three hosts, quality, 2D view
 │   │   ├── simulation/           # simulation contract, step clock, runners, worker protocol
 │   │   ├── url-state/            # param schema, URL parse/serialize, React hook
 │   │   ├── visualization/        # definition types and registry factory
@@ -430,7 +431,10 @@ and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
 4. **Write the renderer** in `renderer.ts`, exporting a `PixiRendererFactory<Params, State>`
    (or `ThreeRendererFactory` for 3D) that returns `{ reset, render, resize, destroy }`. Add
    display objects to `app.stage`, read state in `render`, and free textures and graphics in
-   `destroy`. `context.quality.level` lets you reduce detail at low quality.
+   `destroy`. `context.quality.level` lets you reduce detail at low quality. For pan and zoom,
+   also return `panZoom: { minScale, maxScale, setView }` and apply `viewTransform(view,
+context)` to a container holding your content; the viewport handles every gesture
+   ([ADR 0012](docs/decisions/0012-2d-pan-and-zoom.md)).
 
 5. **Describe it** in `metadata.ts` (`VisualizationMetadata`): `slug` (must match the folder
    name, kebab-case), `title`, `description`, `category`, `difficulty`, `tags`,
@@ -522,8 +526,10 @@ The essentials:
 - `prefers-reduced-motion`: visualizations start paused, with a note explaining how to start
   them.
 - Long-form explanations are static HTML, readable without JavaScript.
-- Known gap: the canvas content itself is not described to screen readers beyond its label.
-  Text alternatives for visual state are on the roadmap.
+- The viewport's description is the visualization's current state while paused, and pausing
+  announces it ([ADR 0011](docs/decisions/0011-state-descriptions-and-keyboard.md)).
+- Interactive views work from the keyboard once the viewport has focus: arrow keys rotate the
+  3D camera; plus, minus, arrows and 0 pan and zoom 2D views, which also have zoom buttons.
 
 ## Roadmap
 

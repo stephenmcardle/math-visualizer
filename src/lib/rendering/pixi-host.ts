@@ -23,6 +23,11 @@ export async function createPixiHost<TParams, TState>(
     autoStart: false,
   });
   app.canvas.style.display = "block";
+  // Renderers don't use Pixi's pointer events, and its event system sets
+  // `touch-action: none` on the canvas, which stops a swipe over the viewport
+  // from scrolling the page. Detach it (Pixi passes null itself on destroy;
+  // the type omits it) so the viewport's touch policy applies.
+  app.renderer.events.setTargetElement(null as unknown as HTMLElement);
   container.appendChild(app.canvas);
 
   const renderer = factory(app, context);

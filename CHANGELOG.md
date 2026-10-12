@@ -13,6 +13,11 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Pan and zoom on the 2D visualizations (random walk, percolation, Ising model): drag and
+  Ctrl/⌘ + scroll with a mouse, two fingers on a touchscreen, plus/minus, arrows and 0 on the
+  keyboard, and **Zoom in**, **Zoom out** and **Reset view** buttons in the viewport's corner.
+  A plain scroll or one-finger swipe still scrolls the page. The view isn't stored in the URL
+  but is kept in saved images (ADR 0012).
 - Home page filters for category, difficulty and tag, with a match count and **Clear filters**.
   Filters are kept in the URL (`/?tag=phase+transition`) so a filtered list can be shared; the
   static HTML still lists every visualization, and the controls render disabled until the page
@@ -87,6 +92,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Fixed
 
+- Swiping over a 2D visualization on a touchscreen now scrolls the page. Pixi's event system had
+  set `touch-action: none` on the canvas, trapping the swipe in a viewport that fills most of a
+  phone screen.
 - A worker that can't keep up no longer falls further behind with every batch: a batch of steps
   is never larger than the one in flight, so the simulation slows down instead.
 

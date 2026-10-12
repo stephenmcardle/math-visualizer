@@ -66,15 +66,17 @@ Exit: at least three visualizations covering Pixi, Three and worker execution, w
 visualization-specific code in the host. Met 2026-10-08 with the Lorenz attractor; the milestone
 closed 2026-10-12 with the Ising model.
 
-## Milestone 4: Polish and reach 🚧
+## Milestone 4: Polish and reach ✅
 
-- ⬜ Pan and zoom in the viewport
+- ✅ Pan and zoom in the 2D viewports (ADR 0012)
 - ✅ Screen-reader summaries of visualization state, and a keyboard-operable 3D camera (ADR 0011)
 - ✅ Copy share link and export frame as image
 - ✅ Math typesetting in MDX explanations (KaTeX at build time)
 - ✅ End-to-end smoke tests for the host page and every visualization (ADR 0010)
 - ✅ Auto quality that can step back up after a downgrade (ISS-009)
 - ✅ Home page filtering by category, difficulty and tag (moved from Milestone 3)
+
+Exit: every item above is shipped. Met 2026-10-12.
 
 ## Ideas (not scheduled)
 

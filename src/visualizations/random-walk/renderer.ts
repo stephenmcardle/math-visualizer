@@ -1,12 +1,18 @@
 import { Color, Container, Graphics, RenderTexture, Sprite } from "pixi.js";
 
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
+import { DEFAULT_VIEW, viewTransform, type ViewTransform } from "@/lib/rendering/view";
 import type { RandomWalkParams } from "@/visualizations/random-walk/params";
 import type { RandomWalkState } from "@/visualizations/random-walk/simulation";
 
 const TRAIL_ALPHA = 0.55;
 const HEAD_RADIUS = 2;
 const GOLDEN_ANGLE_DEGREES = 137.508;
+/** Walkers spread out over time, so zooming out matters as much as zooming in. */
+const MIN_ZOOM = 0.25;
+const MAX_ZOOM = 8;
+/** How long the view must be still before trails are redrawn at the new zoom. */
+const SETTLE_MS = 200;
 
 function walkerColors(count: number): number[] {
   // Golden-angle hue spacing keeps neighboring walkers distinguishable; mid
@@ -31,6 +37,12 @@ function createTrailTexture(context: RenderContext): RenderTexture {
  * When several steps happen between frames, the segment joins the sampled
  * positions. The trail texture is visual memory owned by the renderer, not
  * part of the simulation state.
+ *
+ * The texture holds screen pixels for the view it was drawn with. While the
+ * view moves, the sprite is transformed to follow; once it settles, the
+ * texture is redrawn ("rebaked") for the new view so new segments are crisp
+ * again. Old trails keep the resolution they were drawn at, and walks that
+ * happened off-screen were never drawn, so zooming out shows none for them.
  */
 export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, RandomWalkState> = (
   app,
@@ -48,6 +60,39 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
   let trailsShown = true;
   let prevX = new Float64Array(0);
   let prevY = new Float64Array(0);
+  let view = DEFAULT_VIEW;
+  let viewChangedAt = 0;
+  /** The transform the trail texture was drawn with. */
+  let baked: ViewTransform = viewTransform(view, context);
+
+  const placeTrails = () => {
+    const current = viewTransform(view, context);
+    const k = current.scale / baked.scale;
+    trailSprite.scale.set(k);
+    trailSprite.position.set(current.x - baked.x * k, current.y - baked.y * k);
+  };
+
+  const rebake = () => {
+    const next = createTrailTexture(context);
+    const copy = new Sprite(trails);
+    copy.position.copyFrom(trailSprite.position);
+    copy.scale.copyFrom(trailSprite.scale);
+    // A wrapper, so the copy's own transform applies when rendered as the root.
+    const wrapper = new Container();
+    wrapper.addChild(copy);
+    app.renderer.render({
+      container: wrapper,
+      target: next,
+      clear: true,
+      clearColor: [0, 0, 0, 0],
+    });
+    wrapper.destroy({ children: true });
+    trails.destroy(true);
+    trails = next;
+    trailSprite.texture = trails;
+    baked = viewTransform(view, context);
+    placeTrails();
+  };
 
   const clearTrails = () => {
     app.renderer.render({
@@ -70,14 +115,22 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
       const { x, y } = state;
       const ox = context.width / 2;
       const oy = context.height / 2;
+      const current = viewTransform(view, context);
+      if (
+        (baked.scale !== current.scale || baked.x !== current.x || baked.y !== current.y) &&
+        performance.now() - viewChangedAt > SETTLE_MS
+      ) {
+        rebake();
+      }
 
       if (params.trails) {
         segments.clear();
+        const { scale: s, x: bx, y: by } = baked;
         for (let i = 0; i < x.length; i++) {
           if (x[i] === prevX[i] && y[i] === prevY[i]) continue;
           segments
-            .moveTo(ox + prevX[i], oy + prevY[i])
-            .lineTo(ox + x[i], oy + y[i])
+            .moveTo(bx + s * (ox + prevX[i]), by + s * (oy + prevY[i]))
+            .lineTo(bx + s * (ox + x[i]), by + s * (oy + y[i]))
             .stroke({ width: 1, color: colors[i], alpha: TRAIL_ALPHA });
         }
         app.renderer.render({ container: segments, target: trails, clear: false });
@@ -93,8 +146,9 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
       heads.clear();
       // Without trails the heads are all there is, so draw them at any quality.
       if (!params.trails || context.quality.level !== "low") {
+        const { scale: s, x: cx, y: cy } = current;
         for (let i = 0; i < x.length; i++) {
-          heads.circle(ox + x[i], oy + y[i], HEAD_RADIUS).fill(colors[i]);
+          heads.circle(cx + s * (ox + x[i]), cy + s * (oy + y[i]), HEAD_RADIUS).fill(colors[i]);
         }
       }
     },
@@ -107,6 +161,18 @@ export const createRandomWalkRenderer: PixiRendererFactory<RandomWalkParams, Ran
       trails = createTrailTexture(next);
       trailSprite.texture = trails;
       previous.destroy(true);
+      baked = viewTransform(view, next);
+      placeTrails();
+    },
+
+    panZoom: {
+      minScale: MIN_ZOOM,
+      maxScale: MAX_ZOOM,
+      setView(next) {
+        view = next;
+        viewChangedAt = performance.now();
+        placeTrails();
+      },
     },
 
     destroy() {

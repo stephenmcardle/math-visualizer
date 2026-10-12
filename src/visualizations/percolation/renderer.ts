@@ -1,6 +1,8 @@
-import { BufferImageSource, Color, Graphics, Sprite, Text, Texture } from "pixi.js";
+import { BufferImageSource, Color, Container, Graphics, Sprite, Texture } from "pixi.js";
 
+import { createOverlayLabel } from "@/lib/rendering/overlay-label";
 import type { PixiRendererFactory, RenderContext } from "@/lib/rendering/types";
+import { DEFAULT_VIEW, isDefaultView, viewTransform } from "@/lib/rendering/view";
 import type { PercolationParams } from "@/visualizations/percolation/params";
 import { SPANS, type PercolationState } from "@/visualizations/percolation/simulation";
 
@@ -9,6 +11,8 @@ const GOLDEN_ANGLE_DEGREES = 137.508;
 /** Alpha for clusters that don't span, once some cluster does. */
 const DIM_ALPHA = 0.3;
 const MARGIN = 0.92;
+/** Enough to pick out single sites in a 512² lattice on a phone. */
+const MAX_ZOOM = 16;
 const NEUTRAL = 0x8a8a8a;
 
 /** Pack premultiplied RGBA into one little-endian pixel (byte order R, G, B, A). */
@@ -53,31 +57,42 @@ export const createPercolationRenderer: PixiRendererFactory<PercolationParams, P
 
   const backing = new Graphics();
   const lattice = new Sprite();
-  const label = new Text({
-    text: "",
-    style: { fontFamily: "ui-monospace, monospace", fontSize: 13, fill: NEUTRAL },
-  });
-  label.position.set(12, 10);
-  app.stage.addChild(backing, lattice, label);
+  const label = createOverlayLabel();
+  // Pan and zoom move the lattice; the label stays put.
+  const world = new Container();
+  world.addChild(backing, lattice);
+  app.stage.addChild(world, label.container);
 
   let side = 0;
   let pixels = new Uint32Array(0);
   let source: BufferImageSource | null = null;
+  let view = DEFAULT_VIEW;
+  let fitScale = 1;
   let drawnOpened = -1;
+
+  const applyView = () => {
+    const transform = viewTransform(view, context);
+    world.position.set(transform.x, transform.y);
+    world.scale.set(transform.scale);
+    label.setBacked(!isDefaultView(view));
+    // Sharp edges once a site covers a screen pixel or more; smooth sampling
+    // below that avoids shimmering.
+    if (source) source.scaleMode = fitScale * view.scale >= 1 ? "nearest" : "linear";
+  };
 
   const layout = () => {
     if (side === 0) return;
     const fit = Math.min(context.width, context.height) * MARGIN;
-    // Whole-number scales keep every site the same size on screen; below one
-    // pixel per site, smooth sampling avoids shimmering.
+    // Whole-number scales keep every site the same size on screen.
     const scale = fit >= side ? Math.floor(fit / side) : fit / side;
-    if (source) source.scaleMode = scale >= 1 ? "nearest" : "linear";
+    fitScale = scale;
     const size = side * scale;
     const x = Math.round((context.width - size) / 2);
     const y = Math.round((context.height - size) / 2);
     lattice.position.set(x, y);
     lattice.scale.set(scale);
     backing.clear().rect(x, y, size, size).fill({ color: NEUTRAL, alpha: 0.12 });
+    applyView();
   };
 
   const replaceTexture = (nextSide: number) => {
@@ -118,14 +133,25 @@ export const createPercolationRenderer: PixiRendererFactory<PercolationParams, P
       source.update();
 
       const sites = side * side;
-      label.text = spanned
-        ? `p = ${formatP(state.opened, sites)}\nfirst spanned at p = ${formatP(state.spanningAt, sites)}`
-        : `p = ${formatP(state.opened, sites)}`;
+      label.setText(
+        spanned
+          ? `p = ${formatP(state.opened, sites)}\nfirst spanned at p = ${formatP(state.spanningAt, sites)}`
+          : `p = ${formatP(state.opened, sites)}`,
+      );
     },
 
     resize(next: RenderContext) {
       context = next;
       layout();
+    },
+
+    panZoom: {
+      minScale: 1,
+      maxScale: MAX_ZOOM,
+      setView(next) {
+        view = next;
+        applyView();
+      },
     },
 
     destroy() {
