@@ -13,6 +13,11 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- Screen-reader descriptions of each visualization's state, such as "50 walkers after 450 steps…"
+  or the Ising magnetization. They are the viewport's description while paused, and pausing
+  announces them (ADR 0011).
+- The Lorenz camera rotates with the arrow keys once the viewport has keyboard focus. Renderers
+  can now declare keyboard handling, which makes the viewport focusable.
 - End-to-end smoke tests (Playwright, Chromium) against the production build, run in CI after the
   build (ADR 0010). Every registered visualization is checked for a drawn frame, a complete URL
   and a clean console; host tests cover URL state, Copy link, the phone layout and the 404 page.

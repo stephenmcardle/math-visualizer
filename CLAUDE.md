@@ -99,6 +99,11 @@ quality change, auto step-down), which is a no-op re-render unless the level act
   with dynamic `import()` per page (`pixi-host.ts`, `three-host.ts`); the Pixi ticker is off.
   The Three.js factory also gets `requestRender()` (draw one frame without stepping) for camera
   controls; the Lorenz renderer shows the rotate-only, `touch-action: pan-y` setup (ADR 0008).
+  A renderer may return `keyboard: { help, onKeyDown }`; the viewport then becomes focusable and
+  forwards keys (Lorenz arrow-key rotation, ADR 0011).
+- Descriptions: each definition's `describe(state, params)` (in `describe.ts`) is the viewport's
+  screen-reader description, written only while paused and announced on pause (ADR 0011). While
+  playing it is a fixed sentence, so the loop still never touches the DOM.
 - Runners (`src/lib/simulation/runner.ts`, `worker-runner.ts`, `worker-protocol.ts`): `execution:
 "worker"` moves `step` into `src/workers/simulation.worker.ts`. Worker-run simulations must
   also be listed in `src/workers/simulations.ts` (kept separate so the worker bundle has no

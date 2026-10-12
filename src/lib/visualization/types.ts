@@ -43,6 +43,12 @@ export interface VisualizationDefinition<S extends ParamSchema, TState> {
    */
   execution: "main" | "worker";
   renderer: RendererBinding<ParamValues<S>, TState>;
+  /**
+   * One or two plain sentences describing the current state for screen readers,
+   * e.g. "200 walkers after 450 steps…". Used as the viewport's description while
+   * paused and announced when the user pauses. Must not mutate state.
+   */
+  describe?(state: TState, params: ParamValues<S>): string;
   /** Optional long-form MDX explanation, loaded at build time on the visualization page. */
   explanation?: () => Promise<{ default: MDXContent }>;
 }

@@ -18,6 +18,8 @@ import type { LorenzState } from "@/visualizations/lorenz-attractor/simulation";
 const TRAIL_FRAMES = 120;
 const TRAIL_ALPHA = 0.8;
 const HEAD_SIZE = 3;
+/** Camera rotation per arrow-key press. */
+const KEY_ROTATION = (5 * Math.PI) / 180;
 const GOLDEN_ANGLE = 137.508 / 360;
 
 // Each segment stores the frame it was drawn in; the shader fades it by age,
@@ -66,8 +68,9 @@ function cameraDistance(rho: number, aspect: number): number {
  * Trails are a ring of `TRAIL_FRAMES` slots, laid out slot-major so the
  * newest segments of all trajectories are contiguous and upload as one range.
  * When several simulation steps happen between frames, a segment joins the
- * sampled positions. The camera orbits on drag; zoom and pan are off so the
- * wheel and pinch never trap page scrolling, and vertical swipes still scroll.
+ * sampled positions. The camera orbits on drag or with the arrow keys; zoom
+ * and pan are off so the wheel and pinch never trap page scrolling, and
+ * vertical swipes still scroll.
  */
 export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzState> = (
   { renderer, scene, camera, requestRender },
@@ -231,6 +234,20 @@ export const createLorenzRenderer: ThreeRendererFactory<LorenzParams, LorenzStat
     resize(next) {
       context = next;
       if (!Number.isNaN(framedRho)) frameCamera(framedRho);
+    },
+
+    keyboard: {
+      help: "Use the arrow keys to rotate the view.",
+      onKeyDown(event) {
+        if (event.altKey || event.ctrlKey || event.metaKey) return false;
+        // rotateLeft/rotateUp update the controls, whose change event requests a frame.
+        if (event.key === "ArrowLeft") controls.rotateLeft(KEY_ROTATION);
+        else if (event.key === "ArrowRight") controls.rotateLeft(-KEY_ROTATION);
+        else if (event.key === "ArrowUp") controls.rotateUp(KEY_ROTATION);
+        else if (event.key === "ArrowDown") controls.rotateUp(-KEY_ROTATION);
+        else return false;
+        return true;
+      },
     },
 
     destroy() {

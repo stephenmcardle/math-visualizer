@@ -22,6 +22,12 @@ export interface VisualizationRenderer<TParams, TState> {
   /** Viewport size or quality changed. The engine canvas is already resized. */
   resize(context: RenderContext): void;
   destroy(): void;
+  /**
+   * Optional keyboard interaction, such as rotating a camera. When present the
+   * viewport becomes focusable, reads `help` to screen readers, and forwards key
+   * presses; return true for keys that were handled.
+   */
+  keyboard?: { help: string; onKeyDown(event: KeyboardEvent): boolean };
 }
 
 export type PixiRendererFactory<TParams, TState> = (
