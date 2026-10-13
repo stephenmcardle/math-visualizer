@@ -10,6 +10,7 @@ users and new contributors. These files track where the project is and why.
 | [ISSUES.md](ISSUES.md)             | Capture log: bugs, debt, ideas and questions noticed during work        | You notice something you are not fixing right now |
 | [decisions/](decisions/README.md)  | Architecture decision records (ADRs)                                    | A choice is made that someone might later revisit |
 | [research/](research/)             | Reviews that feed planning, e.g. which openai/math results to visualize | The source changes or a plan is made from them    |
+| [plans/](plans/)                   | Designs and step-by-step implementation plans for multi-PR work         | A plan is written, or a step of it lands          |
 | [../CHANGELOG.md](../CHANGELOG.md) | User-visible and contributor-visible changes                            | Every change worth mentioning, in the same PR     |
 
 ## How they fit together

@@ -51,14 +51,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Reviewed openai/math for visualizable results
-  ([research/openai-math-candidates.md](research/openai-math-candidates.md)): 11 fit existing
-  templates now, 28 need new templates. Next: plan the visualization template system from it.
+- Visualization template system: [design](plans/2026-10-12-template-system-design.md) and
+  [Plan 1](plans/2026-10-12-lattice-template.md) (lattice template with Ising ported, the Potts
+  model, model families and the switcher) are written. Next: implement Plan 1.
 
 ## Next up
 
-1. Plan the visualization template system (lattice Markov chain, lattice growth, planar
-   particles first) from the openai/math review, then the next milestone around it.
+1. Implement Plan 1, then write Plan 2 (random-bond Ising, Ashkin–Teller, XY, O(3)).
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations

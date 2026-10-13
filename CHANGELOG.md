@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- `docs/plans/`: the design for visualization templates (lattice, planar particles, lattice
+  growth) and model families, and Plan 1, which moves Ising onto a lattice template and adds the
+  Potts model and a model switcher.
 - `docs/research/openai-math-candidates.md`: a review of all 372 result families in
   [openai/math](https://github.com/openai/math), sorted into do now (11), do later (28), maybe
   (36) and not possible (297), with the visualization templates they imply.
