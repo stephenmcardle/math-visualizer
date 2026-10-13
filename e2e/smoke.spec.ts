@@ -248,6 +248,52 @@ test("switching the palette recolors the run without restarting it", async ({ pa
   await expect(page.getByRole("combobox", { name: "Palette" })).toContainText("Viridis");
 });
 
+test("the model switcher opens a sibling page with the shared settings", async ({ page }) => {
+  let started = 0;
+  let stopped = 0;
+  page.on("worker", (worker) => {
+    started++;
+    worker.on("close", () => stopped++);
+  });
+  await page.goto("/visualizations/ising-model?side=64&palette=viridis&temperature=3&seed=7");
+  const models = page.getByRole("navigation", { name: "Lattice spin models" });
+  await expect(models.locator("[aria-current=page]")).toHaveText("Ising Model");
+
+  await models.getByRole("link", { name: "Potts Model" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Potts Model" })).toBeVisible();
+  await expect(models.locator("[aria-current=page]")).toHaveText("Potts Model");
+  // Shared keys carry over; Ising's temperature is dropped when the page rewrites its URL.
+  const potts = visualizations.get("potts-model")!;
+  await expect
+    .poll(() => [...new URL(page.url()).searchParams.keys()].sort())
+    .toEqual([...Object.keys(potts.params), "seed"].sort());
+  const search = new URL(page.url()).searchParams;
+  expect([search.get("side"), search.get("palette"), search.get("seed")]).toEqual([
+    "64",
+    "viridis",
+    "7",
+  ]);
+  await expect(page.locator("canvas")).toBeVisible();
+  // The Ising worker stopped and the Potts one started.
+  await expect.poll(() => [started, stopped]).toEqual([2, 1]);
+});
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("the static page already shows the model switcher", async ({ page }) => {
+    // Rendered on the server too, so the viewport doesn't shift down when the page hydrates
+    // and the family's pages link to each other for crawlers.
+    await page.goto("/visualizations/ising-model");
+    const models = page.getByRole("navigation", { name: "Lattice spin models" });
+    await expect(models.locator("[aria-current=page]")).toHaveText("Ising Model");
+    await expect(models.getByRole("link", { name: "Potts Model" })).toHaveAttribute(
+      "href",
+      "/visualizations/potts-model",
+    );
+  });
+});
+
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {
   await page.goto("/visualizations/random-walk?seed=7");
   await page.getByRole("switch", { name: "Show trails" }).click();
@@ -289,6 +335,14 @@ test.describe("on a phone", () => {
     );
     await page.getByRole("button", { name: "Controls" }).tap();
     await expect(page.getByRole("dialog").getByRole("slider", { name: "Grid size" })).toBeVisible();
+  });
+
+  test("the model switcher fits the screen", async ({ page }) => {
+    await page.goto("/visualizations/potts-model?seed=7");
+    await expect(page.getByRole("navigation", { name: "Lattice spin models" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
   });
 
   test("two fingers over the viewport zoom, and one finger scrolls the page", async ({ page }) => {

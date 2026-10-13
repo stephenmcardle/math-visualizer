@@ -32,6 +32,53 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-019: Stale lint-scope and renderer-size notes in CLAUDE.md and README
+
+- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
+- **Where:** `CLAUDE.md` (Layers: Simulation), `README.md` (Adding a new visualization)
+- **Status:** open (final review of PR #20)
+- CLAUDE.md says the `Math.random` lint ban covers `simulation.ts` and `src/lib/simulation/`;
+  it now also covers `src/templates/**/simulation.ts` and `src/lib/math/`. The README says a
+  lattice model's `renderer.ts` "is one line"; it is four.
+
+### ISS-018: Model switcher: current item hovers like a button, family name read twice
+
+- **Captured:** 2026-10-12 · **Type:** bug · **Severity:** low
+- **Where:** `src/components/visualization/model-switcher.tsx`
+- **Status:** open (final review of PR #20)
+- The current model is a `<span>` with `buttonVariants({ variant: "default" })`, so it keeps
+  `hover:bg-primary/80` and looks clickable. The `<nav>` has `aria-label={family}` and also shows
+  the family as visible text, so screen readers announce it twice; use `aria-labelledby` on the
+  visible text instead.
+
+### ISS-017: ADR 0014 misstates the slow template variant
+
+- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
+- **Where:** `docs/decisions/0014-visualization-templates-and-families.md`
+- **Status:** open (final review of PR #20)
+- It says "a per-attempt helper call made Ising 40% slower", but the template does call
+  `model.attempt` per attempt. The slow version called a neighbor helper four times per attempt;
+  the code comment in `src/templates/lattice/simulation.ts` has it right. Fix the wording in a
+  follow-up note rather than rewriting the accepted ADR's substance.
+
+### ISS-016: Potts q > 4 discontinuity paper may have a published version
+
+- **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
+- **Where:** `src/visualizations/potts-model/metadata.ts`
+- **Status:** open (final review of PR #20)
+- Duminil-Copin, Gagnebin, Harel, Manolescu and Tassion is cited as a 2016 arXiv preprint
+  (link verified). The reviewer believes it appeared in Annales scientifiques de l'ENS 54 (2021),
+  1363–1413. Resolve the DOI before citing the published version.
+
+### ISS-015: Potts explanation implies q = 5 and 6 look abrupt
+
+- **Captured:** 2026-10-12 · **Type:** bug · **Severity:** low
+- **Where:** `src/visualizations/potts-model/explanation.mdx`, `metadata.ts`, `params.ts` (q)
+- **Status:** open (final review of PR #20)
+- The transition is discontinuous for q ≥ 5, but only very weakly for 5 and 6: the correlation
+  length at T_c is about 2,500 sites for q = 5 and about 160 for q = 6, beyond or near the 512
+  grid. Add a sentence that the jump is clear from about 8 states.
+
 ### ISS-014: Per-visualization custom controls
 
 - **Captured:** 2026-10-12 · **Type:** idea · **Severity:** low
@@ -81,6 +128,8 @@ Keep closed entries; they explain why things are the way they are.
   guaranteed to be bit-identical across engines. Harmless for the random walk; chaotic systems
   could visibly diverge over long runs. Options if needed: a deterministic math helper module,
   or documenting per-visualization guarantees.
+- 2026-10-12: `src/lib/math/deterministic.ts` now holds `expNegative`; deterministic `sin`/`cos`
+  for XY, O(3) and the standard map go there (Plan 2).
 
 ### ISS-003: Random-walk trails reset on resize and quality change
 

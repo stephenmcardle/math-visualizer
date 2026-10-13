@@ -8,7 +8,12 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     // Simulations must be reproducible from their seed; use src/lib/random/prng.ts.
-    files: ["src/visualizations/**/simulation.ts", "src/lib/simulation/**/*.ts"],
+    files: [
+      "src/visualizations/**/simulation.ts",
+      "src/templates/**/simulation.ts",
+      "src/lib/simulation/**/*.ts",
+      "src/lib/math/**/*.ts",
+    ],
     rules: {
       "no-restricted-properties": [
         "error",

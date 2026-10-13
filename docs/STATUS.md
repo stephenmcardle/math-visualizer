@@ -1,14 +1,14 @@
 # Status
 
 **Last updated:** 2026-10-12
-**Phase:** Milestones 0–4 complete; the next milestone is not planned yet.
+**Phase:** Milestones 0–4 complete; Milestone 5 (templates and openai/math models) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
-four architecture layers and four visualizations (2D random walk on the main thread, site
-percolation and the Ising model in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
+four architecture layers and five visualizations (2D random walk on the main thread, site
+percolation and the Ising and Potts models in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
 is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every merge to
 `main`.
 
@@ -16,14 +16,16 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 121 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 143 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 18 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 22 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
+- A model switcher on pages in the same family (Ising and Potts are "Lattice spin models"),
+  which keeps the seed and shared settings when switching.
 - Seven color palettes on every visualization, switchable mid-run and stored in the URL.
 - Pan and zoom on the 2D visualizations (mouse, touch, keyboard and buttons); one-finger swipes
   and plain scrolling still scroll the page.
@@ -51,13 +53,15 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Visualization template system: [design](plans/2026-10-12-template-system-design.md) and
-  [Plan 1](plans/2026-10-12-lattice-template.md) (lattice template with Ising ported, the Potts
-  model, model families and the switcher) are written. Next: implement Plan 1.
+- Milestone 5, visualization templates ([design](plans/2026-10-12-template-system-design.md)).
+  [Plan 1](plans/2026-10-12-lattice-template.md) is implemented: the lattice template with
+  Ising ported, the Potts model, and model families with a switcher (ADR 0014). Next: write
+  Plan 2.
 
 ## Next up
 
-1. Implement Plan 1, then write Plan 2 (random-bond Ising, Ashkin–Teller, XY, O(3)).
+1. Write and implement Plan 2: random-bond Ising, Ashkin–Teller, XY and O(3), with
+   deterministic `sin`/`cos`.
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations

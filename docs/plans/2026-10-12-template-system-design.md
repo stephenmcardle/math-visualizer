@@ -1,6 +1,6 @@
 # Visualization templates: design
 
-- **Status:** Proposed
+- **Status:** Accepted; Plan 1 done
 - **Date:** 2026-10-12
 - **Inputs:** [openai/math review](../research/openai-math-candidates.md), including its
   "Decisions for the template plan" section

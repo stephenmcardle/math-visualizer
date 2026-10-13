@@ -13,6 +13,12 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- A model switcher on pages that belong to a family, starting with **Lattice spin models**
+  (Ising and Potts). Switching keeps the seed and every setting the two pages share, such as
+  grid size, speed and palette.
+- **Potts model** page: the q-state generalization of the Ising model, from 2 to 10 states,
+  with the temperature as a multiple of the critical temperature. Up to 4 states the transition
+  is continuous; above it is abrupt. The first model built on the lattice template.
 - `docs/plans/`: the design for visualization templates (lattice, planar particles, lattice
   growth) and model families, and Plan 1, which moves Ising onto a lattice template and adds the
   Potts model and a model switcher.
@@ -81,6 +87,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- The Ising model now runs on a shared lattice template (`src/templates/lattice/`), the base
+  for upcoming lattice models. Shared links replay exactly as before, and a sweep is slightly
+  faster.
 - "Auto" render quality now steps back up after a slowdown ends: one level after a sustained run
   of fast frames, never above the device's starting level, with the wait doubling after each step
   down so it can't oscillate. Frame times are judged per 90-frame window, so occasional long

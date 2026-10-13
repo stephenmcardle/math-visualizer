@@ -13,6 +13,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ModelSwitcher } from "@/components/visualization/model-switcher";
 import { ParamControls } from "@/components/visualization/param-controls";
 import { QualityControl } from "@/components/visualization/quality-control";
 import { SeedControl } from "@/components/visualization/seed-control";
@@ -21,7 +22,8 @@ import {
   type ViewportHandle,
 } from "@/components/visualization/visualization-viewport";
 import type { QualityLevel, QualitySetting } from "@/lib/rendering/quality";
-import { shareUrl, type ParamValue } from "@/lib/url-state/params";
+import { serializeParams, shareUrl, type ParamValue } from "@/lib/url-state/params";
+import { familyMembers } from "@/lib/visualization/family";
 import type { AnyVisualizationDefinition } from "@/lib/visualization/types";
 import { useVisualizationUrlState } from "@/lib/url-state/use-visualization-url-state";
 import { visualizations } from "@/visualizations/registry";
@@ -101,6 +103,7 @@ export function VisualizationHost({ slug }: { slug: string }) {
   const [activeLevel, setActiveLevel] = useState<QualityLevel | null>(null);
   const [resetToken, setResetToken] = useState(0);
   const viewportRef = useRef<ViewportHandle>(null);
+  const family = familyMembers(visualizations.list(), slug);
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -149,6 +152,14 @@ export function VisualizationHost({ slug }: { slug: string }) {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="min-w-0 space-y-3">
+        {family.length > 0 && (
+          <ModelSwitcher
+            family={definition.metadata.family!}
+            members={family}
+            current={slug}
+            query={serializeParams(definition.params, params, seed).toString()}
+          />
+        )}
         <VisualizationViewport
           ref={viewportRef}
           definition={definition}

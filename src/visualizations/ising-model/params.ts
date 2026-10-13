@@ -1,16 +1,7 @@
-import { paletteParam } from "@/lib/rendering/palettes";
-import type { ParamSchema, ParamValues } from "@/lib/url-state/params";
+import type { ParamValues } from "@/lib/url-state/params";
+import { latticeParams } from "@/templates/lattice/params";
 
-export const isingParams = {
-  side: {
-    label: "Grid size",
-    description: "Spins along each side of the square lattice, which wraps around at the edges.",
-    min: 32,
-    max: 512,
-    step: 32,
-    default: 128,
-    unit: "spins",
-  },
+export const isingParams = latticeParams({
   temperature: {
     label: "Temperature",
     description:
@@ -31,17 +22,6 @@ export const isingParams = {
     ],
     default: "random",
   },
-  speed: {
-    label: "Speed",
-    description: "Sweeps per second. One sweep is one attempted flip per spin, on average.",
-    min: 1,
-    max: 100,
-    step: 1,
-    default: 30,
-    unit: "sweeps/s",
-    live: true,
-  },
-  palette: paletteParam,
-} satisfies ParamSchema;
+});
 
 export type IsingParams = ParamValues<typeof isingParams>;

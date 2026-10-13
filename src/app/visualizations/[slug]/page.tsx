@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { ModelSwitcher } from "@/components/visualization/model-switcher";
 import { VisualizationHost } from "@/components/visualization/visualization-host";
+import { familyMembers } from "@/lib/visualization/family";
 import { visualizations } from "@/visualizations/registry";
 
 // Static export: every visualization page is generated at build time.
@@ -36,6 +38,7 @@ export default async function VisualizationPage(props: PageProps<"/visualization
   if (!definition) notFound();
 
   const { metadata } = definition;
+  const family = familyMembers(visualizations.list(), slug);
   const Explanation = definition.explanation ? (await definition.explanation()).default : null;
 
   return (
@@ -49,9 +52,21 @@ export default async function VisualizationPage(props: PageProps<"/visualization
         <p className="leading-7 text-muted-foreground">{metadata.description}</p>
       </header>
 
-      {/* The host reads the query string, which is only known in the browser. */}
-      <Suspense fallback={<ViewportFallback />}>
-        <VisualizationHost slug={slug} />
+      {/* The host reads the query string, which is only known in the browser. The fallback
+          includes the switcher, with plain links, so the static HTML has the host's layout
+          and a family's pages link to each other without JavaScript. */}
+      <Suspense
+        fallback={
+          <div className="space-y-3">
+            {family.length > 0 && (
+              <ModelSwitcher family={metadata.family!} members={family} current={slug} query="" />
+            )}
+            <ViewportFallback />
+          </div>
+        }
+      >
+        {/* Keyed so that switching models in a family starts a fresh host, runner and worker. */}
+        <VisualizationHost key={slug} slug={slug} />
       </Suspense>
 
       {(Explanation || metadata.references.length > 0) && (

@@ -2,6 +2,7 @@ import { createRegistry } from "@/lib/visualization/registry";
 import { isingModel } from "@/visualizations/ising-model/definition";
 import { lorenzAttractor } from "@/visualizations/lorenz-attractor/definition";
 import { percolation } from "@/visualizations/percolation/definition";
+import { pottsModel } from "@/visualizations/potts-model/definition";
 import { randomWalk } from "@/visualizations/random-walk/definition";
 
 /**
@@ -13,4 +14,5 @@ export const visualizations = createRegistry([
   percolation,
   lorenzAttractor,
   isingModel,
+  pottsModel,
 ]);

@@ -9,6 +9,9 @@ import { describeLorenz } from "@/visualizations/lorenz-attractor/describe";
 import { describePercolation } from "@/visualizations/percolation/describe";
 import { percolationParams } from "@/visualizations/percolation/params";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
+import { describePotts } from "@/visualizations/potts-model/describe";
+import { pottsParams } from "@/visualizations/potts-model/params";
+import { pottsSimulation } from "@/visualizations/potts-model/simulation";
 import { describeRandomWalk } from "@/visualizations/random-walk/describe";
 import { randomWalkParams } from "@/visualizations/random-walk/params";
 import { visualizations } from "@/visualizations/registry";
@@ -66,6 +69,14 @@ describe("screen-reader descriptions", () => {
     expect(describeIsing(state, params)).toBe(
       "32 by 32 spins at temperature 2.27, after 0 sweeps. " +
         "Magnetization per spin 1.000: 100% of spins point up.",
+    );
+  });
+
+  it("Potts: reports q, the relative temperature and the largest state's share", () => {
+    const params = { ...defaultParams(pottsParams), side: 16, start: "up" };
+    expect(describePotts(pottsSimulation.create(params, 3), params)).toBe(
+      "16 by 16 sites with 3 states at 1.00 times the critical temperature, after 0 sweeps. " +
+        "The most common state covers 100% of sites.",
     );
   });
 });
