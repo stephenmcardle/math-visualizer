@@ -81,6 +81,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Changed
 
+- The Ising model now runs on a shared lattice template (`src/templates/lattice/`), the base
+  for upcoming lattice models. Shared links replay exactly as before, and a sweep is slightly
+  faster.
 - "Auto" render quality now steps back up after a slowdown ends: one level after a sustained run
   of fast frames, never above the device's starting level, with the wait doubling after each step
   down so it can't oscillate. Frame times are judged per 90-frame window, so occasional long

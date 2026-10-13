@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import { expNegative } from "@/lib/math/deterministic";
 import { LocalSimulationRunner } from "@/lib/simulation/runner";
 import { createWorkerHandler } from "@/lib/simulation/worker-protocol";
 import { defaultParams } from "@/lib/url-state/params";
 import { isingParams, type IsingParams } from "@/visualizations/ising-model/params";
-import {
-  expNegative,
-  isingSimulation,
-  type IsingState,
-} from "@/visualizations/ising-model/simulation";
+import { isingSimulation, type IsingState } from "@/visualizations/ising-model/simulation";
 
 const params: IsingParams = { ...defaultParams(isingParams), side: 32 };
 
@@ -32,14 +29,6 @@ function meanAbsMagnetization(p: IsingParams, seed: number): number {
   }
   return total / 200;
 }
-
-describe("expNegative", () => {
-  it("matches Math.exp over the range the simulation uses", () => {
-    for (let x = 0; x <= 16; x += 0.01) {
-      expect(Math.abs(expNegative(x) / Math.exp(-x) - 1)).toBeLessThan(1e-13);
-    }
-  });
-});
 
 describe("Ising simulation", () => {
   it("starts from random or all-up spins", () => {
