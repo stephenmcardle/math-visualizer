@@ -1,0 +1,82 @@
+## What this shows
+
+Each square is a **site** that holds one of $q$ states, drawn as $q$ colors.
+Neighboring sites lower their energy by matching, while temperature changes
+them at random. The **temperature** is shown as a multiple of the critical
+temperature $T_c$, so the phase transition is always at 1:
+
+- Below $T_c$, matching wins. Regions of one color grow, and given enough
+  time one color covers most of the grid.
+- Above $T_c$, the random changes win, and every color covers about
+  $1/q$ of the grid.
+- At $T_c$, what happens depends on $q$. Up to 4 states the transition is
+  **continuous**: regions of every size appear at once, as in the Ising
+  model. With 5 or more it is **discontinuous**: ordered and disordered
+  regions can sit side by side, and the order disappears abruptly.
+
+The corner shows the temperature, $q$ and the share of sites in the most
+common state.
+
+Things to try: at the default 3 states, drag the temperature from 1.2 down
+to 0.8 and back. Then set 10 states and do the same, and compare how sharply
+the order appears and disappears.
+
+## How the visualization works
+
+- Sites are updated with the **Metropolis algorithm**. Each attempt picks a
+  site at random and proposes one of the other $q - 1$ states. If the energy
+  would not go up, the change is made. Otherwise it is made with probability
+  $e^{-\Delta E/T}$.
+- One **sweep** is as many attempts as there are sites.
+- The grid wraps around at the edges, so no site sits on a boundary.
+- All randomness comes from a seeded pseudo-random generator, and the
+  acceptance probabilities use only addition, subtraction, multiplication and
+  division, so a shared link replays exactly in every browser.
+- The simulation runs in a Web Worker so the page stays responsive.
+
+## Parameters
+
+- **Grid size**: sites along each side. Restarts the run.
+- **States**: $q$, from 2 to 10. Restarts the run.
+- **Temperature**: as a multiple of $T_c$. Applies from the next sweep.
+- **Starting state**: random (as if infinitely hot) or all the same (as if
+  at absolute zero). Restarts the run.
+- **Speed**: sweeps per second. Never changes the results.
+
+## Mathematical background
+
+A configuration assigns a state $\sigma_i \in \{1, \dots, q\}$ to every site
+$i$. Its energy is
+
+$$
+H = -\sum_{\langle i, j \rangle} \delta(\sigma_i, \sigma_j),
+$$
+
+summed over neighboring pairs, where $\delta(a, b)$ is 1 when $a = b$ and 0
+otherwise. At temperature $T$ a configuration occurs with probability
+proportional to $e^{-H/T}$. With $q = 2$ this is the Ising model with every
+temperature halved: $T_c$ is about 1.135 here and 2.269 there.
+
+Renfrey Potts introduced the model in 1952 and located its critical point on
+the square lattice by a duality argument. Beffara and Duminil-Copin proved in
+2012 that the transition is at
+
+$$
+T_c = \frac{1}{\ln\bigl(1 + \sqrt{q}\bigr)},
+$$
+
+about 0.995 for $q = 3$. Whether the transition is continuous was settled by
+Duminil-Copin, Sidoravicius and Tassion for $q \le 4$ and by Duminil-Copin,
+Gagnebin, Harel, Manolescu and Tassion for $q > 4$.
+
+Each configuration also has a **random-cluster** (Fortuin–Kasteleyn) picture,
+in which bonds between equal neighbors are kept at random and the spins are
+read off the clusters. At $T_c$ with $q \le 4$ the boundaries of those
+clusters are expected to look like Schramm–Loewner evolution (SLE) curves. A
+2026 manuscript from OpenAI's openai/math collection proves this for
+$1 \le q < 4$. It has not been refereed, and its main result is not
+formalized in Lean. This page shows the spins, not those cluster boundaries.
+
+## References
+
+Full citations are listed below.

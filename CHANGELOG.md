@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **Potts model** page: the q-state generalization of the Ising model, from 2 to 10 states,
+  with the temperature as a multiple of the critical temperature. Up to 4 states the transition
+  is continuous; above it is abrupt. The first model built on the lattice template.
 - `docs/plans/`: the design for visualization templates (lattice, planar particles, lattice
   growth) and model families, and Plan 1, which moves Ising onto a lattice template and adds the
   Potts model and a model switcher.
