@@ -51,7 +51,8 @@ export default async function VisualizationPage(props: PageProps<"/visualization
 
       {/* The host reads the query string, which is only known in the browser. */}
       <Suspense fallback={<ViewportFallback />}>
-        <VisualizationHost slug={slug} />
+        {/* Keyed so that switching models in a family starts a fresh host, runner and worker. */}
+        <VisualizationHost key={slug} slug={slug} />
       </Suspense>
 
       {(Explanation || metadata.references.length > 0) && (

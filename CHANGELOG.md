@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- A model switcher on pages that belong to a family, starting with **Lattice spin models**
+  (Ising and Potts). Switching keeps the seed and every setting the two pages share, such as
+  grid size, speed and palette.
 - **Potts model** page: the q-state generalization of the Ising model, from 2 to 10 states,
   with the temperature as a multiple of the critical temperature. Up to 4 states the transition
   is continuous; above it is abrupt. The first model built on the lattice template.

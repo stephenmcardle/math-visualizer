@@ -16,14 +16,16 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 140 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 143 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 19 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 21 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
+- A model switcher on pages in the same family (Ising and Potts are "Lattice spin models"),
+  which keeps the seed and shared settings when switching.
 - Seven color palettes on every visualization, switchable mid-run and stored in the URL.
 - Pan and zoom on the 2D visualizations (mouse, touch, keyboard and buttons); one-finger swipes
   and plain scrolling still scroll the page.

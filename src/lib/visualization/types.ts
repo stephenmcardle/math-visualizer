@@ -25,6 +25,11 @@ export interface VisualizationMetadata {
   /** Broad mathematical area, e.g. "Probability", "Dynamical systems". */
   category: string;
   difficulty: Difficulty;
+  /**
+   * Models that are variations on one idea, e.g. "Lattice spin models". Pages in
+   * the same family link to each other and carry shared params over (ADR 0014).
+   */
+  family?: string;
   tags: string[];
   relatedConcepts: string[];
   references: Reference[];

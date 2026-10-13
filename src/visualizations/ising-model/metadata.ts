@@ -7,6 +7,7 @@ export const isingMetadata: VisualizationMetadata = {
     "Tiny magnets on a grid try to align with their neighbors while heat flips them at random. Cool the grid below the critical temperature, about 2.269, and it magnetizes.",
   category: "Statistical mechanics",
   difficulty: "intermediate",
+  family: "Lattice spin models",
   tags: ["ising model", "phase transition", "markov chain monte carlo", "metropolis algorithm"],
   relatedConcepts: ["Critical phenomena", "Boltzmann distribution", "Markov chain Monte Carlo"],
   references: [

@@ -7,6 +7,7 @@ export const pottsMetadata: VisualizationMetadata = {
     "Each site on a grid takes one of q colors and prefers to match its neighbors. With up to 4 colors the order melts gradually at the critical temperature; with more it breaks abruptly.",
   category: "Statistical mechanics",
   difficulty: "intermediate",
+  family: "Lattice spin models",
   tags: ["potts model", "phase transition", "markov chain monte carlo", "metropolis algorithm"],
   relatedConcepts: ["Ising model", "Random-cluster model", "First-order phase transition"],
   references: [
