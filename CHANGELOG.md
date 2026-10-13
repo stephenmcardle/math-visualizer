@@ -13,6 +13,8 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- ADR 0015: continuous spins are stored as 1/65536-turn steps with deterministic trigonometry,
+  and every palette gains a `wheel` for coloring angles.
 - **O(3) model** page: spins pointing anywhere in space, which never order at a positive
   temperature, unlike the XY model. Colored from down (the palette's second color) through gray
   to up (its first).

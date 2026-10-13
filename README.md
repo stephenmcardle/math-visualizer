@@ -234,7 +234,7 @@ interface VisualizationRenderer<TParams, TState> {
 │   │   ├── site-header.tsx
 │   │   └── theme-toggle.tsx
 │   ├── lib/
-│   │   ├── math/                 # deterministic math for simulations
+│   │   ├── math/                 # deterministic math and quantized angles for simulations
 │   │   ├── random/prng.ts        # seeded PRNG
 │   │   ├── rendering/            # renderer contracts, Pixi/Three hosts, quality, 2D view
 │   │   ├── simulation/           # simulation contract, step clock, runners, worker protocol
@@ -398,6 +398,11 @@ params. Its `renderer.ts` is one line, and `defineLatticeVisualization` replaces
 `src/visualizations/potts-model/` as the reference ([ADR 0014](docs/decisions/0014-visualization-templates-and-families.md)).
 To put related pages in a model switcher, give them the same `family` in `metadata.ts`, and
 give shared params the same key only when they mean the same thing.
+Lattice models also get `latticeContractTests` (`src/templates/lattice/contract-tests.ts`) for
+the seeded, batching and worker checks; add a pinned replay of your own. For exponentials,
+critical points or angles, use `src/lib/math/` (`expNegative`, `sinhPositive`, `bisect`,
+`cosTurns`/`sinTurns` and the 1/65536-turn angle tables) rather than `Math.exp` or `Math.sin`,
+and color angles with `palette.wheel(n)`.
 
 1. **Create the folder** `src/visualizations/bond-percolation/`.
 

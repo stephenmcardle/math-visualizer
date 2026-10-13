@@ -111,12 +111,13 @@ quality change, auto step down or up), which is a no-op re-render unless the lev
   `touch-action: pan-x pan-y` so one finger still scrolls the page (ADR 0012).
 - Colors: every visualization's params include the shared `palette: paletteParam` (a live enum;
   a test enforces it), and renderers take colors from `palette(params.palette)` in
-  `src/lib/rendering/palettes.ts` (`.colors(n)` or `.pair`), recoloring in `render` when it
+  `src/lib/rendering/palettes.ts` (`.colors(n)` or `.pair`, or `.wheel(n)` for angles (ADR 0015)), recoloring in `render` when it
   changes instead of restarting (ADR 0013).
 - Templates (`src/templates/<name>/`, ADR 0014): shared simulation loop, params, renderer and
   definition helper for models of one structure; a model supplies hooks and a Pixi-free painter.
-  `src/templates/lattice/` serves Ising and Potts. Ported models keep their pinned replay tests
-  unchanged. `metadata.family` links related pages through the model switcher, and a test makes
+  `src/templates/lattice/` serves the six lattice spin models. Ported models keep their pinned
+  replay tests unchanged. Lattice models share `latticeContractTests` and must use `src/lib/math/`
+  (deterministic exp, sinh, bisection, trig and quantized angles) instead of `Math.exp`/`Math.sin`. `metadata.family` links related pages through the model switcher, and a test makes
   shared keys within a family agree.
 - Descriptions: each definition's `describe(state, params)` (in `describe.ts`) is the viewport's
   screen-reader description, written only while paused and announced on pause (ADR 0011). While

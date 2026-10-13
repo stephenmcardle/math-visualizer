@@ -56,12 +56,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 - Milestone 5, visualization templates ([design](plans/2026-10-12-template-system-design.md)).
   [Plan 1](plans/2026-10-12-lattice-template.md) is implemented: the lattice template with
   Ising ported, the Potts model, and model families with a switcher (ADR 0014).
-  [Plan 2](plans/2026-10-12-lattice-models.md) is written: random-bond Ising, Ashkin–Teller, XY
-  and O(3), with deterministic trigonometry and an Ising cross-check.
+  [Plan 2](plans/2026-10-12-lattice-models.md) is implemented: random-bond Ising, Ashkin–Teller,
+  XY and O(3), with deterministic trigonometry and an Ising cross-check (ADR 0015).
+  Plan 3 (planar-particle template) next.
 
 ## Next up
 
-1. Implement Plan 2 once PR #20 (Plan 1) merges, then write Plan 3 (planar-particle template).
+1. Write Plan 3 (planar-particle template).
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations
@@ -72,6 +73,7 @@ Tracked in more detail in [ISSUES.md](ISSUES.md).
 - At high speeds the random walk and Lorenz trails join positions sampled once per frame, not
   every step (by design; documented in their explanations).
 - Bit-for-bit reproducibility is guaranteed within one JavaScript engine; across browsers,
-  `Math.cos`/`Math.sin` may differ in the last bit.
+  `Math.cos`/`Math.sin` may differ in the last bit (the random walk's isotropic mode; the lattice
+  models use deterministic math, ADR 0015).
 - Screen-reader descriptions update only while paused; while playing they say so.
 - Zooming into the random walk shows older trails at the resolution they were drawn at.

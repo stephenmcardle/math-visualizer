@@ -130,6 +130,9 @@ Keep closed entries; they explain why things are the way they are.
   or documenting per-visualization guarantees.
 - 2026-10-12: `src/lib/math/deterministic.ts` now holds `expNegative`; deterministic `sin`/`cos`
   for XY, O(3) and the standard map go there (Plan 2).
+- 2026-10-13: Lattice models now use deterministic math throughout, including trigonometry via
+  `cosTurns`/`sinTurns` and 1/65536-turn angle tables (ADR 0015). The random walk's isotropic
+  mode still uses `Math.cos`/`Math.sin`: changing it would change old links.
 
 ### ISS-003: Random-walk trails reset on resize and quality change
 
