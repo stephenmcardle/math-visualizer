@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- `docs/plans/2026-10-12-lattice-models.md`: Plan 2, which adds the random-bond Ising,
+  Ashkin–Teller, XY and O(3) models on the lattice template, deterministic trigonometry, palette
+  wheels for angles, and a cross-check that the models reducing to Ising reproduce it.
 - A model switcher on pages that belong to a family, starting with **Lattice spin models**
   (Ising and Potts). Switching keeps the seed and every setting the two pages share, such as
   grid size, speed and palette.

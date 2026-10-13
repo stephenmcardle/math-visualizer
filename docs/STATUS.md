@@ -55,13 +55,13 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 - Milestone 5, visualization templates ([design](plans/2026-10-12-template-system-design.md)).
   [Plan 1](plans/2026-10-12-lattice-template.md) is implemented: the lattice template with
-  Ising ported, the Potts model, and model families with a switcher (ADR 0014). Next: write
-  Plan 2.
+  Ising ported, the Potts model, and model families with a switcher (ADR 0014).
+  [Plan 2](plans/2026-10-12-lattice-models.md) is written: random-bond Ising, Ashkin–Teller, XY
+  and O(3), with deterministic trigonometry and an Ising cross-check.
 
 ## Next up
 
-1. Write and implement Plan 2: random-bond Ising, Ashkin–Teller, XY and O(3), with
-   deterministic `sin`/`cos`.
+1. Implement Plan 2 once PR #20 (Plan 1) merges, then write Plan 3 (planar-particle template).
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations
