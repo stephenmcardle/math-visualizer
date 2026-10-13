@@ -86,7 +86,7 @@ on shared templates ([design](plans/2026-10-12-template-system-design.md)). Exit
 
 - ✅ Color palettes on every visualization, switchable mid-run (ADR 0013)
 - ✅ Lattice template, Ising ported, Potts model, model families and switcher (ADR 0014)
-- Remaining lattice models: random-bond Ising, Ashkin–Teller, XY, O(3)
+- ✅ Remaining lattice models: random-bond Ising, Ashkin–Teller, XY, O(3) (ADR 0015)
 - Planar-particle template, random walk ported, and four models
 - Lattice-growth template, percolation ported, and two models
 

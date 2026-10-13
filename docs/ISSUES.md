@@ -32,6 +32,46 @@ Keep closed entries; they explain why things are the way they are.
 
 ## Open
 
+### ISS-024: The git-ignored `.superpowers/` workspace fails `format:check` locally
+
+- **Captured:** 2026-10-13 · **Type:** chore · **Severity:** low
+- **Where:** `.prettierignore`
+- **Status:** open (final review of Plan 2)
+- Plan-execution notes in `.superpowers/` are git-ignored but not Prettier-ignored, so
+  `npm run format:check` fails on a working copy that has them. CI's clean checkout is
+  unaffected. Fix: add `.superpowers` to `.prettierignore`.
+
+### ISS-023: `expNegative`'s test stops short of the range random-bond Ising uses
+
+- **Captured:** 2026-10-13 · **Type:** debt · **Severity:** low
+- **Where:** `src/lib/math/deterministic.test.ts`
+- **Status:** open (final review of Plan 2)
+- The test compares against `Math.exp` for x ≤ 16, but random-bond Ising reaches x ≈ 21.3
+  (ε = 0.9 at 0.5 T_c). The reviewer measured 6e-15 relative error up to x = 120, so only the
+  test's range needs extending.
+
+### ISS-022: No exact check of the new samplers' bond geometry or energy changes
+
+- **Captured:** 2026-10-13 · **Type:** debt · **Severity:** low
+- **Where:** `src/visualizations/{random-bond-ising,xy-model,o3-model}/simulation.test.ts`
+- **Status:** open (final review of Plan 2)
+- The Ising cross-check runs random-bond Ising at ε = 0, so miswired bonds would likely still
+  pass "orders below T_c, not above"; XY and O(3) have no test of the size of ΔE. The reviewer
+  confirmed all four samplers against exact enumeration on 3 × 3 and 2 × 2 tori (mean energy
+  over 10⁶ sweeps, |z| < 1). One such test per model, about 1 s each, would pin detailed
+  balance.
+
+### ISS-021: O(3) page states "no phase transition" as settled fact
+
+- **Captured:** 2026-10-13 · **Type:** docs · **Severity:** low
+- **Where:** `src/visualizations/o3-model/metadata.ts`, `params.ts`, `explanation.mdx` (lead)
+- **Status:** open (final review of Plan 2)
+- It is Polyakov's prediction, proved in an unrefereed (though Lean-formalized) 2026
+  manuscript; the background section hedges, the lead and the temperature help text don't.
+  Suggested lead: "Polyakov predicted, and a Lean-formalized 2026 manuscript proves, …". The
+  "compare T = 1 and T = 0.5 on the largest grid" suggestion may also mislead: local
+  Metropolis equilibrates very slowly at β = 2, where ξ is about 200.
+
 ### ISS-019: Stale lint-scope and renderer-size notes in CLAUDE.md and README
 
 - **Captured:** 2026-10-12 · **Type:** chore · **Severity:** low
@@ -70,7 +110,7 @@ Keep closed entries; they explain why things are the way they are.
   (link verified). The reviewer believes it appeared in Annales scientifiques de l'ENS 54 (2021),
   1363–1413. Resolve the DOI before citing the published version.
 
-### ISS-015: Potts explanation implies q = 5 and 6 look abrupt
+### ISS-020: Potts explanation implies q = 5 and 6 look abrupt
 
 - **Captured:** 2026-10-12 · **Type:** bug · **Severity:** low
 - **Where:** `src/visualizations/potts-model/explanation.mdx`, `metadata.ts`, `params.ts` (q)
@@ -130,6 +170,9 @@ Keep closed entries; they explain why things are the way they are.
   or documenting per-visualization guarantees.
 - 2026-10-12: `src/lib/math/deterministic.ts` now holds `expNegative`; deterministic `sin`/`cos`
   for XY, O(3) and the standard map go there (Plan 2).
+- 2026-10-13: Lattice models now use deterministic math throughout, including trigonometry via
+  `cosTurns`/`sinTurns` and 1/65536-turn angle tables (ADR 0015). The random walk's isotropic
+  mode still uses `Math.cos`/`Math.sin`: changing it would change old links.
 
 ### ISS-003: Random-walk trails reset on resize and quality change
 

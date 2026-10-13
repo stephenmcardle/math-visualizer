@@ -1,6 +1,6 @@
 # Visualization templates: design
 
-- **Status:** Accepted; Plan 1 done
+- **Status:** Accepted; Plans 1–2 done
 - **Date:** 2026-10-12
 - **Inputs:** [openai/math review](../research/openai-math-candidates.md), including its
   "Decisions for the template plan" section
@@ -88,8 +88,8 @@ table)` writes one pixel per site, and `label(state, params)` returns the overla
   - XY and O(3) need deterministic `sin` and `cos` in `src/lib/math/deterministic.ts`
     (ISS-005).
   - XY needs a cyclic color table.
-  - XY and O(3) need a smaller maximum `side`, since a worker snapshot of 512² floating-point
-    spins is several megabytes per frame.
+  - Directions are quantized to 1/65536 turn instead (ADR 0015), so XY and O(3) keep the shared
+    grid size.
 
 ### T3 planar particles (second)
 

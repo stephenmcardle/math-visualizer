@@ -1,0 +1,67 @@
+## What this shows
+
+This is the [Ising model](/visualizations/ising-model) with one change: the
+bonds between neighboring spins don't all have the same strength. Each bond is
+strong ($1 + \varepsilon$) or weak ($1 - \varepsilon$) with equal chance, decided
+once at the start and then fixed. Physicists call this **quenched disorder**: the
+spins move, but the bonds never do.
+
+The temperature is shown as a multiple of the critical temperature $T_c$, which
+depends on the disorder $\varepsilon$, so the transition is always at 1. The
+corner shows the temperature, $\varepsilon$ and the magnetization per spin $m$.
+
+Things to try: at $T = 1\,T_c$, compare $\varepsilon = 0$ (the ordinary Ising
+model) with $\varepsilon = 0.3$. The patterns look alike: the claim at the heart
+of this page. Then push $\varepsilon$ toward 0.9, where the weak bonds are almost
+broken, and watch the domains start to follow the bond pattern.
+
+## How the visualization works
+
+- Each bond's strength is drawn from the seeded generator before the spins, so a
+  shared link replays the same bonds and the same run.
+- Spins are updated with the **Metropolis algorithm**, as in the Ising model. A
+  flip that would raise the energy by $\Delta E$ is accepted with probability
+  $e^{-\Delta E/T}$.
+- $T_c$ is found by bisection, and every probability uses only addition,
+  subtraction, multiplication and division, so runs replay exactly in every
+  browser.
+- The simulation runs in a Web Worker.
+
+## Parameters
+
+- **Grid size**: spins along each side. Restarts the run.
+- **Disorder**: $\varepsilon$, from 0 to 0.9. Restarts the run with new bonds.
+- **Temperature**: as a multiple of $T_c$. Applies from the next sweep.
+- **Starting spins**: random or all up. Restarts the run.
+- **Speed**: sweeps per second. Never changes the results.
+
+## Mathematical background
+
+The energy of a configuration is
+
+$$
+H = -\sum_{\langle i, j \rangle} J_{ij}\, s_i s_j,
+\qquad J_{ij} = 1 \pm \varepsilon.
+$$
+
+With strong and weak bonds in equal proportion, a duality argument (Fisch 1978;
+Kinzel and Domany 1981) places the transition where
+
+$$
+\sinh\bigl(2(1+\varepsilon)/T_c\bigr)\,\sinh\bigl(2(1-\varepsilon)/T_c\bigr) = 1.
+$$
+
+At $\varepsilon = 0$ this gives Onsager's $T_c \approx 2.269$.
+
+For the ordinary Ising model at $T_c$, the boundaries between up and down
+regions converge, on large grids, to random curves called SLE$_3$ (Chelkak and
+Smirnov). A 2026 manuscript from OpenAI's openai/math collection proves the same
+limit for weak disorder of the two-valued kind shown here, for almost every
+choice of bonds. It has not been refereed, and its main result is not formalized
+in Lean. Those curves are defined with boundary conditions that this page, a grid
+that wraps around, doesn't have, so what you see is the spins rather than the
+curves.
+
+## References
+
+Full citations are listed below.

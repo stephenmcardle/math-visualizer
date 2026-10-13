@@ -13,6 +13,24 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- ADR 0015: continuous spins are stored as 1/65536-turn steps with deterministic trigonometry,
+  and every palette gains a `wheel` for coloring angles.
+- **O(3) model** page: spins pointing anywhere in space, which never order at a positive
+  temperature, unlike the XY model. Colored from down (the palette's second color) through gray
+  to up (its first).
+- **XY model** page: planar spins with the vortex-unbinding (Berezinskii–Kosterlitz–Thouless)
+  transition near T = 0.893, a live vortex count, and colors from each palette's new wheel.
+  Angles are stored in steps of 1/65536 turn, so shared links replay exactly in every browser.
+- **Ashkin–Teller model** page: two Ising layers coupled by a four-spin interaction, from two
+  independent Ising models (K = 0) to the 4-state Potts model (K = 1), at temperatures relative to
+  its critical line.
+- A cross-check test: Potts with 2 states, random-bond Ising without disorder and Ashkin–Teller
+  without coupling all reproduce the Ising model's exact magnetization (Yang) below T_c.
+- **Random-bond Ising model** page: the Ising model with bonds of random strength 1 ± ε, fixed
+  for the run, at temperatures relative to its critical point. In the Lattice spin models family.
+- `docs/plans/2026-10-12-lattice-models.md`: Plan 2, which adds the random-bond Ising,
+  Ashkin–Teller, XY and O(3) models on the lattice template, deterministic trigonometry, palette
+  wheels for angles, and a cross-check that the models reducing to Ising reproduce it.
 - A model switcher on pages that belong to a family, starting with **Lattice spin models**
   (Ising and Potts). Switching keeps the seed and every setting the two pages share, such as
   grid size, speed and palette.

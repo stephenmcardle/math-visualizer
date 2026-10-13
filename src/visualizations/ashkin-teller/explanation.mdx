@@ -1,0 +1,70 @@
+## What this shows
+
+Each site holds two Ising spins, $\sigma$ and $\tau$, so it is in one of four
+states, drawn as four colors. Each layer on its own is an
+[Ising model](/visualizations/ising-model). The **four-spin coupling** $K$
+rewards neighbors whose $\sigma\tau$ products agree, tying the layers together.
+
+The temperature is shown as a multiple of the critical temperature, which depends
+on $K$, so the transition is always at 1:
+
+- At $K = 0$ the layers are independent Ising models.
+- At $K = 1$ the model is the [4-state Potts model](/visualizations/potts-model):
+  all four colors are equivalent.
+- In between, the critical point moves continuously along a line, and the
+  pictures at $T_c$ change character along it.
+
+The corner shows the average of $\sigma$, of $\tau$ and of their product.
+
+Things to try: at $T = 1\,T_c$, step $K$ from 0 to 1 and compare the patterns.
+Below $T_c$, all three averages move away from 0.
+
+## How the visualization works
+
+- Each Metropolis attempt picks a site at random and proposes flipping
+  $\sigma$, $\tau$ or both, with equal chance. A change that would raise the
+  energy by $\Delta E$ is accepted with probability $e^{-\Delta E/T}$.
+- The critical temperature is found by bisection, and every probability uses
+  only addition, subtraction, multiplication and division, so runs replay
+  exactly in every browser.
+- The simulation runs in a Web Worker.
+
+## Parameters
+
+- **Grid size**: sites along each side. Restarts the run.
+- **Four-spin coupling**: $K$, from 0 to 1. Restarts the run.
+- **Temperature**: as a multiple of $T_c$. Applies from the next sweep.
+- **Starting spins**: random, or all up in both layers. Restarts the run.
+- **Speed**: sweeps per second. Never changes the results.
+
+## Mathematical background
+
+The energy of a configuration is
+
+$$
+\begin{aligned}
+H = -\sum_{\langle i, j \rangle} \bigl(&\sigma_i\sigma_j + \tau_i\tau_j \\
+&+ K\,\sigma_i\sigma_j\tau_i\tau_j\bigr).
+\end{aligned}
+$$
+
+Julius Ashkin and Edward Teller introduced the model in 1943. Its self-dual
+curve is
+
+$$
+\sinh(2/T) = e^{-2K/T}.
+$$
+
+Aoun, Dober and Glazman proved in 2023 that for $0 \le K \le 1$ the transitions of
+$\sigma$, $\tau$ and $\sigma\tau$ all happen on this curve, which is how this page
+finds $T_c$. At $K = 0$ it gives Onsager's $T_c \approx 2.269$.
+
+Along this critical line, the model's large-scale structure changes
+continuously. A 2026 manuscript from OpenAI's openai/math collection identifies
+the scaling limit of the model's height function and current clusters along the
+whole line, including the Potts endpoint. It has not been refereed, and its main
+result is not formalized in Lean. This page shows the spins, not those objects.
+
+## References
+
+Full citations are listed below.

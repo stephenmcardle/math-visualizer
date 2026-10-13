@@ -1,0 +1,67 @@
+## What this shows
+
+Each site holds an arrow that can point in any direction in the plane, drawn as
+a color around the palette's wheel. Neighboring arrows prefer to point the same
+way, and temperature turns them at random.
+
+Unlike the [Ising model](/visualizations/ising-model), the arrows never all line
+up at any positive temperature: in two dimensions, slow twists cost too little
+energy (the Mermin–Wagner theorem). Instead the transition is about
+**vortices**, points the arrows swirl around once, clockwise or counterclockwise:
+
+- Above about $T = 0.893$, vortices and antivortices wander freely and scramble
+  the arrows over short distances.
+- Below it, they bind into close pairs, and the arrows stay correlated over long
+  distances: correlations fall off as a power of distance instead of
+  exponentially.
+
+The corner counts vortices; on a grid that wraps around, antivortices always
+match them in number. On the Classic palette a vortex is a point where every
+color meets. Ramp palettes run out and back around the wheel, so they show
+vortices less clearly.
+
+Things to try: start at the default 0.89 and let it settle, then drag the
+temperature up to 1.2 and back down to 0.7, watching the vortex count.
+
+## How the visualization works
+
+- Each Metropolis attempt picks a site at random and proposes a new direction,
+  uniformly at random. A change that would raise the energy by $\Delta E$ is
+  accepted with probability $e^{-\Delta E/T}$.
+- Directions are stored as whole steps of $1/65536$ of a turn, far finer than
+  the simulation can resolve. Cosines come from a table computed once with only
+  addition, subtraction, multiplication and division, so runs replay exactly in
+  every browser, and vortices are counted exactly.
+- The simulation runs in a Web Worker.
+
+## Parameters
+
+- **Grid size**: sites along each side. Restarts the run.
+- **Temperature**: in units of the coupling. Applies from the next sweep.
+- **Starting spins**: random directions, or all the same. Restarts the run.
+- **Speed**: sweeps per second. Never changes the results.
+
+## Mathematical background
+
+With $\theta_i$ the angle of the arrow at site $i$, the energy is
+
+$$
+H = -\sum_{\langle i, j \rangle} \cos(\theta_i - \theta_j).
+$$
+
+Berezinskii, and Kosterlitz and Thouless, explained the transition as the
+unbinding of vortex pairs, and Fröhlich and Spencer proved in 1981 that it
+exists. Numerically it is at $T \approx 0.893$ (Hasenbusch 2005). Just above it,
+the correlation length $\xi$ grows extremely fast as $T$ falls, roughly like
+
+$$
+\xi \sim \exp\!\bigl(b / \sqrt{T - T_c}\,\bigr).
+$$
+
+A 2026 manuscript from OpenAI's openai/math collection proves this form of
+the blow-up. It has not been refereed, and its main result is not formalized in
+Lean.
+
+## References
+
+Full citations are listed below.

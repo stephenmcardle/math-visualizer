@@ -2,19 +2,31 @@ import { describe, expect, it } from "vitest";
 
 import { createRng } from "@/lib/random/prng";
 import { defaultParams } from "@/lib/url-state/params";
+import { describeAshkinTeller } from "@/visualizations/ashkin-teller/describe";
+import { ashkinTellerParams } from "@/visualizations/ashkin-teller/params";
+import { ashkinTellerSimulation } from "@/visualizations/ashkin-teller/simulation";
 import { describeIsing } from "@/visualizations/ising-model/describe";
 import { isingParams } from "@/visualizations/ising-model/params";
 import { isingSimulation } from "@/visualizations/ising-model/simulation";
 import { describeLorenz } from "@/visualizations/lorenz-attractor/describe";
+import { describeO3 } from "@/visualizations/o3-model/describe";
+import { o3Params } from "@/visualizations/o3-model/params";
+import { o3Simulation } from "@/visualizations/o3-model/simulation";
 import { describePercolation } from "@/visualizations/percolation/describe";
 import { percolationParams } from "@/visualizations/percolation/params";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
 import { describePotts } from "@/visualizations/potts-model/describe";
 import { pottsParams } from "@/visualizations/potts-model/params";
 import { pottsSimulation } from "@/visualizations/potts-model/simulation";
+import { describeRandomBondIsing } from "@/visualizations/random-bond-ising/describe";
+import { randomBondIsingParams } from "@/visualizations/random-bond-ising/params";
+import { randomBondIsingSimulation } from "@/visualizations/random-bond-ising/simulation";
 import { describeRandomWalk } from "@/visualizations/random-walk/describe";
 import { randomWalkParams } from "@/visualizations/random-walk/params";
 import { visualizations } from "@/visualizations/registry";
+import { describeXy } from "@/visualizations/xy-model/describe";
+import { xyParams } from "@/visualizations/xy-model/params";
+import { xySimulation } from "@/visualizations/xy-model/simulation";
 
 describe("screen-reader descriptions", () => {
   it("exist for every visualization", () => {
@@ -77,6 +89,37 @@ describe("screen-reader descriptions", () => {
     expect(describePotts(pottsSimulation.create(params, 3), params)).toBe(
       "16 by 16 sites with 3 states at 1.00 times the critical temperature, after 0 sweeps. " +
         "The most common state covers 100% of sites.",
+    );
+  });
+
+  it("random-bond Ising: reports the disorder, temperature and share of up spins", () => {
+    const params = { ...defaultParams(randomBondIsingParams), side: 16, start: "up" };
+    expect(describeRandomBondIsing(randomBondIsingSimulation.create(params, 3), params)).toBe(
+      "16 by 16 spins with bond disorder 0.30, at 1.00 times the critical temperature, " +
+        "after 0 sweeps. 100% of spins point up.",
+    );
+  });
+
+  it("Ashkin–Teller: reports both layers and how often they agree", () => {
+    const params = { ...defaultParams(ashkinTellerParams), side: 16, start: "up" };
+    expect(describeAshkinTeller(ashkinTellerSimulation.create(params, 3), params)).toBe(
+      "16 by 16 sites with four-spin coupling 0.50, at 1.00 times the critical temperature, " +
+        "after 0 sweeps. 100% of σ spins and 100% of τ spins point up, and the two agree " +
+        "at 100% of sites.",
+    );
+  });
+
+  it("XY: reports the temperature and the vortex counts", () => {
+    const params = { ...defaultParams(xyParams), side: 16, start: "up" };
+    expect(describeXy(xySimulation.create(params, 3), params)).toBe(
+      "16 by 16 spins at temperature 0.89, after 0 sweeps: 0 vortices and 0 antivortices.",
+    );
+  });
+
+  it("O(3): reports the temperature and the length of the average spin", () => {
+    const params = { ...defaultParams(o3Params), side: 16, start: "up" };
+    expect(describeO3(o3Simulation.create(params, 3), params)).toBe(
+      "16 by 16 spins at temperature 1.00, after 0 sweeps. The average spin has length 1.000.",
     );
   });
 });

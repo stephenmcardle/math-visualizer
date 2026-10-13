@@ -41,6 +41,8 @@ export function createLatticeRenderer<P extends { palette: string }, M>(
     let view = DEFAULT_VIEW;
     let fitScale = 1;
     let drawnSweeps = -1;
+    /** The params the label was last written for; the same object until a param changes. */
+    let labeledParams: P | null = null;
 
     const applyView = () => {
       const transform = viewTransform(view, context);
@@ -98,13 +100,19 @@ export function createLatticeRenderer<P extends { palette: string }, M>(
           applyPalette(params.palette, state);
           drawnSweeps = -1;
         }
+        let painted = false;
         if (state.sweeps !== drawnSweeps && source) {
           drawnSweeps = state.sweeps;
           painter.paint(state, pixels, table);
           source.update();
+          painted = true;
         }
-        // Live params such as temperature can change while paused.
-        label.setText(painter.label(state, params));
+        // Only after a new sweep or a param change (live params such as temperature can change
+        // while paused): some labels, such as the XY model's vortex count, scan every site.
+        if (painted || params !== labeledParams) {
+          labeledParams = params;
+          label.setText(painter.label(state, params));
+        }
       },
 
       resize(next: RenderContext) {

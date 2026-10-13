@@ -66,4 +66,19 @@ describe("palettes", () => {
       expect(validateDefinition(definition)).toEqual([]);
     }
   });
+
+  it("give wheels that close up: Classic turns through every hue, ramps run out and back", () => {
+    for (const p of PALETTES) {
+      const wheel = p.wheel(64);
+      expect(wheel, p.value).toHaveLength(64);
+      if (p.value === "classic") {
+        expect(wheel[0]).toBe(hslToHex(0, 0.7, 0.52));
+        expect(wheel[16]).toBe(hslToHex(90, 0.7, 0.52));
+      } else if (p.value === "okabe-ito") {
+        expect(new Set(wheel).size).toBe(7);
+      } else {
+        for (let i = 1; i < 64; i++) expect(wheel[i], `${p.value} ${i}`).toBe(wheel[64 - i]);
+      }
+    }
+  });
 });

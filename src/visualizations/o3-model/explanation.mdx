@@ -1,0 +1,63 @@
+## What this shows
+
+Each site holds an arrow that can point in any direction in space. Color shows
+how far it points up (the palette's first color) or down (its second); arrows
+lying flat are gray. Neighboring arrows prefer to point the same way, and
+temperature turns them at random.
+
+This model has **no phase transition**. At every positive temperature, arrows
+far apart are unrelated: agreement decays exponentially with distance, over a
+**correlation length** $\xi$. What changes as it cools is how big $\xi$ is: it
+grows exponentially in $1/T$.
+
+- At $T = 1$ and above, regions of agreement are a few sites across.
+- Toward the lowest temperatures, $\xi$ becomes larger than the grid, and the
+  grid looks ordered. That is a finite-size effect, not order: a large enough
+  grid would still break up.
+
+The corner shows the length of the average arrow, $|m|$, from 0 to 1. On a
+finite grid it is never exactly 0, and it shrinks as the grid grows.
+
+Things to try: compare $T = 1$ and $T = 0.5$ on the largest grid, then compare
+the [XY model](/visualizations/xy-model), whose arrows are confined to the plane.
+
+## How the visualization works
+
+- Each Metropolis attempt picks a site at random and proposes a new direction,
+  uniformly at random on the sphere. A change that would raise the energy by
+  $\Delta E$ is accepted with probability $e^{-\Delta E/T}$.
+- A direction is stored as a height and a longitude, each in 65536 steps. Equal
+  bands of height have equal area on the sphere (Archimedes), so uniform steps
+  give a uniform direction. Cosines and sines come from tables computed with
+  only addition, subtraction, multiplication and division, so runs replay
+  exactly in every browser.
+- The simulation runs in a Web Worker.
+
+## Parameters
+
+- **Grid size**: sites along each side. Restarts the run.
+- **Temperature**: in units of the coupling. Applies from the next sweep.
+- **Starting spins**: random directions, or all up. Restarts the run.
+- **Speed**: sweeps per second. Never changes the results.
+
+## Mathematical background
+
+With $\mathbf{s}_i$ the unit vector at site $i$, the energy is
+
+$$
+H = -\sum_{\langle i, j \rangle} \mathbf{s}_i \cdot \mathbf{s}_j.
+$$
+
+Mermin and Wagner proved in 1966 that the arrows can't all align at any positive
+temperature in two dimensions. That alone allows the XY model's kind of
+transition. Polyakov predicted in 1975 that the O(3) model has none: a finite
+correlation length at every temperature, growing exponentially as $T \to 0$.
+
+A 2026 manuscript from OpenAI's openai/math collection proves exponential decay of
+correlations at every positive temperature, for this model and every O($n$) model
+with $n \ge 3$. It has not been refereed, but according to the collection's
+catalog its main result is formalized in Lean.
+
+## References
+
+Full citations are listed below.

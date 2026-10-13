@@ -1,8 +1,9 @@
 /**
- * Color palettes shared by every visualization (ADR 0013). Each offers two
+ * Color palettes shared by every visualization (ADR 0013). Each offers three
  * views of itself: `colors(count)` gives distinct colors for walkers, clusters
- * or trajectories, and `pair` gives two contrasting colors for two-state
- * pictures such as spins. Colors are 0xRRGGBB numbers in sRGB.
+ * or trajectories, `pair` gives two contrasting colors for two-state pictures
+ * such as spins, and `wheel(count)` gives colors around a closed loop for
+ * angles (ADR 0015). Colors are 0xRRGGBB numbers in sRGB.
  *
  * Pure data and math with no engine imports, so params files (which the
  * worker bundle also loads) can use `paletteParam`.
@@ -17,6 +18,12 @@ export interface Palette {
   colors(count: number): number[];
   /** [first, second] state, e.g. spin up and spin down. */
   pair: readonly [number, number];
+  /**
+   * `count` colors for evenly spaced angles, where the last one meets the first.
+   * Classic is a hue wheel; a ramp runs out and back, so opposite turning
+   * directions share colors.
+   */
+  wheel(count: number): number[];
 }
 
 const GOLDEN_ANGLE_DEGREES = 137.508;
@@ -33,7 +40,8 @@ export function hslToHex(h: number, s: number, l: number): number {
   return (channel(0) << 16) | (channel(8) << 8) | channel(4);
 }
 
-function lerpHex(a: number, b: number, t: number): number {
+/** The color a fraction `t` of the way from `a` to `b`, mixing each channel. */
+export function lerpHex(a: number, b: number, t: number): number {
   const mix = (shift: number) => {
     const x = (a >> shift) & 0xff;
     const y = (b >> shift) & 0xff;
@@ -70,6 +78,10 @@ function rampPalette(
         sampleRamp(stops, lo + (hi - lo) * ((i * GOLDEN_FRACTION) % 1)),
       ),
     pair: [sampleRamp(stops, pairAt[0]), sampleRamp(stops, pairAt[1])],
+    wheel: (count) =>
+      Array.from({ length: count }, (_, i) =>
+        sampleRamp(stops, lo + (hi - lo) * (1 - Math.abs((2 * i) / count - 1))),
+      ),
   };
 }
 
@@ -84,6 +96,9 @@ function listPalette(
     label,
     colors: (count) => Array.from({ length: count }, (_, i) => list[i % list.length]),
     pair,
+    // The list in order, as equal sectors.
+    wheel: (count) =>
+      Array.from({ length: count }, (_, i) => list[Math.floor((i * list.length) / count)]),
   };
 }
 
@@ -126,6 +141,8 @@ export const PALETTES: readonly Palette[] = [
       ),
     // Orange and blue stay distinct with the common forms of color blindness.
     pair: [0xe8833a, 0x3a76c4],
+    wheel: (count) =>
+      Array.from({ length: count }, (_, i) => hslToHex((360 * i) / count, 0.7, 0.52)),
   },
   listPalette("okabe-ito", "Okabe–Ito (color-blind safe)", OKABE_ITO, [0xe69f00, 0x0072b2]),
   rampPalette("viridis", "Viridis", VIRIDIS, [0.15, 1], [1, 0]),
