@@ -106,9 +106,10 @@ behind. T4 has only Lorenz plus one weak candidate, so it isn't worth templatizi
 
 Notes for implementation:
 
-- **218 could be a param on the existing Ising.** A "bond disorder" param with default 0 would
-  keep old links unchanged (ADR 0009). The flip-probability table then depends on local bonds, so
-  `expNegative` is called per flip or per bond configuration.
+- **218 gets its own page for now** (see Decisions). Its flip probabilities depend on the
+  local bonds, so `expNegative` is called per flip or per bond configuration, not from one table.
+  Folding it into Ising later as a "bond disorder" param with default 0 would keep old links
+  unchanged (ADR 0009).
 - **Cross-browser determinism.** 216, 215 and 146 need trigonometry (ISS-005). The standard map is
   chaotic, so a last-bit difference in `Math.sin` would make a shared link diverge visibly between
   browsers. Use a deterministic polynomial `sin`/`cos`, as `expNegative` does for the Ising model.
@@ -228,16 +229,21 @@ faithful to draw.
 - **Real and complex analysis:** 072, 073, 075, 077–086.
 - **Theoretical computer science:** 102–114, 116–121, 124–130, 132–142.
 
-## Open questions for the template plan
+## Decisions for the template plan
 
-- **Citations.** CONTRIBUTING asks for verified references. The manuscripts are real and
-  linkable, but unrefereed. A proposal for each explanation:
-  - cite classical, refereed sources for the model itself;
-  - link the openai/math family as "a 2026 manuscript (unrefereed)";
-  - note whether its main result is Lean-formalized.
-- **Unit of reuse.** Should a drop-in be one model per page, as today, or should a page host
-  several models of one template? For example, one lattice page with Ising, Potts, Ashkin–Teller
-  and XY as a model select. The second means fewer pages but a schema whose params vary by model.
-- **Overlap with existing pages.** Some candidates are variants of what we have: 218 of Ising,
-  223 at $q=2$ of Ising, and 212 is percolation's sibling. Decide whether they are params, new
-  pages, or both.
+Decided on 2026-10-12, after this review:
+
+- **Citations.** Each explanation:
+  - cites classical, refereed sources for the model itself;
+  - links the openai/math family as "a 2026 manuscript (unrefereed)";
+  - notes whether its main result is Lean-formalized.
+- **Unit of reuse: both, through sibling pages.** Each model stays its own registry entry and
+  page, with its own slug, explanation, metadata and param schema. Its definition comes from a
+  template factory, so pages share code but not params. On each page, a model switcher lists the
+  other models built from the same template. Picking one is a link to that page that keeps the
+  current query string. The target page ignores keys it doesn't know and resets invalid values
+  to defaults (`params.ts` already does both), so the seed, palette and any shared params carry
+  over. This avoids a schema whose params change with the model.
+- **Overlap with existing pages.** Variants of existing pages become separate pages for now:
+  random-bond Ising (218) as its own page rather than a param on Ising, Potts (223) with $q = 2$
+  allowed, and first-passage percolation (212) beside percolation. Folding them in can come later.
