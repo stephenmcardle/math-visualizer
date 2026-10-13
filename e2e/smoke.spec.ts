@@ -278,6 +278,22 @@ test("the model switcher opens a sibling page with the shared settings", async (
   await expect.poll(() => [started, stopped]).toEqual([2, 1]);
 });
 
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("the static page already shows the model switcher", async ({ page }) => {
+    // Rendered on the server too, so the viewport doesn't shift down when the page hydrates
+    // and the family's pages link to each other for crawlers.
+    await page.goto("/visualizations/ising-model");
+    const models = page.getByRole("navigation", { name: "Lattice spin models" });
+    await expect(models.locator("[aria-current=page]")).toHaveText("Ising Model");
+    await expect(models.getByRole("link", { name: "Potts Model" })).toHaveAttribute(
+      "href",
+      "/visualizations/potts-model",
+    );
+  });
+});
+
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {
   await page.goto("/visualizations/random-walk?seed=7");
   await page.getByRole("switch", { name: "Show trails" }).click();

@@ -19,7 +19,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 | `npm run check` (local)  | Passing: lint, typecheck, 143 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 21 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 22 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works

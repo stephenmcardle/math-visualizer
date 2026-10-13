@@ -7,7 +7,8 @@ import type { VisualizationMetadata } from "@/lib/visualization/types";
 /**
  * Links to the other models in this page's family (ADR 0014). Each link
  * carries this run's params and seed; the target page keeps the keys it
- * shares and drops the rest.
+ * shares and drops the rest. With an empty `query` (the static page, before
+ * the host has read the URL) the links are plain page links.
  */
 export function ModelSwitcher(props: {
   family: string;
@@ -30,7 +31,7 @@ export function ModelSwitcher(props: {
         ) : (
           <Link
             key={member.slug}
-            href={`/visualizations/${member.slug}?${props.query}`}
+            href={`/visualizations/${member.slug}${props.query ? `?${props.query}` : ""}`}
             className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
           >
             {member.title}
