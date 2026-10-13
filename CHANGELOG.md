@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **XY model** page: planar spins with the vortex-unbinding (Berezinskii–Kosterlitz–Thouless)
+  transition near T = 0.893, a live vortex count, and colors from each palette's new wheel.
+  Angles are stored in steps of 1/65536 turn, so shared links replay exactly in every browser.
 - **Ashkin–Teller model** page: two Ising layers coupled by a four-spin interaction, from two
   independent Ising models (K = 0) to the 4-state Potts model (K = 1), at temperatures relative to
   its critical line.

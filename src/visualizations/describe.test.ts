@@ -21,6 +21,9 @@ import { randomBondIsingSimulation } from "@/visualizations/random-bond-ising/si
 import { describeRandomWalk } from "@/visualizations/random-walk/describe";
 import { randomWalkParams } from "@/visualizations/random-walk/params";
 import { visualizations } from "@/visualizations/registry";
+import { describeXy } from "@/visualizations/xy-model/describe";
+import { xyParams } from "@/visualizations/xy-model/params";
+import { xySimulation } from "@/visualizations/xy-model/simulation";
 
 describe("screen-reader descriptions", () => {
   it("exist for every visualization", () => {
@@ -100,6 +103,13 @@ describe("screen-reader descriptions", () => {
       "16 by 16 sites with four-spin coupling 0.50, at 1.00 times the critical temperature, " +
         "after 0 sweeps. 100% of σ spins and 100% of τ spins point up, and the two agree " +
         "at 100% of sites.",
+    );
+  });
+
+  it("XY: reports the temperature and the vortex counts", () => {
+    const params = { ...defaultParams(xyParams), side: 16, start: "up" };
+    expect(describeXy(xySimulation.create(params, 3), params)).toBe(
+      "16 by 16 spins at temperature 0.89, after 0 sweeps: 0 vortices and 0 antivortices.",
     );
   });
 });
