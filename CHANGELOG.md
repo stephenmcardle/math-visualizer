@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- `docs/research/openai-math-candidates.md`: a review of all 372 result families in
+  [openai/math](https://github.com/openai/math), sorted into do now (11), do later (28), maybe
+  (36) and not possible (297), with the visualization templates they imply.
 - A **Palette** choice on every visualization: Classic (the previous colors), Okabe–Ito
   (color-blind safe), Viridis, Plasma, Cividis, Turbo and Grayscale. Switching recolors the
   current run instead of restarting it (random-walk trails start fresh in the new colors), and
