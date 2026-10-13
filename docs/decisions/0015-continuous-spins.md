@@ -18,8 +18,10 @@ The XY and O(3) models need spins that point in any direction. Two problems come
 - **Quantized directions.** Directions are whole steps of 1/65536 of a turn in `Uint16Array`s
   (`src/lib/math/angles.ts`); O(3) adds a height in 65536 equal-area bands.
   - Angle arithmetic is exact, with wraparound by mask.
-  - Cosines and sines are table lookups.
-  - XY vortices are counted exactly with integer arithmetic.
+  - Cosines and sines are table lookups (`angleTables()`), built on first use so pages
+    without angles don't pay for them.
+  - XY vortices are counted exactly with integer arithmetic, taking each bond's step in one
+    fixed direction so a half-turn tie breaks the same way in both plaquettes beside it.
   - The state is at most 1 MB at 512², so every lattice model keeps the 32–512 grid.
 - **Deterministic math.** The tables are built with `cosTurns` and `sinTurns`
   (`src/lib/math/deterministic.ts`): exact reduction of whole turns, then a Taylor series on at

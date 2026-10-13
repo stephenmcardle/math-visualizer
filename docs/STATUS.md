@@ -16,7 +16,7 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 196 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 198 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
 | `npm run test:e2e`       | Passing: 27 Playwright smoke tests (also in CI)         |

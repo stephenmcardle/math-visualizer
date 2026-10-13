@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { ANGLE_STEPS, COS, SIN, angleDifference } from "@/lib/math/angles";
+import { ANGLE_STEPS, angleDifference, angleTables } from "@/lib/math/angles";
 
 describe("quantized angles", () => {
   it("tabulate cos and sin of every step", () => {
+    const { cos: COS, sin: SIN } = angleTables();
     for (let i = 0; i < ANGLE_STEPS; i += 97) {
       const angle = (2 * Math.PI * i) / ANGLE_STEPS;
       expect(Math.abs(COS[i] - Math.cos(angle))).toBeLessThan(1e-15);

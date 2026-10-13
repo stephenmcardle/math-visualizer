@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ANGLE_STEPS } from "@/lib/math/angles";
+import { createRng, nextInt } from "@/lib/random/prng";
 import { defaultParams } from "@/lib/url-state/params";
 import { checksum, latticeContractTests } from "@/templates/lattice/contract-tests";
 import { xyParams, type XyParams } from "@/visualizations/xy-model/params";
@@ -45,6 +46,19 @@ describe("XY simulation", () => {
 
   it("has as many antivortices as vortices in any configuration on the torus", () => {
     const { vortices, antivortices } = countVortices(run(3, 5));
+    expect(vortices).toBeGreaterThan(0);
+    expect(antivortices).toBe(vortices);
+  });
+
+  it("balances vortices even across neighbors exactly half a turn apart", () => {
+    // Quarter-turn angles put many neighbors exactly half a turn apart, where the
+    // shorter way round is a tie that both plaquettes beside the bond must break alike.
+    const state = xySimulation.create({ ...params, side: 32, start: "up" }, 1);
+    const rng = createRng(9);
+    for (let i = 0; i < state.angles.length; i++) {
+      state.angles[i] = nextInt(rng, 4) * (ANGLE_STEPS / 4);
+    }
+    const { vortices, antivortices } = countVortices(state);
     expect(vortices).toBeGreaterThan(0);
     expect(antivortices).toBe(vortices);
   });

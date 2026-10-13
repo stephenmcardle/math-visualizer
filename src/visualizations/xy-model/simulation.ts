@@ -1,4 +1,4 @@
-import { ANGLE_MASK, ANGLE_STEPS, COS, angleDifference } from "@/lib/math/angles";
+import { ANGLE_MASK, ANGLE_STEPS, angleDifference, angleTables } from "@/lib/math/angles";
 import { expNegative } from "@/lib/math/deterministic";
 import { nextFloat, nextInt } from "@/lib/random/prng";
 import {
@@ -24,8 +24,8 @@ export interface XyFields {
 export type XyState = LatticeState<XyFields>;
 
 /** One bond's energy change when a spin turns from `current` to `proposal`. */
-function bondChange(current: number, proposal: number, neighbor: number): number {
-  return COS[(current - neighbor) & ANGLE_MASK] - COS[(proposal - neighbor) & ANGLE_MASK];
+function bondChange(cos: Float64Array, current: number, proposal: number, neighbor: number) {
+  return cos[(current - neighbor) & ANGLE_MASK] - cos[(proposal - neighbor) & ANGLE_MASK];
 }
 
 const xyModel: LatticeModel<XyParams, XyFields> = {
@@ -45,11 +45,12 @@ const xyModel: LatticeModel<XyParams, XyFields> = {
     const { angles, rng } = state;
     const current = angles[site];
     const proposal = nextInt(rng, ANGLE_STEPS);
+    const { cos } = angleTables();
     const delta =
-      bondChange(current, proposal, angles[north]) +
-      bondChange(current, proposal, angles[south]) +
-      bondChange(current, proposal, angles[west]) +
-      bondChange(current, proposal, angles[east]);
+      bondChange(cos, current, proposal, angles[north]) +
+      bondChange(cos, current, proposal, angles[south]) +
+      bondChange(cos, current, proposal, angles[west]) +
+      bondChange(cos, current, proposal, angles[east]);
     if (delta <= 0 || nextFloat(rng) < expNegative(delta / state.temperature)) {
       angles[site] = proposal;
     }
@@ -61,9 +62,10 @@ export const xySimulation = latticeSimulation(xyModel);
 /**
  * Vortices and antivortices: plaquettes around which the angle turns once
  * forward or once back. Exact, because the steps around a plaquette add up to a
- * whole number of turns. On the torus the two counts match, except in the rare
- * case (1 in 65536 per bond) of neighbors exactly half a turn apart, which count
- * as turning back from either side; that only affects the displayed count.
+ * whole number of turns. Each bond's step is taken in one fixed direction
+ * (west to east, north to south) and negated in the plaquette that crosses it the
+ * other way, so neighbors exactly half a turn apart break the tie alike on both
+ * sides, and on the torus the two counts always match.
  */
 export function countVortices(state: XyState): { vortices: number; antivortices: number } {
   const { side, angles } = state;
@@ -79,9 +81,9 @@ export function countVortices(state: XyState): { vortices: number; antivortices:
       const d = angles[below * side + col];
       const turn =
         angleDifference(a, b) +
-        angleDifference(b, c) +
-        angleDifference(c, d) +
-        angleDifference(d, a);
+        angleDifference(b, c) -
+        angleDifference(d, c) -
+        angleDifference(a, d);
       if (turn > 0) vortices++;
       else if (turn < 0) antivortices++;
     }

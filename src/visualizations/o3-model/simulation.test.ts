@@ -4,10 +4,9 @@ import { defaultParams } from "@/lib/url-state/params";
 import { checksum, latticeContractTests } from "@/templates/lattice/contract-tests";
 import { o3Params, type O3Params } from "@/visualizations/o3-model/params";
 import {
-  HEIGHT,
-  RADIUS,
   magnetization,
   o3Simulation,
+  sphereTables,
   type O3State,
 } from "@/visualizations/o3-model/simulation";
 
@@ -35,8 +34,9 @@ describe("O(3) simulation", () => {
   latticeContractTests("o3-model", o3Simulation, params, (s) => [...s.heights, ...s.longitudes]);
 
   it("stores unit vectors, spread evenly over the sphere", () => {
-    for (let k = 0; k < HEIGHT.length; k += 101) {
-      expect(HEIGHT[k] ** 2 + RADIUS[k] ** 2).toBeCloseTo(1, 14);
+    const { height, radius } = sphereTables();
+    for (let k = 0; k < height.length; k += 101) {
+      expect(height[k] ** 2 + radius[k] ** 2).toBeCloseTo(1, 14);
     }
     // Uniform random directions average out to nearly nothing.
     expect(magnetization(o3Simulation.create({ ...params, side: 64 }, 1))).toBeLessThan(0.03);

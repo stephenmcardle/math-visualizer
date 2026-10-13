@@ -1,4 +1,4 @@
-import { ANGLE_STEPS, COS, SIN } from "@/lib/math/angles";
+import { ANGLE_STEPS, angleTables } from "@/lib/math/angles";
 import { expNegative } from "@/lib/math/deterministic";
 import { nextFloat, nextInt } from "@/lib/random/prng";
 import {
@@ -25,13 +25,30 @@ export interface O3Fields {
 
 export type O3State = LatticeState<O3Fields>;
 
-/** z at the middle of each height band, and the radius √(1 − z²) of its circle. */
-export const HEIGHT = new Float64Array(ANGLE_STEPS);
-export const RADIUS = new Float64Array(ANGLE_STEPS);
-for (let k = 0; k < ANGLE_STEPS; k++) {
-  HEIGHT[k] = (2 * k + 1) / ANGLE_STEPS - 1;
-  // Math.sqrt is correctly rounded everywhere, unlike Math.sin or Math.exp.
-  RADIUS[k] = Math.sqrt(1 - HEIGHT[k] * HEIGHT[k]);
+export interface SphereTables {
+  /** z at the middle of each height band, and the radius √(1 − z²) of its circle. */
+  height: Float64Array;
+  radius: Float64Array;
+  /** cos and sin of each longitude step. */
+  cos: Float64Array;
+  sin: Float64Array;
+}
+
+let tables: SphereTables | null = null;
+
+/** Built on first use, like `angleTables`, so other pages don't pay for them. */
+export function sphereTables(): SphereTables {
+  if (!tables) {
+    const height = new Float64Array(ANGLE_STEPS);
+    const radius = new Float64Array(ANGLE_STEPS);
+    for (let k = 0; k < ANGLE_STEPS; k++) {
+      height[k] = (2 * k + 1) / ANGLE_STEPS - 1;
+      // Math.sqrt is correctly rounded everywhere, unlike Math.sin or Math.exp.
+      radius[k] = Math.sqrt(1 - height[k] * height[k]);
+    }
+    tables = { height, radius, ...angleTables() };
+  }
+  return tables;
 }
 
 const o3Model: LatticeModel<O3Params, O3Fields> = {
@@ -56,6 +73,7 @@ const o3Model: LatticeModel<O3Params, O3Fields> = {
 
   attempt(state, site, north, south, west, east) {
     const { heights, longitudes, rng } = state;
+    const { height: HEIGHT, radius: RADIUS, cos: COS, sin: SIN } = sphereTables();
     // The neighbors' sum, h; the energy change is −(s′ − s)·h.
     let hx = 0;
     let hy = 0;
@@ -87,6 +105,7 @@ export const o3Simulation = latticeSimulation(o3Model);
 /** Length of the average spin, from 0 (no net direction) to 1 (all aligned). */
 export function magnetization(state: O3State): number {
   const { heights, longitudes } = state;
+  const { height: HEIGHT, radius: RADIUS, cos: COS, sin: SIN } = sphereTables();
   let x = 0;
   let y = 0;
   let z = 0;
