@@ -1,4 +1,5 @@
 import { createRegistry } from "@/lib/visualization/registry";
+import { ashkinTeller } from "@/visualizations/ashkin-teller/definition";
 import { isingModel } from "@/visualizations/ising-model/definition";
 import { lorenzAttractor } from "@/visualizations/lorenz-attractor/definition";
 import { percolation } from "@/visualizations/percolation/definition";
@@ -17,4 +18,5 @@ export const visualizations = createRegistry([
   isingModel,
   pottsModel,
   randomBondIsing,
+  ashkinTeller,
 ]);

@@ -13,6 +13,11 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **Ashkin–Teller model** page: two Ising layers coupled by a four-spin interaction, from two
+  independent Ising models (K = 0) to the 4-state Potts model (K = 1), at temperatures relative to
+  its critical line.
+- A cross-check test: Potts with 2 states, random-bond Ising without disorder and Ashkin–Teller
+  without coupling all reproduce the Ising model's exact magnetization (Yang) below T_c.
 - **Random-bond Ising model** page: the Ising model with bonds of random strength 1 ± ε, fixed
   for the run, at temperatures relative to its critical point. In the Lattice spin models family.
 - `docs/plans/2026-10-12-lattice-models.md`: Plan 2, which adds the random-bond Ising,

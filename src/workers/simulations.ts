@@ -1,4 +1,5 @@
 import type { Simulation } from "@/lib/simulation/types";
+import { ashkinTellerSimulation } from "@/visualizations/ashkin-teller/simulation";
 import { isingSimulation } from "@/visualizations/ising-model/simulation";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
 import { pottsSimulation } from "@/visualizations/potts-model/simulation";
@@ -15,4 +16,5 @@ export const workerSimulations: Record<string, Simulation<unknown, unknown>> = {
   "ising-model": isingSimulation as Simulation<unknown, unknown>,
   "potts-model": pottsSimulation as Simulation<unknown, unknown>,
   "random-bond-ising": randomBondIsingSimulation as Simulation<unknown, unknown>,
+  "ashkin-teller": ashkinTellerSimulation as Simulation<unknown, unknown>,
 };

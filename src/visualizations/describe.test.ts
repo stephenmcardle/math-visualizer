@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { createRng } from "@/lib/random/prng";
 import { defaultParams } from "@/lib/url-state/params";
+import { describeAshkinTeller } from "@/visualizations/ashkin-teller/describe";
+import { ashkinTellerParams } from "@/visualizations/ashkin-teller/params";
+import { ashkinTellerSimulation } from "@/visualizations/ashkin-teller/simulation";
 import { describeIsing } from "@/visualizations/ising-model/describe";
 import { isingParams } from "@/visualizations/ising-model/params";
 import { isingSimulation } from "@/visualizations/ising-model/simulation";
@@ -88,6 +91,15 @@ describe("screen-reader descriptions", () => {
     expect(describeRandomBondIsing(randomBondIsingSimulation.create(params, 3), params)).toBe(
       "16 by 16 spins with bond disorder 0.30, at 1.00 times the critical temperature, " +
         "after 0 sweeps. 100% of spins point up.",
+    );
+  });
+
+  it("Ashkin–Teller: reports both layers and how often they agree", () => {
+    const params = { ...defaultParams(ashkinTellerParams), side: 16, start: "up" };
+    expect(describeAshkinTeller(ashkinTellerSimulation.create(params, 3), params)).toBe(
+      "16 by 16 sites with four-spin coupling 0.50, at 1.00 times the critical temperature, " +
+        "after 0 sweeps. 100% of σ spins and 100% of τ spins point up, and the two agree " +
+        "at 100% of sites.",
     );
   });
 });
