@@ -9,6 +9,9 @@ import { describeIsing } from "@/visualizations/ising-model/describe";
 import { isingParams } from "@/visualizations/ising-model/params";
 import { isingSimulation } from "@/visualizations/ising-model/simulation";
 import { describeLorenz } from "@/visualizations/lorenz-attractor/describe";
+import { describeO3 } from "@/visualizations/o3-model/describe";
+import { o3Params } from "@/visualizations/o3-model/params";
+import { o3Simulation } from "@/visualizations/o3-model/simulation";
 import { describePercolation } from "@/visualizations/percolation/describe";
 import { percolationParams } from "@/visualizations/percolation/params";
 import { percolationSimulation } from "@/visualizations/percolation/simulation";
@@ -110,6 +113,13 @@ describe("screen-reader descriptions", () => {
     const params = { ...defaultParams(xyParams), side: 16, start: "up" };
     expect(describeXy(xySimulation.create(params, 3), params)).toBe(
       "16 by 16 spins at temperature 0.89, after 0 sweeps: 0 vortices and 0 antivortices.",
+    );
+  });
+
+  it("O(3): reports the temperature and the length of the average spin", () => {
+    const params = { ...defaultParams(o3Params), side: 16, start: "up" };
+    expect(describeO3(o3Simulation.create(params, 3), params)).toBe(
+      "16 by 16 spins at temperature 1.00, after 0 sweeps. The average spin has length 1.000.",
     );
   });
 });

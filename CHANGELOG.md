@@ -13,6 +13,9 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **O(3) model** page: spins pointing anywhere in space, which never order at a positive
+  temperature, unlike the XY model. Colored from down (the palette's second color) through gray
+  to up (its first).
 - **XY model** page: planar spins with the vortex-unbinding (Berezinskii–Kosterlitz–Thouless)
   transition near T = 0.893, a live vortex count, and colors from each palette's new wheel.
   Angles are stored in steps of 1/65536 turn, so shared links replay exactly in every browser.
