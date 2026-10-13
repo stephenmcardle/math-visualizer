@@ -7,8 +7,8 @@ See [ROADMAP.md](ROADMAP.md).
 ## Summary
 
 The scaffold and development infrastructure are on `main`. The generic visualization host, the
-four architecture layers and five visualizations (2D random walk on the main thread, site
-percolation and the Ising and Potts models in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
+four architecture layers and six visualizations (2D random walk on the main thread, site
+percolation and the Ising, Potts and random-bond Ising models in a Web Worker, and the Lorenz attractor in Three.js) work in the production build, and CI runs the full check on every push and PR. The GitHub repository is public, and the site
 is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on every merge to
 `main`.
 
@@ -16,15 +16,15 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 150 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 161 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 23 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 24 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works
 
-- A model switcher on pages in the same family (Ising and Potts are "Lattice spin models"),
+- A model switcher on pages in the same family (Ising, Potts and random-bond Ising are "Lattice spin models"),
   which keeps the seed and shared settings when switching.
 - Seven color palettes on every visualization, switchable mid-run and stored in the URL.
 - Pan and zoom on the 2D visualizations (mouse, touch, keyboard and buttons); one-finger swipes

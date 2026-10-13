@@ -12,6 +12,9 @@ import { percolationSimulation } from "@/visualizations/percolation/simulation";
 import { describePotts } from "@/visualizations/potts-model/describe";
 import { pottsParams } from "@/visualizations/potts-model/params";
 import { pottsSimulation } from "@/visualizations/potts-model/simulation";
+import { describeRandomBondIsing } from "@/visualizations/random-bond-ising/describe";
+import { randomBondIsingParams } from "@/visualizations/random-bond-ising/params";
+import { randomBondIsingSimulation } from "@/visualizations/random-bond-ising/simulation";
 import { describeRandomWalk } from "@/visualizations/random-walk/describe";
 import { randomWalkParams } from "@/visualizations/random-walk/params";
 import { visualizations } from "@/visualizations/registry";
@@ -77,6 +80,14 @@ describe("screen-reader descriptions", () => {
     expect(describePotts(pottsSimulation.create(params, 3), params)).toBe(
       "16 by 16 sites with 3 states at 1.00 times the critical temperature, after 0 sweeps. " +
         "The most common state covers 100% of sites.",
+    );
+  });
+
+  it("random-bond Ising: reports the disorder, temperature and share of up spins", () => {
+    const params = { ...defaultParams(randomBondIsingParams), side: 16, start: "up" };
+    expect(describeRandomBondIsing(randomBondIsingSimulation.create(params, 3), params)).toBe(
+      "16 by 16 spins with bond disorder 0.30, at 1.00 times the critical temperature, " +
+        "after 0 sweeps. 100% of spins point up.",
     );
   });
 });

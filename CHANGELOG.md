@@ -13,6 +13,8 @@ Deprecated, Removed, Fixed or Security. Write for contributors and users, not as
 
 ### Added
 
+- **Random-bond Ising model** page: the Ising model with bonds of random strength 1 ± ε, fixed
+  for the run, at temperatures relative to its critical point. In the Lattice spin models family.
 - `docs/plans/2026-10-12-lattice-models.md`: Plan 2, which adds the random-bond Ising,
   Ashkin–Teller, XY and O(3) models on the lattice template, deterministic trigonometry, palette
   wheels for angles, and a cross-check that the models reducing to Ising reproduce it.
