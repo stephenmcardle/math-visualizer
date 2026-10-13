@@ -16,10 +16,10 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 | Check                    | State                                                   |
 | ------------------------ | ------------------------------------------------------- |
-| `npm run check` (local)  | Passing: lint, typecheck, 149 tests, build              |
+| `npm run check` (local)  | Passing: lint, typecheck, 150 tests, build              |
 | CI (GitHub Actions)      | Passing on `main`; required on PRs by branch protection |
 | Deployment               | Live at https://mathvisualizer.org (Workers Builds)     |
-| `npm run test:e2e`       | Passing: 22 Playwright smoke tests (also in CI)         |
+| `npm run test:e2e`       | Passing: 23 Playwright smoke tests (also in CI)         |
 | Open capture-log entries | See [ISSUES.md](ISSUES.md)                              |
 
 ## What works

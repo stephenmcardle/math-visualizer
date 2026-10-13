@@ -294,6 +294,21 @@ test.describe("without JavaScript", () => {
   });
 });
 
+test("a live param change while paused redraws the lattice label", async ({ page }) => {
+  // The lattice renderer rewrites its label only after a new sweep or a param change.
+  await page.goto("/visualizations/ising-model?seed=7");
+  await page.waitForTimeout(500);
+  await page.getByRole("button", { name: "Pause" }).click();
+  await page.waitForTimeout(300);
+  const before = await saveFramePng(page);
+  expect((await saveFramePng(page)).equals(before)).toBe(true);
+  await page.getByRole("slider", { name: "Temperature" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page).toHaveURL(/temperature=2\.28/);
+  // Paused, so the spins are unchanged: only the label ("T = 2.28") can differ.
+  await expect.poll(async () => (await saveFramePng(page)).equals(before)).toBe(false);
+});
+
 test("controls write to the URL, and reloading keeps them", async ({ page }) => {
   await page.goto("/visualizations/random-walk?seed=7");
   await page.getByRole("switch", { name: "Show trails" }).click();
