@@ -113,6 +113,11 @@ quality change, auto step down or up), which is a no-op re-render unless the lev
   a test enforces it), and renderers take colors from `palette(params.palette)` in
   `src/lib/rendering/palettes.ts` (`.colors(n)` or `.pair`), recoloring in `render` when it
   changes instead of restarting (ADR 0013).
+- Templates (`src/templates/<name>/`, ADR 0014): shared simulation loop, params, renderer and
+  definition helper for models of one structure; a model supplies hooks and a Pixi-free painter.
+  `src/templates/lattice/` serves Ising and Potts. Ported models keep their pinned replay tests
+  unchanged. `metadata.family` links related pages through the model switcher, and a test makes
+  shared keys within a family agree.
 - Descriptions: each definition's `describe(state, params)` (in `describe.ts`) is the viewport's
   screen-reader description, written only while paused and announced on pause (ADR 0011). While
   playing it is a fixed sentence, so the loop still never touches the DOM.

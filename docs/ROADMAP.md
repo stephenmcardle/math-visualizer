@@ -78,11 +78,17 @@ closed 2026-10-12 with the Ising model.
 
 Exit: every item above is shipped. Met 2026-10-12.
 
-## Milestone 5: not yet planned 🚧
+## Milestone 5: Templates and the first openai/math models 🚧
 
-Goal and exit criterion to be set. Work shipped since Milestone 4 closed:
+Goal: show the 11 "do now" models from the [openai/math review](research/openai-math-candidates.md)
+on shared templates ([design](plans/2026-10-12-template-system-design.md)). Exit criterion: all
+11 are live, each with a pinned replay test and verified references.
 
 - ✅ Color palettes on every visualization, switchable mid-run (ADR 0013)
+- ✅ Lattice template, Ising ported, Potts model, model families and switcher (ADR 0014)
+- Remaining lattice models: random-bond Ising, Ashkin–Teller, XY, O(3)
+- Planar-particle template, random walk ported, and four models
+- Lattice-growth template, percolation ported, and two models
 
 ## Ideas (not scheduled)
 

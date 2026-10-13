@@ -234,12 +234,15 @@ interface VisualizationRenderer<TParams, TState> {
 │   │   ├── site-header.tsx
 │   │   └── theme-toggle.tsx
 │   ├── lib/
+│   │   ├── math/                 # deterministic math for simulations
 │   │   ├── random/prng.ts        # seeded PRNG
 │   │   ├── rendering/            # renderer contracts, Pixi/Three hosts, quality, 2D view
 │   │   ├── simulation/           # simulation contract, step clock, runners, worker protocol
 │   │   ├── url-state/            # param schema, URL parse/serialize, React hook
 │   │   ├── visualization/        # definition types and registry factory
 │   │   └── site.ts               # project name, description, GitHub URL
+│   ├── templates/
+│   │   └── lattice/              # lattice Markov chain template: simulation, params, painter, renderer, definition
 │   ├── visualizations/
 │   │   ├── registry.ts           # the list of registered visualizations
 │   │   └── random-walk/
@@ -387,6 +390,14 @@ Notes:
 As an example, here is how to add a hypothetical `bond-percolation` visualization. Use
 `src/visualizations/random-walk/` (main thread), `src/visualizations/percolation/` (Web Worker)
 and `src/visualizations/lorenz-attractor/` (Three.js) as references throughout.
+
+**If your model fits a template, start there.** A lattice model updated one site at a time
+(like Ising and Potts) needs only a `LatticeModel` (`init`, `prepare`, `attempt`) in
+`simulation.ts`, a `LatticePainter` in `painter.ts`, and `latticeParams({...})` for its own
+params. Its `renderer.ts` is one line, and `defineLatticeVisualization` replaces step 7. Use
+`src/visualizations/potts-model/` as the reference ([ADR 0014](docs/decisions/0014-visualization-templates-and-families.md)).
+To put related pages in a model switcher, give them the same `family` in `metadata.ts`, and
+give shared params the same key only when they mean the same thing.
 
 1. **Create the folder** `src/visualizations/bond-percolation/`.
 

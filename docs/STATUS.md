@@ -1,7 +1,7 @@
 # Status
 
 **Last updated:** 2026-10-12
-**Phase:** Milestones 0–4 complete; the next milestone is not planned yet.
+**Phase:** Milestones 0–4 complete; Milestone 5 (templates and openai/math models) in progress.
 See [ROADMAP.md](ROADMAP.md).
 
 ## Summary
@@ -53,13 +53,15 @@ is live at https://mathvisualizer.org, deployed by Cloudflare Workers Builds on 
 
 ## In progress
 
-- Visualization template system: [design](plans/2026-10-12-template-system-design.md) and
-  [Plan 1](plans/2026-10-12-lattice-template.md) (lattice template with Ising ported, the Potts
-  model, model families and the switcher) are written. Next: implement Plan 1.
+- Milestone 5, visualization templates ([design](plans/2026-10-12-template-system-design.md)).
+  [Plan 1](plans/2026-10-12-lattice-template.md) is implemented: the lattice template with
+  Ising ported, the Potts model, and model families with a switcher (ADR 0014). Next: write
+  Plan 2.
 
 ## Next up
 
-1. Implement Plan 1, then write Plan 2 (random-bond Ising, Ashkin–Teller, XY, O(3)).
+1. Write and implement Plan 2: random-bond Ising, Ashkin–Teller, XY and O(3), with
+   deterministic `sin`/`cos`.
 2. Watch CI after `ubuntu-latest` moves to Ubuntu 26 on 2026-10-19 (ISS-010).
 
 ## Known limitations

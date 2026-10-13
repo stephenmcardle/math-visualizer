@@ -81,6 +81,8 @@ Keep closed entries; they explain why things are the way they are.
   guaranteed to be bit-identical across engines. Harmless for the random walk; chaotic systems
   could visibly diverge over long runs. Options if needed: a deterministic math helper module,
   or documenting per-visualization guarantees.
+- 2026-10-12: `src/lib/math/deterministic.ts` now holds `expNegative`; deterministic `sin`/`cos`
+  for XY, O(3) and the standard map go there (Plan 2).
 
 ### ISS-003: Random-walk trails reset on resize and quality change
 
