@@ -1,10 +1,10 @@
-import type { LatticePainter } from "@/templates/lattice/painter";
+import { distinctColors, type LatticePainter } from "@/templates/lattice/painter";
 import { majorityShare } from "@/visualizations/potts-model/describe";
 import type { PottsParams } from "@/visualizations/potts-model/params";
 import type { PottsFields } from "@/visualizations/potts-model/simulation";
 
 export const pottsPainter: LatticePainter<PottsParams, PottsFields> = {
-  colors: (palette, state) => palette.colors(state.q),
+  colors: (palette, state) => distinctColors(palette, state.q),
 
   paint(state, pixels, table) {
     const { states } = state;
